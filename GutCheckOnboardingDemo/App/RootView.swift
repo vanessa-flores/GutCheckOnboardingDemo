@@ -1,0 +1,120 @@
+import SwiftUI
+
+struct RootView: View {
+    @Bindable private var appRouter = AppRouter()
+    
+    var body: some View {
+        Group {
+            switch appRouter.currentFlow {
+            case .onboarding:
+                OnboardingFlowView(appRouter: appRouter)
+            case .mainApp:
+                MainAppView(appRouter: appRouter)
+            }
+        }
+    }
+}
+
+// MARK: - Onboarding Flow View
+
+struct OnboardingFlowView: View {
+    @State var appRouter: AppRouter
+    
+    var body: some View {
+        NavigationStack(path: $appRouter.onboardingRouter.navigationPath) {
+            Text("Welcome Screen Placeholder")
+                .navigationDestination(for: OnboardingScreen.self) { screen in
+                    onboardingDestination(for: screen)
+                }
+        }
+        .sheet(isPresented: $appRouter.onboardingRouter.showingSignIn) {
+            // Sign in flow for returning users
+            SignInView(appRouter: appRouter)
+        }
+    }
+    
+    @ViewBuilder
+    private func onboardingDestination(for screen: OnboardingScreen) -> some View {
+        switch screen {
+        case .welcome:
+            Text("Welcome Screen")
+            
+        case .screen1:
+            Text("Screen 1 Placeholder")
+            
+        case .screen2:
+            Text("Screen 2 Placeholder")
+            
+        case .screen3:
+            Text("Screen 3 Placeholder")
+            
+        case .screen4:
+            Text("Screen 4 Placeholder")
+            
+        case .screen5:
+            Text("Screen 5 Placeholder")
+            
+        case .emailCollection:
+            Text("Email Collection Placeholder")
+        }
+    }
+}
+
+// MARK: - Main App View
+
+struct MainAppView: View {
+    @State var appRouter: AppRouter
+    
+    var body: some View {
+        TabView(selection: $appRouter.mainAppRouter.selectedTab) {
+            // Dashboard Tab
+            DashboardView()
+                .tabItem {
+                    Label(
+                        appRouter.mainAppRouter.selectedTab.title,
+                        systemImage: appRouter.mainAppRouter.selectedTab.icon
+                    )
+                }
+                .tag(MainTab.dashboard)
+        }
+    }
+}
+
+// MARK: - Placeholder Views
+
+struct SignInView: View {
+    var appRouter: AppRouter
+    
+    var body: some View {
+        VStack {
+            Text("Sign In")
+                .font(AppTheme.Typography.title)
+            
+            Button("Sign In") {
+                appRouter.signIn()
+            }
+            .buttonStyle(AppTheme.PrimaryButtonStyle())
+            .padding()
+        }
+    }
+}
+
+struct DashboardView: View {
+    var body: some View {
+        NavigationStack {
+            VStack {
+                Text("Dashboard")
+                    .font(AppTheme.Typography.largeTitle)
+                
+                Text("Your gut & hormone tracking home")
+                    .font(AppTheme.Typography.body)
+                    .foregroundColor(AppTheme.Colors.textSecondary)
+            }
+            .navigationTitle("GutCheck")
+        }
+    }
+}
+
+#Preview {
+    RootView()
+}

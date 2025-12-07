@@ -13,8 +13,8 @@ class AppRouter {
     
     // MARK: - Child Routers
     
-    let onboardingRouter = OnboardingRouter()
-    let mainAppRouter = MainAppRouter()
+    var onboardingRouter = OnboardingRouter()
+    var mainAppRouter = MainAppRouter()
     
     // MARK: - Flow Management
     
