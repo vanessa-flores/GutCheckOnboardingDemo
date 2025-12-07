@@ -48,7 +48,7 @@ struct OnboardingFlowView: View {
             OnboardingScreen3View(router: appRouter.onboardingRouter)
             
         case .screen4:
-            Text("Screen 4 Placeholder")
+            OnboardingScreen4View(router: appRouter.onboardingRouter)
             
         case .screen5:
             Text("Screen 5 Placeholder")
