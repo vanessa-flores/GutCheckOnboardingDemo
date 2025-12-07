@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct OnboardingScreen2View: View {
+struct OnboardingScreen3View: View {
     var router: OnboardingRouter
     
     var body: some View {
@@ -12,7 +12,7 @@ struct OnboardingScreen2View: View {
                 HStack(spacing: 8) {
                     ForEach(0..<5) { index in
                         Circle()
-                            .fill(index == 1 ? AppTheme.Colors.primaryAction : AppTheme.Colors.textSecondary.opacity(0.3))
+                            .fill(index == 2 ? AppTheme.Colors.primaryAction : AppTheme.Colors.textSecondary.opacity(0.3))
                             .frame(width: 8, height: 8)
                     }
                 }
@@ -21,21 +21,21 @@ struct OnboardingScreen2View: View {
                 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
-                        IllustrationPlaceholder(height: 180, text: "Gut-hormone connection diagram")
-                            .padding(.bottom, AppTheme.Spacing.xl)
-                        
-                        Text("Your gut and hormones are deeply connected")
+                        Text("Your baseline matters")
                             .font(AppTheme.Typography.title)
                             .foregroundColor(AppTheme.Colors.textPrimary)
                             .tracking(AppTheme.Typography.titleTracking)
                             .padding(.bottom, AppTheme.Spacing.lg)
                         
-                        Text("Research shows gut health directly impacts hormone regulation. When your gut is struggling, your hormones often follow.")
+                        Text("Tracking helps you see patterns you'd otherwise miss. Understanding where you're starting makes it possible to know what's actually working.")
                             .font(AppTheme.Typography.bodyLarge)
                             .foregroundColor(AppTheme.Colors.textPrimary)
                             .lineSpacing(10)
+                            .padding(.bottom, AppTheme.Spacing.xxxl)
                         
-                        Button("This makes sense") {
+                        IllustrationPlaceholder(height: 140, text: "Line graph showing patterns")
+                        
+                        Button("That makes sense") {
                             router.goToNextScreen()
                         }
                         .buttonStyle(AppTheme.PrimaryButtonStyle())
@@ -59,6 +59,6 @@ struct OnboardingScreen2View: View {
 
 #Preview {
     NavigationStack {
-        OnboardingScreen2View(router: OnboardingRouter())
+        OnboardingScreen3View(router: OnboardingRouter())
     }
 }
