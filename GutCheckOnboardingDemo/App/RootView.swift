@@ -22,7 +22,7 @@ struct OnboardingFlowView: View {
     
     var body: some View {
         NavigationStack(path: $appRouter.onboardingRouter.navigationPath) {
-            Text("Welcome Screen Placeholder")
+            WelcomeScreenView(router: appRouter.onboardingRouter)
                 .navigationDestination(for: OnboardingScreen.self) { screen in
                     onboardingDestination(for: screen)
                 }
