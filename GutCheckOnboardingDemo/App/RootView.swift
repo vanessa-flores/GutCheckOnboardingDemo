@@ -28,7 +28,6 @@ struct OnboardingFlowView: View {
                 }
         }
         .sheet(isPresented: $appRouter.onboardingRouter.showingSignIn) {
-            // Sign in flow for returning users
             SignInView(appRouter: appRouter)
         }
     }
@@ -37,10 +36,10 @@ struct OnboardingFlowView: View {
     private func onboardingDestination(for screen: OnboardingScreen) -> some View {
         switch screen {
         case .welcome:
-            Text("Welcome Screen")
+            WelcomeScreenView(router: appRouter.onboardingRouter)
             
         case .screen1:
-            Text("Screen 1 Placeholder")
+            OnboardingScreen1View(router: appRouter.onboardingRouter)
             
         case .screen2:
             Text("Screen 2 Placeholder")
