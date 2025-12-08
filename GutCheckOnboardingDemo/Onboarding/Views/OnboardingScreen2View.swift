@@ -9,11 +9,11 @@ struct OnboardingScreen2View: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
-                HStack(spacing: 8) {
-                    ForEach(0..<5) { index in
+                HStack(spacing: AppTheme.Spacing.xs) {
+                    ForEach(0..<AppTheme.ComponentSizes.onboardingScreenCount, id: \.self) { index in
                         Circle()
                             .fill(index == 1 ? AppTheme.Colors.primaryAction : AppTheme.Colors.textSecondary.opacity(0.3))
-                            .frame(width: 8, height: 8)
+                            .frame(width: AppTheme.ComponentSizes.progressDotSize, height: AppTheme.ComponentSizes.progressDotSize)
                     }
                 }
                 .padding(.top, AppTheme.Spacing.md)
@@ -21,7 +21,7 @@ struct OnboardingScreen2View: View {
                 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
-                        IllustrationPlaceholder(height: 180, text: "Gut-hormone connection diagram")
+                        IllustrationPlaceholder(height: AppTheme.ComponentSizes.illustrationHeight, text: "Gut-hormone connection diagram")
                             .padding(.bottom, AppTheme.Spacing.xl)
                         
                         Text("Your gut and hormones are deeply connected")

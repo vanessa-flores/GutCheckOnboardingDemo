@@ -182,15 +182,65 @@ struct AppTheme {
     struct Animation {
         /// 0.2s - Quick interactions (button press, hover)
         static let quick: Double = 0.2
-        
+
         /// 0.35s - Standard transitions (screen navigation)
         static let standard: Double = 0.35
-        
+
         /// 0.6s - Slower fade-ins (secondary content)
         static let slow: Double = 0.6
-        
+
         /// 0.8s - Emphasis animations (primary content reveal)
         static let emphasis: Double = 0.8
+
+        // MARK: Welcome Screen Timing
+        /// Duration for app name fade-in animation
+        static let welcomeAppNameDuration: Double = 0.8
+
+        /// Delay before tagline appears after app name
+        static let welcomeTaglineDelay: Double = 1.2
+
+        /// Duration for tagline and accent line fade-in
+        static let welcomeTaglineDuration: Double = 0.6
+
+        /// Total time before auto-advancing from welcome screen
+        static let welcomeAutoAdvanceDelay: Double = 3.6
+    }
+
+    // MARK: - Component Sizes
+    struct ComponentSizes {
+        // MARK: Progress Indicator
+        /// Number of onboarding content screens (excluding welcome and email)
+        static let onboardingScreenCount: Int = 5
+
+        /// Size of progress indicator dots
+        static let progressDotSize: CGFloat = 8
+
+        // MARK: Checkbox
+        /// Size of checkbox container
+        static let checkboxSize: CGFloat = 24
+
+        /// Corner radius for checkbox
+        static let checkboxCornerRadius: CGFloat = 6
+
+        /// Size of checkmark icon inside checkbox
+        static let checkmarkIconSize: CGFloat = 14
+
+        // MARK: Text Input
+        /// Height for multi-line text editor
+        static let textEditorHeight: CGFloat = 96
+
+        // MARK: Illustrations
+        /// Standard height for illustration placeholders
+        static let illustrationHeight: CGFloat = 180
+
+        /// Smaller height for compact illustrations
+        static let illustrationHeightCompact: CGFloat = 140
+    }
+
+    // MARK: - Validation
+    struct Validation {
+        /// Email validation regex pattern
+        static let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
     }
     
     // MARK: - Button Styles

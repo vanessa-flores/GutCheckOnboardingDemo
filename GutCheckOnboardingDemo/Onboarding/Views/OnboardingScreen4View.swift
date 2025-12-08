@@ -14,11 +14,11 @@ struct OnboardingScreen4View: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
-                HStack(spacing: 8) {
-                    ForEach(0..<5) { index in
+                HStack(spacing: AppTheme.Spacing.xs) {
+                    ForEach(0..<AppTheme.ComponentSizes.onboardingScreenCount, id: \.self) { index in
                         Circle()
                             .fill(index == 3 ? AppTheme.Colors.primaryAction : AppTheme.Colors.textSecondary.opacity(0.3))
-                            .frame(width: 8, height: 8)
+                            .frame(width: AppTheme.ComponentSizes.progressDotSize, height: AppTheme.ComponentSizes.progressDotSize)
                     }
                 }
                 .padding(.top, AppTheme.Spacing.md)
@@ -52,7 +52,7 @@ struct OnboardingScreen4View: View {
                         if selectedSymptoms.contains(.other) {
                             ZStack(alignment: .topLeading) {
                                 TextEditor(text: $otherText)
-                                    .frame(height: 96)
+                                    .frame(height: AppTheme.ComponentSizes.textEditorHeight)
                                     .padding(AppTheme.Spacing.sm)
                                     .background(Color.white)
                                     .cornerRadius(AppTheme.CornerRadius.medium)
@@ -122,30 +122,30 @@ struct SymptomCheckbox: View {
     
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 8) {
+            HStack(spacing: AppTheme.Spacing.xs) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 6)
+                    RoundedRectangle(cornerRadius: AppTheme.ComponentSizes.checkboxCornerRadius)
                         .stroke(AppTheme.Colors.textSecondary, lineWidth: 2)
-                        .frame(width: 24, height: 24)
-                    
+                        .frame(width: AppTheme.ComponentSizes.checkboxSize, height: AppTheme.ComponentSizes.checkboxSize)
+
                     if isSelected {
-                        RoundedRectangle(cornerRadius: 6)
+                        RoundedRectangle(cornerRadius: AppTheme.ComponentSizes.checkboxCornerRadius)
                             .fill(AppTheme.Colors.primaryAction)
-                            .frame(width: 24, height: 24)
-                        
+                            .frame(width: AppTheme.ComponentSizes.checkboxSize, height: AppTheme.ComponentSizes.checkboxSize)
+
                         Image(systemName: "checkmark")
-                            .font(.system(size: 14, weight: .semibold))
+                            .font(.system(size: AppTheme.ComponentSizes.checkmarkIconSize, weight: .semibold))
                             .foregroundColor(.white)
                     }
                 }
-                
+
                 Text(label)
                     .font(AppTheme.Typography.body)
                     .foregroundColor(AppTheme.Colors.textPrimary)
-                
+
                 Spacer()
             }
-            .padding(.vertical, 12)
+            .padding(.vertical, AppTheme.Spacing.sm)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

@@ -10,11 +10,11 @@ struct OnboardingScreen1View: View {
             
             VStack(spacing: 0) {
                 // Progress indicator dots - below nav bar
-                HStack(spacing: 8) {
-                    ForEach(0..<5) { index in
+                HStack(spacing: AppTheme.Spacing.xs) {
+                    ForEach(0..<AppTheme.ComponentSizes.onboardingScreenCount, id: \.self) { index in
                         Circle()
                             .fill(index == 0 ? AppTheme.Colors.primaryAction : AppTheme.Colors.textSecondary.opacity(0.3))
-                            .frame(width: 8, height: 8)
+                            .frame(width: AppTheme.ComponentSizes.progressDotSize, height: AppTheme.ComponentSizes.progressDotSize)
                     }
                 }
                 .padding(.top, AppTheme.Spacing.md)
@@ -34,7 +34,7 @@ struct OnboardingScreen1View: View {
                             .lineSpacing(10)
                             .padding(.bottom, AppTheme.Spacing.xxxl)
                         
-                        IllustrationPlaceholder(height: 140, text: "Small accent illustration")
+                        IllustrationPlaceholder(height: AppTheme.ComponentSizes.illustrationHeightCompact, text: "Small accent illustration")
                         
                         VStack(spacing: 0) {
                             Button("Tell me more") {
@@ -75,10 +75,10 @@ struct IllustrationPlaceholder: View {
     
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.large)
                 .fill(AppTheme.Colors.primaryAction.opacity(0.15))
                 .overlay(
-                    RoundedRectangle(cornerRadius: 16)
+                    RoundedRectangle(cornerRadius: AppTheme.CornerRadius.large)
                         .strokeBorder(style: StrokeStyle(lineWidth: 2, dash: [5]))
                         .foregroundColor(AppTheme.Colors.primaryAction.opacity(0.3))
                 )

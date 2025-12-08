@@ -45,22 +45,21 @@ struct WelcomeScreenView: View {
             .padding(.horizontal, AppTheme.Spacing.xxxl)
         }
         .onAppear {
-            // App name fades in (0.8s)
-            withAnimation(.easeOut(duration: 0.8)) {
+            // App name fades in
+            withAnimation(.easeOut(duration: AppTheme.Animation.welcomeAppNameDuration)) {
                 showAppName = true
             }
-            
-            // Stagger delay (0.4s) + tagline/line fade in (0.6s) = starts at 1.2s
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-                withAnimation(.easeOut(duration: 0.6)) {
+
+            // Tagline and accent line fade in after delay
+            DispatchQueue.main.asyncAfter(deadline: .now() + AppTheme.Animation.welcomeTaglineDelay) {
+                withAnimation(.easeOut(duration: AppTheme.Animation.welcomeTaglineDuration)) {
                     showTagline = true
                     showAccentLine = true
                 }
             }
-            
+
             // Auto-advance after total duration
-            // 0.8s (app name) + 1.2s (delay to tagline) + 0.6s (tagline) + 1.0s (hold) = 3.6s
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3.6) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + AppTheme.Animation.welcomeAutoAdvanceDelay) {
                 router.advanceFromWelcome()
             }
         }
