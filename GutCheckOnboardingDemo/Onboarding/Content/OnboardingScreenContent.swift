@@ -412,6 +412,53 @@ struct EmailCollectionContentView: View {
     }
 }
 
+// MARK: - Component Previews
+
+#Preview("Headline & Body Components") {
+    OnboardingScreenLayout {
+        OnboardingHeadline(text: "Sample Headline", isVisible: true, offset: 0)
+        OnboardingBody(text: "Sample body text for previewing styles and spacing.", isVisible: true, offset: 0, bottomPadding: AppTheme.Spacing.xl)
+    }
+    .padding()
+}
+
+#Preview("Illustration Component") {
+    OnboardingIllustration(
+        height: AppTheme.ComponentSizes.illustrationHeight,
+        text: "Illustration",
+        isVisible: true,
+        offset: 0,
+        bottomPadding: AppTheme.Spacing.xl
+    )
+    .padding()
+}
+
+#Preview("PlaceholderTextEditor Component") {
+    @State var text: String = ""
+    return PlaceholderTextEditor(text: .constant(text), placeholder: "Enter details...")
+        .padding()
+}
+
+#Preview("StyledTextField Component") {
+    struct Wrapper: View {
+        @State var text: String = ""
+        @FocusState var focused: Bool
+        var body: some View {
+            StyledTextField(
+                placeholder: "Email",
+                text: $text,
+                isError: false,
+                isFocused: $focused,
+                onSubmit: {}
+            )
+            .padding()
+        }
+    }
+    return Wrapper()
+}
+
+// End component previews
+
 // MARK: - Previews
 
 #Preview("Screen 1") {
