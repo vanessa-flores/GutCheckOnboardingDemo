@@ -104,7 +104,7 @@ struct StyledTextField: View {
     var onSubmit: () -> Void
 
     var body: some View {
-        TextField("", text: $text, prompt: Text(placeholder))
+        let base = TextField("", text: $text, prompt: Text(placeholder))
             .keyboardType(.emailAddress)
             .autocapitalization(.none)
             .autocorrectionDisabled()
@@ -118,8 +118,14 @@ struct StyledTextField: View {
                 RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium)
                     .stroke(isError ? AppTheme.Colors.error : AppTheme.Colors.textSecondary, lineWidth: 2)
             )
-            .focused(isFocused ?? .constant(false))
             .onSubmit { onSubmit() }
+
+        if let isFocused {
+            base
+                .focused(isFocused)
+        } else {
+            base
+        }
     }
 }
 
