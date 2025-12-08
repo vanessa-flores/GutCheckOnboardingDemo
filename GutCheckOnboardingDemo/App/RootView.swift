@@ -19,42 +19,21 @@ struct RootView: View {
 
 struct OnboardingFlowView: View {
     @State var appRouter: AppRouter
-    
+
     var body: some View {
-        NavigationStack(path: $appRouter.onboardingRouter.navigationPath) {
-            WelcomeScreenView(router: appRouter.onboardingRouter)
-                .navigationDestination(for: OnboardingScreen.self) { screen in
-                    onboardingDestination(for: screen)
+        Group {
+            if !appRouter.onboardingRouter.hasSeenWelcome {
+                // Welcome screen (auto-advances)
+                WelcomeScreenView(router: appRouter.onboardingRouter)
+            } else {
+                // Container view for screens 1-5 and email collection
+                NavigationStack {
+                    OnboardingContainerView(appRouter: appRouter)
                 }
+            }
         }
         .sheet(isPresented: $appRouter.onboardingRouter.showingSignIn) {
             SignInView(appRouter: appRouter)
-        }
-    }
-    
-    @ViewBuilder
-    private func onboardingDestination(for screen: OnboardingScreen) -> some View {
-        switch screen {
-        case .welcome:
-            WelcomeScreenView(router: appRouter.onboardingRouter)
-            
-        case .screen1:
-            OnboardingScreen1View(router: appRouter.onboardingRouter)
-            
-        case .screen2:
-            OnboardingScreen2View(router: appRouter.onboardingRouter)
-            
-        case .screen3:
-            OnboardingScreen3View(router: appRouter.onboardingRouter)
-            
-        case .screen4:
-            OnboardingScreen4View(router: appRouter.onboardingRouter)
-            
-        case .screen5:
-            OnboardingScreen5View(router: appRouter.onboardingRouter)
-            
-        case .emailCollection:
-            EmailCollectionView(appRouter: appRouter)
         }
     }
 }

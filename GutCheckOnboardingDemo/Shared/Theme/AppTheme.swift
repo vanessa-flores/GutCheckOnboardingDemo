@@ -204,6 +204,19 @@ struct AppTheme {
 
         /// Total time before auto-advancing from welcome screen
         static let welcomeAutoAdvanceDelay: Double = 4.0
+
+        // MARK: Onboarding Container Transitions
+        /// Duration for content fade out when navigating forward
+        static let contentFadeOut: Double = 0.2
+
+        /// Duration for each element to fade in
+        static let contentFadeIn: Double = 0.3
+
+        /// Delay between staggered element animations
+        static let contentStagger: Double = 0.15
+
+        /// Duration for horizontal slide transition (back navigation)
+        static let slideTransition: Double = 0.25
     }
 
     // MARK: - Component Sizes
