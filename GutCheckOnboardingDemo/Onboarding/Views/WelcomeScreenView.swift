@@ -5,6 +5,7 @@ struct WelcomeScreenView: View {
     @State private var showAppName = false
     @State private var showTagline = false
     @State private var showAccentLine = false
+    @State private var fadeOutScreen = false
     
     var body: some View {
         ZStack {
@@ -44,13 +45,14 @@ struct WelcomeScreenView: View {
             }
             .padding(.horizontal, AppTheme.Spacing.xxxl)
         }
+        .opacity(fadeOutScreen ? 0 : 1)
         .onAppear {
-            // App name fades in
+            // App name fades in (0.8s)
             withAnimation(.easeOut(duration: AppTheme.Animation.welcomeAppNameDuration)) {
                 showAppName = true
             }
 
-            // Tagline and accent line fade in after delay
+            // Tagline and accent line fade in after 1.2s delay (0.8s duration)
             DispatchQueue.main.asyncAfter(deadline: .now() + AppTheme.Animation.welcomeTaglineDelay) {
                 withAnimation(.easeOut(duration: AppTheme.Animation.welcomeTaglineDuration)) {
                     showTagline = true
@@ -58,8 +60,15 @@ struct WelcomeScreenView: View {
                 }
             }
 
-            // Auto-advance after total duration
-            DispatchQueue.main.asyncAfter(deadline: .now() + AppTheme.Animation.welcomeAutoAdvanceDelay) {
+            // Fade out after 3.7s (leaves 0.3s for fade-out animation)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.7) {
+                withAnimation(.easeOut(duration: 0.3)) {
+                    fadeOutScreen = true
+                }
+            }
+
+            // Advance to screen 1 after complete fade-out + 0.2s gap
+            DispatchQueue.main.asyncAfter(deadline: .now() + 4.2) {
                 router.advanceFromWelcome()
             }
         }
