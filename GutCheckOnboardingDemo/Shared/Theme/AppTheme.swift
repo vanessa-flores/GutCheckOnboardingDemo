@@ -200,10 +200,10 @@ struct AppTheme {
         static let welcomeTaglineDelay: Double = 1.2
 
         /// Duration for tagline and accent line fade-in
-        static let welcomeTaglineDuration: Double = 0.6
+        static let welcomeTaglineDuration: Double = 0.8
 
         /// Total time before auto-advancing from welcome screen
-        static let welcomeAutoAdvanceDelay: Double = 3.6
+        static let welcomeAutoAdvanceDelay: Double = 4.0
     }
 
     // MARK: - Component Sizes
