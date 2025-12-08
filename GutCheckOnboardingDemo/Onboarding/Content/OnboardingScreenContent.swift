@@ -95,8 +95,7 @@ struct Screen1ContentView: View {
                 height: AppTheme.ComponentSizes.illustrationHeightCompact,
                 text: OnboardingCopy.Screen1.illustrationText
             )
-            .opacity(animationState.showIllustration ? 1 : 0)
-            .offset(x: animationState.contentOffset)
+            .onboardingAnimated(isVisible: animationState.showIllustration, offset: animationState.contentOffset)
         }
     }
 }
@@ -113,8 +112,7 @@ struct Screen2ContentView: View {
                 text: OnboardingCopy.Screen2.illustrationText
             )
             .padding(.bottom, AppTheme.Spacing.xl)
-            .opacity(animationState.showIllustration ? 1 : 0)
-            .offset(x: animationState.contentOffset)
+            .onboardingAnimated(isVisible: animationState.showIllustration, offset: animationState.contentOffset)
 
             OnboardingHeadline(
                 text: OnboardingCopy.Screen2.headline,
@@ -155,8 +153,7 @@ struct Screen3ContentView: View {
                 height: AppTheme.ComponentSizes.illustrationHeightCompact,
                 text: OnboardingCopy.Screen3.illustrationText
             )
-            .opacity(animationState.showIllustration ? 1 : 0)
-            .offset(x: animationState.contentOffset)
+            .onboardingAnimated(isVisible: animationState.showIllustration, offset: animationState.contentOffset)
         }
     }
 }
@@ -193,13 +190,11 @@ struct Screen4ContentView: View {
                     }
                 }
             }
-            .opacity(animationState.showInteractiveContent ? 1 : 0)
-            .offset(x: animationState.contentOffset)
+            .onboardingAnimated(isVisible: animationState.showInteractiveContent, offset: animationState.contentOffset)
 
             if selectedSymptoms.contains(.other) {
                 otherSymptomTextEditor
-                    .opacity(animationState.showInteractiveContent ? 1 : 0)
-                    .offset(x: animationState.contentOffset)
+                    .onboardingAnimated(isVisible: animationState.showInteractiveContent, offset: animationState.contentOffset)
             }
         }
     }
@@ -256,8 +251,7 @@ struct Screen5ContentView: View {
                 text: OnboardingCopy.Screen5.illustrationText
             )
             .padding(.bottom, AppTheme.Spacing.xl)
-            .opacity(animationState.showIllustration ? 1 : 0)
-            .offset(x: animationState.contentOffset)
+            .onboardingAnimated(isVisible: animationState.showIllustration, offset: animationState.contentOffset)
 
             OnboardingHeadline(
                 text: OnboardingCopy.Screen5.headline,
@@ -300,16 +294,14 @@ struct EmailCollectionContentView: View {
             )
 
             emailTextField
-                .opacity(animationState.showInteractiveContent ? 1 : 0)
-                .offset(x: animationState.contentOffset)
+                .onboardingAnimated(isVisible: animationState.showInteractiveContent, offset: animationState.contentOffset)
 
             if showEmailError {
                 Text(OnboardingCopy.EmailCollection.errorMessage)
                     .font(AppTheme.Typography.caption)
                     .foregroundColor(AppTheme.Colors.error)
                     .padding(.top, AppTheme.Spacing.xs)
-                    .opacity(animationState.showInteractiveContent ? 1 : 0)
-                    .offset(x: animationState.contentOffset)
+                    .onboardingAnimated(isVisible: animationState.showInteractiveContent, offset: animationState.contentOffset)
             }
         }
     }
