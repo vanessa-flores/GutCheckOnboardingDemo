@@ -63,6 +63,68 @@ extension View {
     }
 }
 
+// MARK: - Reusable Input Components
+
+struct PlaceholderTextEditor: View {
+    @Binding var text: String
+    let placeholder: String
+
+    var body: some View {
+        ZStack(alignment: .topLeading) {
+            TextEditor(text: $text)
+                .frame(height: AppTheme.ComponentSizes.textEditorHeight)
+                .padding(AppTheme.Spacing.sm)
+                .background(Color.white)
+                .cornerRadius(AppTheme.CornerRadius.medium)
+                .overlay(
+                    RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium)
+                        .stroke(AppTheme.Colors.textSecondary, lineWidth: 2)
+                )
+                .font(AppTheme.Typography.bodySmall)
+                .foregroundColor(AppTheme.Colors.textPrimary)
+                .scrollContentBackground(.hidden)
+
+            if text.isEmpty {
+                Text(placeholder)
+                    .font(AppTheme.Typography.bodySmall)
+                    .foregroundColor(AppTheme.Colors.textSecondary.opacity(0.6))
+                    .padding(.top, 20)
+                    .padding(.leading, 20)
+                    .allowsHitTesting(false)
+            }
+        }
+    }
+}
+
+struct StyledTextField: View {
+    let placeholder: String
+    @Binding var text: String
+    var isError: Bool
+    var isFocused: FocusState<Bool>.Binding?
+    var onSubmit: () -> Void
+
+    var body: some View {
+        TextField("", text: $text, prompt: Text(placeholder))
+            .keyboardType(.emailAddress)
+            .autocapitalization(.none)
+            .autocorrectionDisabled()
+            .font(AppTheme.Typography.bodySmall)
+            .foregroundColor(AppTheme.Colors.textPrimary)
+            .tint(AppTheme.Colors.primaryAction)
+            .padding(AppTheme.Spacing.md)
+            .background(Color.white)
+            .cornerRadius(AppTheme.CornerRadius.medium)
+            .overlay(
+                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium)
+                    .stroke(isError ? AppTheme.Colors.error : AppTheme.Colors.textSecondary, lineWidth: 2)
+            )
+            .focused(isFocused ?? .constant(false))
+            .onSubmit { onSubmit() }
+    }
+}
+
+// End reusable input components
+
 struct OnboardingAnimationState {
     var showHeadline: Bool
     var showBody: Bool
@@ -200,31 +262,9 @@ struct Screen4ContentView: View {
     }
 
     private var otherSymptomTextEditor: some View {
-        ZStack(alignment: .topLeading) {
-            TextEditor(text: $otherText)
-                .frame(height: AppTheme.ComponentSizes.textEditorHeight)
-                .padding(AppTheme.Spacing.sm)
-                .background(Color.white)
-                .cornerRadius(AppTheme.CornerRadius.medium)
-                .overlay(
-                    RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium)
-                        .stroke(AppTheme.Colors.textSecondary, lineWidth: 2)
-                )
-                .font(AppTheme.Typography.bodySmall)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .scrollContentBackground(.hidden)
-
-            if otherText.isEmpty {
-                Text(OnboardingCopy.Screen4.otherTextPlaceholder)
-                    .font(AppTheme.Typography.bodySmall)
-                    .foregroundColor(AppTheme.Colors.textSecondary.opacity(0.6))
-                    .padding(.top, 20)
-                    .padding(.leading, 20)
-                    .allowsHitTesting(false)
-            }
-        }
-        .padding(.top, AppTheme.Spacing.sm)
-        .padding(.bottom, AppTheme.Spacing.sm)
+        PlaceholderTextEditor(text: $otherText, placeholder: OnboardingCopy.Screen4.otherTextPlaceholder)
+            .padding(.top, AppTheme.Spacing.sm)
+            .padding(.bottom, AppTheme.Spacing.sm)
     }
 
     private func toggleSymptom(_ symptom: Symptom) {
@@ -307,29 +347,18 @@ struct EmailCollectionContentView: View {
     }
 
     private var emailTextField: some View {
-        TextField("", text: $email, prompt: Text(OnboardingCopy.EmailCollection.emailPlaceholder))
-            .keyboardType(.emailAddress)
-            .autocapitalization(.none)
-            .autocorrectionDisabled()
-            .font(AppTheme.Typography.bodySmall)
-            .foregroundColor(AppTheme.Colors.textPrimary)
-            .tint(AppTheme.Colors.primaryAction)
-            .padding(AppTheme.Spacing.md)
-            .background(Color.white)
-            .cornerRadius(AppTheme.CornerRadius.medium)
-            .overlay(
-                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium)
-                    .stroke(showEmailError ? AppTheme.Colors.error : AppTheme.Colors.textSecondary, lineWidth: 2)
-            )
-            .focused(isEmailFocused)
-            .onChange(of: email) { _, _ in
-                if showEmailError {
-                    showEmailError = false
-                }
+        StyledTextField(
+            placeholder: OnboardingCopy.EmailCollection.emailPlaceholder,
+            text: $email,
+            isError: showEmailError,
+            isFocused: isEmailFocused,
+            onSubmit: onSubmit
+        )
+        .onChange(of: email) { _, _ in
+            if showEmailError {
+                showEmailError = false
             }
-            .onSubmit {
-                onSubmit()
-            }
+        }
     }
 }
 
