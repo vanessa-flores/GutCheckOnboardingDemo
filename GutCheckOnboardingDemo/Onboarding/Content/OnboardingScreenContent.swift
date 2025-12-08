@@ -1,5 +1,49 @@
 import SwiftUI
 
+// MARK: - Reusable Text Components
+
+struct OnboardingHeadline: View {
+    let text: String
+    let isVisible: Bool
+    let offset: CGFloat
+
+    var body: some View {
+        Text(text)
+            .font(AppTheme.Typography.title)
+            .foregroundColor(AppTheme.Colors.textPrimary)
+            .tracking(AppTheme.Typography.titleTracking)
+            .padding(.bottom, AppTheme.Spacing.lg)
+            .opacity(isVisible ? 1 : 0)
+            .offset(x: offset)
+    }
+}
+
+struct OnboardingBody: View {
+    let text: String
+    let isVisible: Bool
+    let offset: CGFloat
+    let bottomPadding: CGFloat?
+
+    init(text: String, isVisible: Bool, offset: CGFloat, bottomPadding: CGFloat? = nil) {
+        self.text = text
+        self.isVisible = isVisible
+        self.offset = offset
+        self.bottomPadding = bottomPadding
+    }
+
+    var body: some View {
+        Text(text)
+            .font(AppTheme.Typography.bodyLarge)
+            .foregroundColor(AppTheme.Colors.textPrimary)
+            .lineSpacing(10)
+            .padding(.bottom, bottomPadding ?? 0)
+            .opacity(isVisible ? 1 : 0)
+            .offset(x: offset)
+    }
+}
+
+// End reusable text components
+
 struct OnboardingAnimationState {
     var showHeadline: Bool
     var showBody: Bool
@@ -325,3 +369,4 @@ struct EmailCollectionContentView: View {
     )
     .padding()
 }
+
