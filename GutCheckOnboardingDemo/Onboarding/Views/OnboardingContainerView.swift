@@ -33,6 +33,18 @@ struct OnboardingContainerView: View {
     @State private var showEmailError: Bool = false
     @FocusState private var isEmailFocused: Bool
 
+    // MARK: - Computed Properties
+
+    private var animationState: OnboardingAnimationState {
+        OnboardingAnimationState(
+            showHeadline: showHeadline,
+            showBody: showBody,
+            showIllustration: showIllustration,
+            showInteractiveContent: showInteractiveContent,
+            contentOffset: contentOffset
+        )
+    }
+
     // MARK: - Init
 
     init(appRouter: AppRouter) {
@@ -118,245 +130,34 @@ struct OnboardingContainerView: View {
         switch router.activeScreen {
         case .welcome:
             EmptyView() // Welcome is handled separately
+
         case .screen1:
-            screen1Content
+            Screen1ContentView(animationState: animationState)
+
         case .screen2:
-            screen2Content
+            Screen2ContentView(animationState: animationState)
+
         case .screen3:
-            screen3Content
+            Screen3ContentView(animationState: animationState)
+
         case .screen4:
-            screen4Content
+            Screen4ContentView(
+                animationState: animationState,
+                selectedSymptoms: $selectedSymptoms,
+                otherText: $otherText
+            )
+
         case .screen5:
-            screen5Content
+            Screen5ContentView(animationState: animationState)
+
         case .emailCollection:
-            emailCollectionContent
-        }
-    }
-
-    // MARK: - Screen 1 Content
-
-    private var screen1Content: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text("Your body is changing")
-                .font(AppTheme.Typography.title)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .tracking(AppTheme.Typography.titleTracking)
-                .padding(.bottom, AppTheme.Spacing.lg)
-                .opacity(showHeadline ? 1 : 0)
-                .offset(x: contentOffset)
-
-            Text("New symptoms. Irregular cycles. Energy crashes. You're not imagining this—you're in hormonal transition.")
-                .font(AppTheme.Typography.bodyLarge)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .lineSpacing(10)
-                .padding(.bottom, AppTheme.Spacing.xxxl)
-                .opacity(showBody ? 1 : 0)
-                .offset(x: contentOffset)
-
-            IllustrationPlaceholder(height: AppTheme.ComponentSizes.illustrationHeightCompact, text: "Small accent illustration")
-                .opacity(showIllustration ? 1 : 0)
-                .offset(x: contentOffset)
-        }
-    }
-
-    // MARK: - Screen 2 Content
-
-    private var screen2Content: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            IllustrationPlaceholder(height: AppTheme.ComponentSizes.illustrationHeight, text: "Gut-hormone connection diagram")
-                .padding(.bottom, AppTheme.Spacing.xl)
-                .opacity(showIllustration ? 1 : 0)
-                .offset(x: contentOffset)
-
-            Text("Your gut and hormones are deeply connected")
-                .font(AppTheme.Typography.title)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .tracking(AppTheme.Typography.titleTracking)
-                .padding(.bottom, AppTheme.Spacing.lg)
-                .opacity(showHeadline ? 1 : 0)
-                .offset(x: contentOffset)
-
-            Text("Research shows gut health directly impacts hormone regulation. When your gut struggles, your hormones often follow—and most health apps miss this.")
-                .font(AppTheme.Typography.bodyLarge)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .lineSpacing(10)
-                .opacity(showBody ? 1 : 0)
-                .offset(x: contentOffset)
-        }
-    }
-
-    // MARK: - Screen 3 Content
-
-    private var screen3Content: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text("Your baseline matters")
-                .font(AppTheme.Typography.title)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .tracking(AppTheme.Typography.titleTracking)
-                .padding(.bottom, AppTheme.Spacing.lg)
-                .opacity(showHeadline ? 1 : 0)
-                .offset(x: contentOffset)
-
-            Text("Tracking reveals patterns you'd otherwise miss. Understanding where you start makes it possible to see what actually helps your body.")
-                .font(AppTheme.Typography.bodyLarge)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .lineSpacing(10)
-                .padding(.bottom, AppTheme.Spacing.xxxl)
-                .opacity(showBody ? 1 : 0)
-                .offset(x: contentOffset)
-
-            IllustrationPlaceholder(height: AppTheme.ComponentSizes.illustrationHeightCompact, text: "Line graph showing patterns")
-                .opacity(showIllustration ? 1 : 0)
-                .offset(x: contentOffset)
-        }
-    }
-
-    // MARK: - Screen 4 Content (Symptoms)
-
-    private var screen4Content: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text("What are you experiencing?")
-                .font(AppTheme.Typography.title)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .tracking(AppTheme.Typography.titleTracking)
-                .padding(.bottom, AppTheme.Spacing.lg)
-                .opacity(showHeadline ? 1 : 0)
-                .offset(x: contentOffset)
-
-            Text("Select what you're dealing with. This helps us understand where you're starting from.")
-                .font(AppTheme.Typography.bodyLarge)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .lineSpacing(10)
-                .padding(.bottom, AppTheme.Spacing.xl)
-                .opacity(showBody ? 1 : 0)
-                .offset(x: contentOffset)
-
-            VStack(spacing: 0) {
-                ForEach(Symptom.allCases) { symptom in
-                    SymptomCheckbox(
-                        label: symptom.displayText,
-                        isSelected: selectedSymptoms.contains(symptom)
-                    ) {
-                        toggleSymptom(symptom)
-                    }
-                }
-            }
-            .opacity(showInteractiveContent ? 1 : 0)
-            .offset(x: contentOffset)
-
-            if selectedSymptoms.contains(.other) {
-                ZStack(alignment: .topLeading) {
-                    TextEditor(text: $otherText)
-                        .frame(height: AppTheme.ComponentSizes.textEditorHeight)
-                        .padding(AppTheme.Spacing.sm)
-                        .background(Color.white)
-                        .cornerRadius(AppTheme.CornerRadius.medium)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium)
-                                .stroke(AppTheme.Colors.textSecondary, lineWidth: 2)
-                        )
-                        .font(AppTheme.Typography.bodySmall)
-                        .foregroundColor(AppTheme.Colors.textPrimary)
-                        .scrollContentBackground(.hidden)
-
-                    if otherText.isEmpty {
-                        Text("Describe your symptoms")
-                            .font(AppTheme.Typography.bodySmall)
-                            .foregroundColor(AppTheme.Colors.textSecondary.opacity(0.6))
-                            .padding(.top, 20)
-                            .padding(.leading, 20)
-                            .allowsHitTesting(false)
-                    }
-                }
-                .padding(.top, AppTheme.Spacing.sm)
-                .padding(.bottom, AppTheme.Spacing.sm)
-                .opacity(showInteractiveContent ? 1 : 0)
-                .offset(x: contentOffset)
-            }
-        }
-    }
-
-    // MARK: - Screen 5 Content
-
-    private var screen5Content: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            IllustrationPlaceholder(height: AppTheme.ComponentSizes.illustrationHeight, text: "Experimentation illustration\nA/B comparison")
-                .padding(.bottom, AppTheme.Spacing.xl)
-                .opacity(showIllustration ? 1 : 0)
-                .offset(x: contentOffset)
-
-            Text("Small experiments, real insights")
-                .font(AppTheme.Typography.title)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .tracking(AppTheme.Typography.titleTracking)
-                .padding(.bottom, AppTheme.Spacing.lg)
-                .opacity(showHeadline ? 1 : 0)
-                .offset(x: contentOffset)
-
-            Text("Experiment with your nutrition, sleep, and lifestyle. Track how your body responds. Together, we'll discover what actually helps ease your symptoms.")
-                .font(AppTheme.Typography.bodyLarge)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .lineSpacing(10)
-                .opacity(showBody ? 1 : 0)
-                .offset(x: contentOffset)
-        }
-    }
-
-    // MARK: - Email Collection Content
-
-    private var emailCollectionContent: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text("Learn what's happening in your body")
-                .font(AppTheme.Typography.title)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .tracking(AppTheme.Typography.titleTracking)
-                .padding(.top, 100)
-                .padding(.bottom, AppTheme.Spacing.lg)
-                .opacity(showHeadline ? 1 : 0)
-                .offset(x: contentOffset)
-
-            Text("Understand the hormonal changes you're experiencing and how gut health plays a bigger role than most doctors mention. Just a few emails to help you get started.")
-                .font(AppTheme.Typography.bodyLarge)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .lineSpacing(10)
-                .padding(.bottom, AppTheme.Spacing.xl)
-                .opacity(showBody ? 1 : 0)
-                .offset(x: contentOffset)
-
-            TextField("", text: $email, prompt: Text("your@email.com"))
-                .keyboardType(.emailAddress)
-                .autocapitalization(.none)
-                .autocorrectionDisabled()
-                .font(AppTheme.Typography.bodySmall)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .tint(AppTheme.Colors.primaryAction)
-                .padding(AppTheme.Spacing.md)
-                .background(Color.white)
-                .cornerRadius(AppTheme.CornerRadius.medium)
-                .overlay(
-                    RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium)
-                        .stroke(showEmailError ? AppTheme.Colors.error : AppTheme.Colors.textSecondary, lineWidth: 2)
-                )
-                .focused($isEmailFocused)
-                .onChange(of: email) { oldValue, newValue in
-                    if showEmailError {
-                        showEmailError = false
-                    }
-                }
-                .onSubmit {
-                    handleEmailSubmit()
-                }
-                .opacity(showInteractiveContent ? 1 : 0)
-                .offset(x: contentOffset)
-
-            if showEmailError {
-                Text("Please enter a valid email address")
-                    .font(AppTheme.Typography.caption)
-                    .foregroundColor(AppTheme.Colors.error)
-                    .padding(.top, AppTheme.Spacing.xs)
-                    .opacity(showInteractiveContent ? 1 : 0)
-                    .offset(x: contentOffset)
-            }
+            EmailCollectionContentView(
+                animationState: animationState,
+                email: $email,
+                showEmailError: $showEmailError,
+                isEmailFocused: $isEmailFocused,
+                onSubmit: handleEmailSubmit
+            )
         }
     }
 
@@ -403,34 +204,33 @@ struct OnboardingContainerView: View {
                 .opacity(showButton ? 1 : 0)
             } else {
                 // Reserve space even when there's no secondary button
-                // Approximate height: font size (16pt) + top padding (12pt) = 28pt
                 Spacer()
                     .frame(height: 28)
             }
         }
         .padding(.top, AppTheme.Spacing.xl)
     }
-    
+
     // MARK: - Button Configuration
 
     private var primaryButtonTitle: String {
         switch router.activeScreen {
         case .welcome: return ""
-        case .screen1: return "Tell me more"
-        case .screen2: return "This makes sense"
-        case .screen3: return "That makes sense"
-        case .screen4: return "Continue"
-        case .screen5: return "I'm ready"
-        case .emailCollection: return "Get started"
+        case .screen1: return OnboardingCopy.Screen1.buttonTitle
+        case .screen2: return OnboardingCopy.Screen2.buttonTitle
+        case .screen3: return OnboardingCopy.Screen3.buttonTitle
+        case .screen4: return OnboardingCopy.Screen4.buttonTitle
+        case .screen5: return OnboardingCopy.Screen5.buttonTitle
+        case .emailCollection: return OnboardingCopy.EmailCollection.buttonTitle
         }
     }
 
     private var secondaryButtonConfig: (title: String, action: () -> Void)? {
         switch router.activeScreen {
         case .screen1:
-            return ("Already have an account? Sign in", { router.showSignIn() })
+            return (OnboardingCopy.Screen1.secondaryButtonTitle, { router.showSignIn() })
         case .emailCollection:
-            return ("Maybe later", { appRouter.completeOnboarding() })
+            return (OnboardingCopy.EmailCollection.secondaryButtonTitle, { appRouter.completeOnboarding() })
         default:
             return nil
         }
@@ -479,17 +279,6 @@ struct OnboardingContainerView: View {
         return emailPredicate.evaluate(with: email)
     }
 
-    private func toggleSymptom(_ symptom: Symptom) {
-        if selectedSymptoms.contains(symptom) {
-            selectedSymptoms.remove(symptom)
-            if symptom == .other {
-                otherText = ""
-            }
-        } else {
-            selectedSymptoms.insert(symptom)
-        }
-    }
-
     // MARK: - Swipe Gesture
 
     private var swipeBackGesture: some Gesture {
@@ -522,7 +311,7 @@ struct OnboardingContainerView: View {
 
     private func animateForward() {
         let slideDistance = UIScreen.main.bounds.width
-        
+
         // Hide content and slide current screen out to the left
         withAnimation(.easeOut(duration: AppTheme.Animation.slideTransition)) {
             contentOffset = -slideDistance
@@ -531,12 +320,12 @@ struct OnboardingContainerView: View {
             showIllustration = false
             showInteractiveContent = false
         }
-        
+
         // Almost immediately prepare and slide in new content
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
             // Position new content off-screen to the right
             contentOffset = slideDistance
-            
+
             // Show and slide in new content
             withAnimation(.easeOut(duration: AppTheme.Animation.slideTransition)) {
                 showHeadline = true
@@ -545,21 +334,21 @@ struct OnboardingContainerView: View {
                 showInteractiveContent = true
                 contentOffset = 0
             }
-            
+
             DispatchQueue.main.asyncAfter(deadline: .now() + AppTheme.Animation.slideTransition) {
                 isAnimating = false
             }
         }
     }
-    
+
     private func animateBackward() {
         let slideDistance = UIScreen.main.bounds.width
-        
+
         // Old content slides out to the right while new content slides in from left (overlap)
         withAnimation(.easeOut(duration: AppTheme.Animation.slideTransition)) {
             contentOffset = slideDistance  // Slide current content right and out
         }
-        
+
         // Immediately after starting the slide out, prepare and slide in previous content
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
             // Reset position to left side (off-screen) for previous content
@@ -568,20 +357,20 @@ struct OnboardingContainerView: View {
             showBody = true
             showIllustration = true
             showInteractiveContent = true
-            
+
             withAnimation(.easeOut(duration: AppTheme.Animation.slideTransition)) {
                 contentOffset = 0  // Slide previous content in from left
             }
-            
+
             DispatchQueue.main.asyncAfter(deadline: .now() + AppTheme.Animation.slideTransition) {
                 isAnimating = false
             }
         }
     }
-    
+
     private func performInitialAnimation() {
         hasPerformedInitialAnimation = true
-        
+
         // Start with content hidden and offset to the right (off-screen)
         showHeadline = true
         showBody = true
@@ -592,7 +381,7 @@ struct OnboardingContainerView: View {
         toolbarOpacity = 1  // X button visible immediately
         buttonBackgroundOpacity = 1  // Button background visible immediately
         contentOffset = UIScreen.main.bounds.width  // Start off-screen to the right
-        
+
         // Content slides in from right (no fade, pure slide)
         withAnimation(.easeOut(duration: AppTheme.Animation.contentFadeIn)) {
             contentOffset = 0  // Slide to final position
