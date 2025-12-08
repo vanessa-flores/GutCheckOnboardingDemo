@@ -210,13 +210,13 @@ struct AppTheme {
         static let contentFadeOut: Double = 0.2
 
         /// Duration for each element to fade in
-        static let contentFadeIn: Double = 0.3
+        static let contentFadeIn: Double = 0.5
 
         /// Delay between staggered element animations
-        static let contentStagger: Double = 0.15
+        static let contentStagger: Double = 1.0
 
         /// Duration for horizontal slide transition (back navigation)
-        static let slideTransition: Double = 0.25
+        static let slideTransition: Double = 0.1
     }
 
     // MARK: - Component Sizes

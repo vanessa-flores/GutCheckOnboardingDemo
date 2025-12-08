@@ -10,6 +10,8 @@ struct OnboardingContainerView: View {
 
     @State private var contentOpacity: Double = 1.0
     @State private var contentOffset: CGFloat = 0
+    @State private var toolbarOpacity: Double = 1.0
+    @State private var buttonBackgroundOpacity: Double = 1.0
     @State private var isAnimating: Bool = false
 
     // Staggered fade-in states
@@ -18,6 +20,7 @@ struct OnboardingContainerView: View {
     @State private var showIllustration: Bool = true
     @State private var showInteractiveContent: Bool = true
     @State private var showButton: Bool = true
+    @State private var hasPerformedInitialAnimation: Bool = false
 
     // MARK: - Screen 4 State (Symptoms)
 
@@ -65,6 +68,12 @@ struct OnboardingContainerView: View {
                     .padding(.bottom, AppTheme.Spacing.bottomSafeArea)
             }
         }
+        .onAppear {
+            // Detect first appearance from welcome screen
+            if !hasPerformedInitialAnimation && router.activeScreen == .screen1 {
+                performInitialAnimation()
+            }
+        }
         .gesture(swipeBackGesture)
         .onChange(of: router.activeScreen) { oldValue, newValue in
             animateTransition(from: oldValue, to: newValue)
@@ -83,6 +92,7 @@ struct OnboardingContainerView: View {
                     Image(systemName: "xmark")
                         .foregroundColor(AppTheme.Colors.textSecondary)
                 }
+                .opacity(toolbarOpacity)
             }
         }
     }
@@ -133,7 +143,7 @@ struct OnboardingContainerView: View {
                 .tracking(AppTheme.Typography.titleTracking)
                 .padding(.bottom, AppTheme.Spacing.lg)
                 .opacity(showHeadline ? 1 : 0)
-                .offset(x: contentOffset)
+                .offset(y: contentOffset)
 
             Text("New symptoms. Irregular cycles. Energy crashes. You're not imagining this—you're in hormonal transition.")
                 .font(AppTheme.Typography.bodyLarge)
@@ -141,11 +151,11 @@ struct OnboardingContainerView: View {
                 .lineSpacing(10)
                 .padding(.bottom, AppTheme.Spacing.xxxl)
                 .opacity(showBody ? 1 : 0)
-                .offset(x: contentOffset)
+                .offset(y: contentOffset)
 
             IllustrationPlaceholder(height: AppTheme.ComponentSizes.illustrationHeightCompact, text: "Small accent illustration")
                 .opacity(showIllustration ? 1 : 0)
-                .offset(x: contentOffset)
+                .offset(y: contentOffset)
         }
     }
 
@@ -156,7 +166,7 @@ struct OnboardingContainerView: View {
             IllustrationPlaceholder(height: AppTheme.ComponentSizes.illustrationHeight, text: "Gut-hormone connection diagram")
                 .padding(.bottom, AppTheme.Spacing.xl)
                 .opacity(showIllustration ? 1 : 0)
-                .offset(x: contentOffset)
+                .offset(y: contentOffset)
 
             Text("Your gut and hormones are deeply connected")
                 .font(AppTheme.Typography.title)
@@ -164,14 +174,14 @@ struct OnboardingContainerView: View {
                 .tracking(AppTheme.Typography.titleTracking)
                 .padding(.bottom, AppTheme.Spacing.lg)
                 .opacity(showHeadline ? 1 : 0)
-                .offset(x: contentOffset)
+                .offset(y: contentOffset)
 
             Text("Research shows gut health directly impacts hormone regulation. When your gut struggles, your hormones often follow—and most health apps miss this.")
                 .font(AppTheme.Typography.bodyLarge)
                 .foregroundColor(AppTheme.Colors.textPrimary)
                 .lineSpacing(10)
                 .opacity(showBody ? 1 : 0)
-                .offset(x: contentOffset)
+                .offset(y: contentOffset)
         }
     }
 
@@ -185,7 +195,7 @@ struct OnboardingContainerView: View {
                 .tracking(AppTheme.Typography.titleTracking)
                 .padding(.bottom, AppTheme.Spacing.lg)
                 .opacity(showHeadline ? 1 : 0)
-                .offset(x: contentOffset)
+                .offset(y: contentOffset)
 
             Text("Tracking reveals patterns you'd otherwise miss. Understanding where you start makes it possible to see what actually helps your body.")
                 .font(AppTheme.Typography.bodyLarge)
@@ -193,11 +203,11 @@ struct OnboardingContainerView: View {
                 .lineSpacing(10)
                 .padding(.bottom, AppTheme.Spacing.xxxl)
                 .opacity(showBody ? 1 : 0)
-                .offset(x: contentOffset)
+                .offset(y: contentOffset)
 
             IllustrationPlaceholder(height: AppTheme.ComponentSizes.illustrationHeightCompact, text: "Line graph showing patterns")
                 .opacity(showIllustration ? 1 : 0)
-                .offset(x: contentOffset)
+                .offset(y: contentOffset)
         }
     }
 
@@ -211,7 +221,7 @@ struct OnboardingContainerView: View {
                 .tracking(AppTheme.Typography.titleTracking)
                 .padding(.bottom, AppTheme.Spacing.lg)
                 .opacity(showHeadline ? 1 : 0)
-                .offset(x: contentOffset)
+                .offset(y: contentOffset)
 
             Text("Select what you're dealing with. This helps us understand where you're starting from.")
                 .font(AppTheme.Typography.bodyLarge)
@@ -219,7 +229,7 @@ struct OnboardingContainerView: View {
                 .lineSpacing(10)
                 .padding(.bottom, AppTheme.Spacing.xl)
                 .opacity(showBody ? 1 : 0)
-                .offset(x: contentOffset)
+                .offset(y: contentOffset)
 
             VStack(spacing: 0) {
                 ForEach(Symptom.allCases) { symptom in
@@ -261,7 +271,7 @@ struct OnboardingContainerView: View {
                 .padding(.top, AppTheme.Spacing.sm)
                 .padding(.bottom, AppTheme.Spacing.sm)
                 .opacity(showInteractiveContent ? 1 : 0)
-                .offset(x: contentOffset)
+                .offset(y: contentOffset)
             }
         }
     }
@@ -355,13 +365,32 @@ struct OnboardingContainerView: View {
     @ViewBuilder
     private var buttonArea: some View {
         VStack(spacing: 0) {
-            // Primary button with solid background, animated text
-            Button(action: handlePrimaryAction) {
-                Text(primaryButtonTitle)
-                    .opacity(showButton ? 1 : 0)
+            // Primary button - conditionally styled for initial animation
+            if !hasPerformedInitialAnimation {
+                // After initial animation - use standard button style
+                Button(action: handlePrimaryAction) {
+                    Text(primaryButtonTitle)
+                        .opacity(showButton ? 1 : 0)
+                }
+                .buttonStyle(AppTheme.PrimaryButtonStyle())
+                .disabled(isAnimating)
+            } else {
+                // During initial animation - custom style with animating background
+                Button(action: handlePrimaryAction) {
+                    Text(primaryButtonTitle)
+                        .font(AppTheme.Typography.button)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 18)
+                        .background(
+                            AppTheme.Colors.primaryAction
+                                .opacity(buttonBackgroundOpacity)
+                        )
+                        .cornerRadius(AppTheme.CornerRadius.medium)
+                        .opacity(showButton ? 1 : 0)
+                }
+                .disabled(isAnimating)
             }
-            .buttonStyle(AppTheme.PrimaryButtonStyle())
-            .disabled(isAnimating)
 
             // Secondary link (screen-specific)
             if let secondaryAction = secondaryButtonConfig {
@@ -376,7 +405,7 @@ struct OnboardingContainerView: View {
         }
         .padding(.top, AppTheme.Spacing.xl)
     }
-
+    
     // MARK: - Button Configuration
 
     private var primaryButtonTitle: String {
@@ -564,6 +593,34 @@ struct OnboardingContainerView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + AppTheme.Animation.slideTransition) {
                 isAnimating = false
             }
+        }
+    }
+    
+    private func performInitialAnimation() {
+        hasPerformedInitialAnimation = true
+        
+        // Start with everything hidden and offset below
+        showHeadline = false
+        showBody = false
+        showIllustration = false
+        showInteractiveContent = false
+        showButton = false
+        contentOpacity = 0
+        toolbarOpacity = 0
+        buttonBackgroundOpacity = 0
+        contentOffset = 30  // Start 30pt below (positive = down)
+        
+        // Everything slides up from bottom while fading in
+        withAnimation(.easeOut(duration: AppTheme.Animation.contentFadeIn)) {
+            showHeadline = true
+            showBody = true
+            showIllustration = true
+            showInteractiveContent = true
+            showButton = true
+            contentOpacity = 1
+            toolbarOpacity = 1
+            buttonBackgroundOpacity = 1
+            contentOffset = 0  // Slide to final position
         }
     }
 }
