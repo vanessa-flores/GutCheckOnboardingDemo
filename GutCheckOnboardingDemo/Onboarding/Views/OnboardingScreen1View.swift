@@ -22,13 +22,13 @@ struct OnboardingScreen1View: View {
                 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
-                        Text("You're in transition")
+                        Text("Your body is changing")
                             .font(AppTheme.Typography.title)
                             .foregroundColor(AppTheme.Colors.textPrimary)
                             .tracking(AppTheme.Typography.titleTracking)
                             .padding(.bottom, AppTheme.Spacing.lg)
                         
-                        Text("Your body is changing. The symptoms are real, even when they feel hard to explain. You're not imagining this.")
+                        Text("New symptoms. Irregular cycles. Energy crashes. You're not imagining this—you're in hormonal transition.")
                             .font(AppTheme.Typography.bodyLarge)
                             .foregroundColor(AppTheme.Colors.textPrimary)
                             .lineSpacing(10)

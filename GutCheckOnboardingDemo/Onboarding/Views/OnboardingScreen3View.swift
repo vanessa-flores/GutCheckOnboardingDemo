@@ -27,7 +27,7 @@ struct OnboardingScreen3View: View {
                             .tracking(AppTheme.Typography.titleTracking)
                             .padding(.bottom, AppTheme.Spacing.lg)
                         
-                        Text("Tracking helps you see patterns you'd otherwise miss. Understanding where you're starting makes it possible to know what's actually working.")
+                        Text("Tracking reveals patterns you'd otherwise miss. Understanding where you start makes it possible to see what actually helps your body.")
                             .font(AppTheme.Typography.bodyLarge)
                             .foregroundColor(AppTheme.Colors.textPrimary)
                             .lineSpacing(10)

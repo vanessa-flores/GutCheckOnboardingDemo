@@ -24,7 +24,7 @@ struct WelcomeScreenView: View {
                     .offset(y: showAppName ? 0 : 10)
                 
                 // Tagline - fades in after 1.2s stagger delay (0.6s duration)
-                Text("Your gut & hormone health partner")
+                Text("Your partner in hormonal transition")
                     .font(AppTheme.Typography.body)
                     .foregroundColor(AppTheme.Colors.textSecondary)
                     .padding(.top, AppTheme.Spacing.md)

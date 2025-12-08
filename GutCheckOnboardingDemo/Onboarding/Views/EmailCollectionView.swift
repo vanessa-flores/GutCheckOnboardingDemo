@@ -15,14 +15,14 @@ struct EmailCollectionView: View {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
-                        Text("Stay connected")
+                        Text("Learn what's happening in your body")
                             .font(AppTheme.Typography.title)
                             .foregroundColor(AppTheme.Colors.textPrimary)
                             .tracking(AppTheme.Typography.titleTracking)
                             .padding(.top, 100)
                             .padding(.bottom, AppTheme.Spacing.lg)
                         
-                        Text("Get helpful tips as you start tracking—no fluff, just what works.")
+                        Text("Understand the hormonal changes you're experiencing and how gut health plays a bigger role than most doctors mention. Just a few emails to help you get started.")
                             .font(AppTheme.Typography.bodyLarge)
                             .foregroundColor(AppTheme.Colors.textPrimary)
                             .lineSpacing(10)

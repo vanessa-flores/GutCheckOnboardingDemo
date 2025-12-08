@@ -30,7 +30,7 @@ struct OnboardingScreen2View: View {
                             .tracking(AppTheme.Typography.titleTracking)
                             .padding(.bottom, AppTheme.Spacing.lg)
                         
-                        Text("Research shows gut health directly impacts hormone regulation. When your gut is struggling, your hormones often follow.")
+                        Text("Research shows gut health directly impacts hormone regulation. When your gut struggles, your hormones often follow—and most health apps miss this.")
                             .font(AppTheme.Typography.bodyLarge)
                             .foregroundColor(AppTheme.Colors.textPrimary)
                             .lineSpacing(10)

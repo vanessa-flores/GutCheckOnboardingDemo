@@ -32,7 +32,7 @@ struct OnboardingScreen4View: View {
                             .tracking(AppTheme.Typography.titleTracking)
                             .padding(.bottom, AppTheme.Spacing.lg)
                         
-                        Text("Select what you're dealing with right now. This helps us understand your starting point.")
+                        Text("Select what you're dealing with. This helps us understand where you're starting from.")
                             .font(AppTheme.Typography.bodyLarge)
                             .foregroundColor(AppTheme.Colors.textPrimary)
                             .lineSpacing(10)

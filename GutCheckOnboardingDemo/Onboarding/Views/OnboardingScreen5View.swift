@@ -24,18 +24,18 @@ struct OnboardingScreen5View: View {
                         IllustrationPlaceholder(height: AppTheme.ComponentSizes.illustrationHeight, text: "Experimentation illustration\nA/B comparison")
                             .padding(.bottom, AppTheme.Spacing.xl)
                         
-                        Text("Experiments reveal patterns")
+                        Text("Small experiments, real insights")
                             .font(AppTheme.Typography.title)
                             .foregroundColor(AppTheme.Colors.textPrimary)
                             .tracking(AppTheme.Typography.titleTracking)
                             .padding(.bottom, AppTheme.Spacing.lg)
                         
-                        Text("Try small changes. We help you track it. Together, we'll discover what actually helps your body thrive.")
+                        Text("Experiment with your nutrition, sleep, and lifestyle. Track how your body responds. Together, we'll discover what actually helps ease your symptoms.")
                             .font(AppTheme.Typography.bodyLarge)
                             .foregroundColor(AppTheme.Colors.textPrimary)
                             .lineSpacing(10)
                         
-                        Button("Let's start") {
+                        Button("I'm ready") {
                             router.goToNextScreen()
                         }
                         .buttonStyle(AppTheme.PrimaryButtonStyle())
