@@ -143,7 +143,7 @@ struct OnboardingContainerView: View {
                 .tracking(AppTheme.Typography.titleTracking)
                 .padding(.bottom, AppTheme.Spacing.lg)
                 .opacity(showHeadline ? 1 : 0)
-                .offset(y: contentOffset)
+                .offset(x: contentOffset)
 
             Text("New symptoms. Irregular cycles. Energy crashes. You're not imagining this—you're in hormonal transition.")
                 .font(AppTheme.Typography.bodyLarge)
@@ -151,11 +151,11 @@ struct OnboardingContainerView: View {
                 .lineSpacing(10)
                 .padding(.bottom, AppTheme.Spacing.xxxl)
                 .opacity(showBody ? 1 : 0)
-                .offset(y: contentOffset)
+                .offset(x: contentOffset)
 
             IllustrationPlaceholder(height: AppTheme.ComponentSizes.illustrationHeightCompact, text: "Small accent illustration")
                 .opacity(showIllustration ? 1 : 0)
-                .offset(y: contentOffset)
+                .offset(x: contentOffset)
         }
     }
 
@@ -166,7 +166,7 @@ struct OnboardingContainerView: View {
             IllustrationPlaceholder(height: AppTheme.ComponentSizes.illustrationHeight, text: "Gut-hormone connection diagram")
                 .padding(.bottom, AppTheme.Spacing.xl)
                 .opacity(showIllustration ? 1 : 0)
-                .offset(y: contentOffset)
+                .offset(x: contentOffset)
 
             Text("Your gut and hormones are deeply connected")
                 .font(AppTheme.Typography.title)
@@ -174,14 +174,14 @@ struct OnboardingContainerView: View {
                 .tracking(AppTheme.Typography.titleTracking)
                 .padding(.bottom, AppTheme.Spacing.lg)
                 .opacity(showHeadline ? 1 : 0)
-                .offset(y: contentOffset)
+                .offset(x: contentOffset)
 
             Text("Research shows gut health directly impacts hormone regulation. When your gut struggles, your hormones often follow—and most health apps miss this.")
                 .font(AppTheme.Typography.bodyLarge)
                 .foregroundColor(AppTheme.Colors.textPrimary)
                 .lineSpacing(10)
                 .opacity(showBody ? 1 : 0)
-                .offset(y: contentOffset)
+                .offset(x: contentOffset)
         }
     }
 
@@ -195,7 +195,7 @@ struct OnboardingContainerView: View {
                 .tracking(AppTheme.Typography.titleTracking)
                 .padding(.bottom, AppTheme.Spacing.lg)
                 .opacity(showHeadline ? 1 : 0)
-                .offset(y: contentOffset)
+                .offset(x: contentOffset)
 
             Text("Tracking reveals patterns you'd otherwise miss. Understanding where you start makes it possible to see what actually helps your body.")
                 .font(AppTheme.Typography.bodyLarge)
@@ -203,11 +203,11 @@ struct OnboardingContainerView: View {
                 .lineSpacing(10)
                 .padding(.bottom, AppTheme.Spacing.xxxl)
                 .opacity(showBody ? 1 : 0)
-                .offset(y: contentOffset)
+                .offset(x: contentOffset)
 
             IllustrationPlaceholder(height: AppTheme.ComponentSizes.illustrationHeightCompact, text: "Line graph showing patterns")
                 .opacity(showIllustration ? 1 : 0)
-                .offset(y: contentOffset)
+                .offset(x: contentOffset)
         }
     }
 
@@ -221,7 +221,7 @@ struct OnboardingContainerView: View {
                 .tracking(AppTheme.Typography.titleTracking)
                 .padding(.bottom, AppTheme.Spacing.lg)
                 .opacity(showHeadline ? 1 : 0)
-                .offset(y: contentOffset)
+                .offset(x: contentOffset)
 
             Text("Select what you're dealing with. This helps us understand where you're starting from.")
                 .font(AppTheme.Typography.bodyLarge)
@@ -229,7 +229,7 @@ struct OnboardingContainerView: View {
                 .lineSpacing(10)
                 .padding(.bottom, AppTheme.Spacing.xl)
                 .opacity(showBody ? 1 : 0)
-                .offset(y: contentOffset)
+                .offset(x: contentOffset)
 
             VStack(spacing: 0) {
                 ForEach(Symptom.allCases) { symptom in
@@ -271,7 +271,7 @@ struct OnboardingContainerView: View {
                 .padding(.top, AppTheme.Spacing.sm)
                 .padding(.bottom, AppTheme.Spacing.sm)
                 .opacity(showInteractiveContent ? 1 : 0)
-                .offset(y: contentOffset)
+                .offset(x: contentOffset)
             }
         }
     }
@@ -366,8 +366,8 @@ struct OnboardingContainerView: View {
     private var buttonArea: some View {
         VStack(spacing: 0) {
             // Primary button - conditionally styled for initial animation
-            if !hasPerformedInitialAnimation {
-                // After initial animation - use standard button style
+            if hasPerformedInitialAnimation {
+                // After initial animation - use standard button style (solid background)
                 Button(action: handlePrimaryAction) {
                     Text(primaryButtonTitle)
                         .opacity(showButton ? 1 : 0)
@@ -375,7 +375,7 @@ struct OnboardingContainerView: View {
                 .buttonStyle(AppTheme.PrimaryButtonStyle())
                 .disabled(isAnimating)
             } else {
-                // During initial animation - custom style with animating background
+                // During initial animation ONLY - custom style with animating background
                 Button(action: handlePrimaryAction) {
                     Text(primaryButtonTitle)
                         .font(AppTheme.Typography.button)
@@ -392,7 +392,7 @@ struct OnboardingContainerView: View {
                 .disabled(isAnimating)
             }
 
-            // Secondary link (screen-specific)
+            // Secondary button area - always reserve space, but conditionally show button
             if let secondaryAction = secondaryButtonConfig {
                 Button(action: secondaryAction.action) {
                     Text(secondaryAction.title)
@@ -401,6 +401,11 @@ struct OnboardingContainerView: View {
                 }
                 .padding(.top, AppTheme.Spacing.sm)
                 .opacity(showButton ? 1 : 0)
+            } else {
+                // Reserve space even when there's no secondary button
+                // Approximate height: font size (16pt) + top padding (12pt) = 28pt
+                Spacer()
+                    .frame(height: 28)
             }
         }
         .padding(.top, AppTheme.Spacing.xl)
@@ -516,80 +521,58 @@ struct OnboardingContainerView: View {
     }
 
     private func animateForward() {
-        // Phase 1: Fade out current content
-        withAnimation(.easeOut(duration: AppTheme.Animation.contentFadeOut)) {
-            contentOpacity = 0
+        let slideDistance = UIScreen.main.bounds.width
+        
+        // Hide content and slide current screen out to the left
+        withAnimation(.easeOut(duration: AppTheme.Animation.slideTransition)) {
+            contentOffset = -slideDistance
             showHeadline = false
             showBody = false
             showIllustration = false
             showInteractiveContent = false
-            showButton = false
         }
-
-        // Phase 2: Staggered fade in new content
-        let fadeOutDelay = AppTheme.Animation.contentFadeOut
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + fadeOutDelay) {
-            contentOpacity = 1
-            contentOffset = 0
-
-            // Stagger the fade-ins
-            withAnimation(.easeOut(duration: AppTheme.Animation.contentFadeIn)) {
+        
+        // Almost immediately prepare and slide in new content
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            // Position new content off-screen to the right
+            contentOffset = slideDistance
+            
+            // Show and slide in new content
+            withAnimation(.easeOut(duration: AppTheme.Animation.slideTransition)) {
                 showHeadline = true
+                showBody = true
+                showIllustration = true
+                showInteractiveContent = true
+                contentOffset = 0
             }
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + AppTheme.Animation.contentStagger) {
-                withAnimation(.easeOut(duration: AppTheme.Animation.contentFadeIn)) {
-                    showBody = true
-                }
-            }
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + AppTheme.Animation.contentStagger * 2) {
-                withAnimation(.easeOut(duration: AppTheme.Animation.contentFadeIn)) {
-                    showIllustration = true
-                }
-            }
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + AppTheme.Animation.contentStagger * 3) {
-                withAnimation(.easeOut(duration: AppTheme.Animation.contentFadeIn)) {
-                    showInteractiveContent = true
-                }
-            }
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + AppTheme.Animation.contentStagger * 4) {
-                withAnimation(.easeOut(duration: AppTheme.Animation.contentFadeIn)) {
-                    showButton = true
-                }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + AppTheme.Animation.slideTransition) {
                 isAnimating = false
             }
         }
     }
-
+    
     private func animateBackward() {
-        let slideDistance: CGFloat = UIScreen.main.bounds.width
-
-        // Slide current content out to the right
-        withAnimation(.easeInOut(duration: AppTheme.Animation.slideTransition)) {
-            contentOffset = slideDistance
-            contentOpacity = 0
+        let slideDistance = UIScreen.main.bounds.width
+        
+        // Old content slides out to the right while new content slides in from left (overlap)
+        withAnimation(.easeOut(duration: AppTheme.Animation.slideTransition)) {
+            contentOffset = slideDistance  // Slide current content right and out
         }
-
-        // After slide out, reset and slide in from left
-        DispatchQueue.main.asyncAfter(deadline: .now() + AppTheme.Animation.slideTransition) {
-            // Reset position to left side (off-screen)
+        
+        // Immediately after starting the slide out, prepare and slide in previous content
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            // Reset position to left side (off-screen) for previous content
             contentOffset = -slideDistance
             showHeadline = true
             showBody = true
             showIllustration = true
             showInteractiveContent = true
-            showButton = true
-            contentOpacity = 1
-
-            // Slide in from left
-            withAnimation(.easeInOut(duration: AppTheme.Animation.slideTransition)) {
-                contentOffset = 0
+            
+            withAnimation(.easeOut(duration: AppTheme.Animation.slideTransition)) {
+                contentOffset = 0  // Slide previous content in from left
             }
-
+            
             DispatchQueue.main.asyncAfter(deadline: .now() + AppTheme.Animation.slideTransition) {
                 isAnimating = false
             }
@@ -599,27 +582,19 @@ struct OnboardingContainerView: View {
     private func performInitialAnimation() {
         hasPerformedInitialAnimation = true
         
-        // Start with everything hidden and offset below
-        showHeadline = false
-        showBody = false
-        showIllustration = false
-        showInteractiveContent = false
-        showButton = false
-        contentOpacity = 0
-        toolbarOpacity = 0
-        buttonBackgroundOpacity = 0
-        contentOffset = 30  // Start 30pt below (positive = down)
+        // Start with content hidden and offset to the right (off-screen)
+        showHeadline = true
+        showBody = true
+        showIllustration = true
+        showInteractiveContent = true
+        showButton = true
+        contentOpacity = 1  // Progress dots visible immediately
+        toolbarOpacity = 1  // X button visible immediately
+        buttonBackgroundOpacity = 1  // Button background visible immediately
+        contentOffset = UIScreen.main.bounds.width  // Start off-screen to the right
         
-        // Everything slides up from bottom while fading in
+        // Content slides in from right (no fade, pure slide)
         withAnimation(.easeOut(duration: AppTheme.Animation.contentFadeIn)) {
-            showHeadline = true
-            showBody = true
-            showIllustration = true
-            showInteractiveContent = true
-            showButton = true
-            contentOpacity = 1
-            toolbarOpacity = 1
-            buttonBackgroundOpacity = 1
             contentOffset = 0  // Slide to final position
         }
     }
