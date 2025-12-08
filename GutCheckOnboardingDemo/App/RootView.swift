@@ -101,15 +101,39 @@ struct SignInView: View {
 struct DashboardView: View {
     var body: some View {
         NavigationStack {
-            VStack {
-                Text("Dashboard")
-                    .font(AppTheme.Typography.largeTitle)
+            ZStack {
+                AppTheme.Colors.background
+                    .ignoresSafeArea()
                 
-                Text("Your gut & hormone tracking home")
-                    .font(AppTheme.Typography.body)
-                    .foregroundColor(AppTheme.Colors.textSecondary)
+                VStack(spacing: AppTheme.Spacing.xl) {
+                    Spacer()
+                    
+                    Image(systemName: "heart.text.square.fill")
+                        .font(.system(size: 80))
+                        .foregroundColor(AppTheme.Colors.primaryAction.opacity(0.3))
+                    
+                    VStack(spacing: AppTheme.Spacing.sm) {
+                        Text("Welcome to GutCheck")
+                            .font(AppTheme.Typography.title)
+                            .foregroundColor(AppTheme.Colors.textPrimary)
+                            .tracking(AppTheme.Typography.titleTracking)
+                        
+                        Text("Your tracking journey starts here")
+                            .font(AppTheme.Typography.body)
+                            .foregroundColor(AppTheme.Colors.textSecondary)
+                    }
+                    
+                    Spacer()
+                    
+                    Text("Dashboard features coming soon")
+                        .font(AppTheme.Typography.caption)
+                        .foregroundColor(AppTheme.Colors.textSecondary.opacity(0.6))
+                        .padding(.bottom, AppTheme.Spacing.xxxl)
+                }
+                .padding(.horizontal, AppTheme.Spacing.xl)
             }
             .navigationTitle("GutCheck")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
