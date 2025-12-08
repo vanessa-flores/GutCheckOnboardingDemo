@@ -131,6 +131,32 @@ struct StyledTextField: View {
 
 // End reusable input components
 
+// MARK: - Reusable Illustration Component
+
+struct OnboardingIllustration: View {
+    let height: CGFloat
+    let text: String
+    let isVisible: Bool
+    let offset: CGFloat
+    let bottomPadding: CGFloat?
+
+    init(height: CGFloat, text: String, isVisible: Bool, offset: CGFloat, bottomPadding: CGFloat? = nil) {
+        self.height = height
+        self.text = text
+        self.isVisible = isVisible
+        self.offset = offset
+        self.bottomPadding = bottomPadding
+    }
+
+    var body: some View {
+        IllustrationPlaceholder(height: height, text: text)
+            .padding(.bottom, bottomPadding ?? 0)
+            .onboardingAnimated(isVisible: isVisible, offset: offset)
+    }
+}
+
+// End reusable illustration component
+
 struct OnboardingAnimationState {
     var showHeadline: Bool
     var showBody: Bool
@@ -159,11 +185,12 @@ struct Screen1ContentView: View {
                 bottomPadding: AppTheme.Spacing.xxxl
             )
 
-            IllustrationPlaceholder(
+            OnboardingIllustration(
                 height: AppTheme.ComponentSizes.illustrationHeightCompact,
-                text: OnboardingCopy.Screen1.illustrationText
+                text: OnboardingCopy.Screen1.illustrationText,
+                isVisible: animationState.showIllustration,
+                offset: animationState.contentOffset
             )
-            .onboardingAnimated(isVisible: animationState.showIllustration, offset: animationState.contentOffset)
         }
     }
 }
@@ -175,12 +202,13 @@ struct Screen2ContentView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            IllustrationPlaceholder(
+            OnboardingIllustration(
                 height: AppTheme.ComponentSizes.illustrationHeight,
-                text: OnboardingCopy.Screen2.illustrationText
+                text: OnboardingCopy.Screen2.illustrationText,
+                isVisible: animationState.showIllustration,
+                offset: animationState.contentOffset,
+                bottomPadding: AppTheme.Spacing.xl
             )
-            .padding(.bottom, AppTheme.Spacing.xl)
-            .onboardingAnimated(isVisible: animationState.showIllustration, offset: animationState.contentOffset)
 
             OnboardingHeadline(
                 text: OnboardingCopy.Screen2.headline,
@@ -217,11 +245,12 @@ struct Screen3ContentView: View {
                 bottomPadding: AppTheme.Spacing.xxxl
             )
 
-            IllustrationPlaceholder(
+            OnboardingIllustration(
                 height: AppTheme.ComponentSizes.illustrationHeightCompact,
-                text: OnboardingCopy.Screen3.illustrationText
+                text: OnboardingCopy.Screen3.illustrationText,
+                isVisible: animationState.showIllustration,
+                offset: animationState.contentOffset
             )
-            .onboardingAnimated(isVisible: animationState.showIllustration, offset: animationState.contentOffset)
         }
     }
 }
@@ -292,12 +321,13 @@ struct Screen5ContentView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            IllustrationPlaceholder(
+            OnboardingIllustration(
                 height: AppTheme.ComponentSizes.illustrationHeight,
-                text: OnboardingCopy.Screen5.illustrationText
+                text: OnboardingCopy.Screen5.illustrationText,
+                isVisible: animationState.showIllustration,
+                offset: animationState.contentOffset,
+                bottomPadding: AppTheme.Spacing.xl
             )
-            .padding(.bottom, AppTheme.Spacing.xl)
-            .onboardingAnimated(isVisible: animationState.showIllustration, offset: animationState.contentOffset)
 
             OnboardingHeadline(
                 text: OnboardingCopy.Screen5.headline,
