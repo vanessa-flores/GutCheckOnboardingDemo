@@ -44,6 +44,25 @@ struct OnboardingBody: View {
 
 // End reusable text components
 
+// MARK: - Shared Animation Modifier
+
+struct OnboardingAnimated: ViewModifier {
+    let isVisible: Bool
+    let offset: CGFloat
+
+    func body(content: Content) -> some View {
+        content
+            .opacity(isVisible ? 1 : 0)
+            .offset(x: offset)
+    }
+}
+
+extension View {
+    func onboardingAnimated(isVisible: Bool, offset: CGFloat) -> some View {
+        modifier(OnboardingAnimated(isVisible: isVisible, offset: offset))
+    }
+}
+
 struct OnboardingAnimationState {
     var showHeadline: Bool
     var showBody: Bool
