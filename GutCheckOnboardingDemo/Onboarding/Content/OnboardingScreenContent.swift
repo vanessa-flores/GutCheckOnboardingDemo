@@ -59,21 +59,18 @@ struct Screen1ContentView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(OnboardingCopy.Screen1.headline)
-                .font(AppTheme.Typography.title)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .tracking(AppTheme.Typography.titleTracking)
-                .padding(.bottom, AppTheme.Spacing.lg)
-                .opacity(animationState.showHeadline ? 1 : 0)
-                .offset(x: animationState.contentOffset)
+            OnboardingHeadline(
+                text: OnboardingCopy.Screen1.headline,
+                isVisible: animationState.showHeadline,
+                offset: animationState.contentOffset
+            )
 
-            Text(OnboardingCopy.Screen1.body)
-                .font(AppTheme.Typography.bodyLarge)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .lineSpacing(10)
-                .padding(.bottom, AppTheme.Spacing.xxxl)
-                .opacity(animationState.showBody ? 1 : 0)
-                .offset(x: animationState.contentOffset)
+            OnboardingBody(
+                text: OnboardingCopy.Screen1.body,
+                isVisible: animationState.showBody,
+                offset: animationState.contentOffset,
+                bottomPadding: AppTheme.Spacing.xxxl
+            )
 
             IllustrationPlaceholder(
                 height: AppTheme.ComponentSizes.illustrationHeightCompact,
@@ -100,20 +97,17 @@ struct Screen2ContentView: View {
             .opacity(animationState.showIllustration ? 1 : 0)
             .offset(x: animationState.contentOffset)
 
-            Text(OnboardingCopy.Screen2.headline)
-                .font(AppTheme.Typography.title)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .tracking(AppTheme.Typography.titleTracking)
-                .padding(.bottom, AppTheme.Spacing.lg)
-                .opacity(animationState.showHeadline ? 1 : 0)
-                .offset(x: animationState.contentOffset)
+            OnboardingHeadline(
+                text: OnboardingCopy.Screen2.headline,
+                isVisible: animationState.showHeadline,
+                offset: animationState.contentOffset
+            )
 
-            Text(OnboardingCopy.Screen2.body)
-                .font(AppTheme.Typography.bodyLarge)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .lineSpacing(10)
-                .opacity(animationState.showBody ? 1 : 0)
-                .offset(x: animationState.contentOffset)
+            OnboardingBody(
+                text: OnboardingCopy.Screen2.body,
+                isVisible: animationState.showBody,
+                offset: animationState.contentOffset
+            )
         }
     }
 }
@@ -125,21 +119,18 @@ struct Screen3ContentView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(OnboardingCopy.Screen3.headline)
-                .font(AppTheme.Typography.title)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .tracking(AppTheme.Typography.titleTracking)
-                .padding(.bottom, AppTheme.Spacing.lg)
-                .opacity(animationState.showHeadline ? 1 : 0)
-                .offset(x: animationState.contentOffset)
+            OnboardingHeadline(
+                text: OnboardingCopy.Screen3.headline,
+                isVisible: animationState.showHeadline,
+                offset: animationState.contentOffset
+            )
 
-            Text(OnboardingCopy.Screen3.body)
-                .font(AppTheme.Typography.bodyLarge)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .lineSpacing(10)
-                .padding(.bottom, AppTheme.Spacing.xxxl)
-                .opacity(animationState.showBody ? 1 : 0)
-                .offset(x: animationState.contentOffset)
+            OnboardingBody(
+                text: OnboardingCopy.Screen3.body,
+                isVisible: animationState.showBody,
+                offset: animationState.contentOffset,
+                bottomPadding: AppTheme.Spacing.xxxl
+            )
 
             IllustrationPlaceholder(
                 height: AppTheme.ComponentSizes.illustrationHeightCompact,
@@ -160,21 +151,18 @@ struct Screen4ContentView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(OnboardingCopy.Screen4.headline)
-                .font(AppTheme.Typography.title)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .tracking(AppTheme.Typography.titleTracking)
-                .padding(.bottom, AppTheme.Spacing.lg)
-                .opacity(animationState.showHeadline ? 1 : 0)
-                .offset(x: animationState.contentOffset)
+            OnboardingHeadline(
+                text: OnboardingCopy.Screen4.headline,
+                isVisible: animationState.showHeadline,
+                offset: animationState.contentOffset
+            )
 
-            Text(OnboardingCopy.Screen4.body)
-                .font(AppTheme.Typography.bodyLarge)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .lineSpacing(10)
-                .padding(.bottom, AppTheme.Spacing.xl)
-                .opacity(animationState.showBody ? 1 : 0)
-                .offset(x: animationState.contentOffset)
+            OnboardingBody(
+                text: OnboardingCopy.Screen4.body,
+                isVisible: animationState.showBody,
+                offset: animationState.contentOffset,
+                bottomPadding: AppTheme.Spacing.xl
+            )
 
             VStack(spacing: 0) {
                 ForEach(Symptom.allCases) { symptom in
@@ -252,20 +240,17 @@ struct Screen5ContentView: View {
             .opacity(animationState.showIllustration ? 1 : 0)
             .offset(x: animationState.contentOffset)
 
-            Text(OnboardingCopy.Screen5.headline)
-                .font(AppTheme.Typography.title)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .tracking(AppTheme.Typography.titleTracking)
-                .padding(.bottom, AppTheme.Spacing.lg)
-                .opacity(animationState.showHeadline ? 1 : 0)
-                .offset(x: animationState.contentOffset)
+            OnboardingHeadline(
+                text: OnboardingCopy.Screen5.headline,
+                isVisible: animationState.showHeadline,
+                offset: animationState.contentOffset
+            )
 
-            Text(OnboardingCopy.Screen5.body)
-                .font(AppTheme.Typography.bodyLarge)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .lineSpacing(10)
-                .opacity(animationState.showBody ? 1 : 0)
-                .offset(x: animationState.contentOffset)
+            OnboardingBody(
+                text: OnboardingCopy.Screen5.body,
+                isVisible: animationState.showBody,
+                offset: animationState.contentOffset
+            )
         }
     }
 }
@@ -281,22 +266,19 @@ struct EmailCollectionContentView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(OnboardingCopy.EmailCollection.headline)
-                .font(AppTheme.Typography.title)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .tracking(AppTheme.Typography.titleTracking)
-                .padding(.top, 100)
-                .padding(.bottom, AppTheme.Spacing.lg)
-                .opacity(animationState.showHeadline ? 1 : 0)
-                .offset(x: animationState.contentOffset)
+            OnboardingHeadline(
+                text: OnboardingCopy.EmailCollection.headline,
+                isVisible: animationState.showHeadline,
+                offset: animationState.contentOffset
+            )
+            .padding(.top, 100)
 
-            Text(OnboardingCopy.EmailCollection.body)
-                .font(AppTheme.Typography.bodyLarge)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .lineSpacing(10)
-                .padding(.bottom, AppTheme.Spacing.xl)
-                .opacity(animationState.showBody ? 1 : 0)
-                .offset(x: animationState.contentOffset)
+            OnboardingBody(
+                text: OnboardingCopy.EmailCollection.body,
+                isVisible: animationState.showBody,
+                offset: animationState.contentOffset,
+                bottomPadding: AppTheme.Spacing.xl
+            )
 
             emailTextField
                 .opacity(animationState.showInteractiveContent ? 1 : 0)
