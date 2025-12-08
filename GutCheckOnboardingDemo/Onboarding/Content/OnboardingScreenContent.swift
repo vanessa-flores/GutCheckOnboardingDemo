@@ -157,6 +157,20 @@ struct OnboardingIllustration: View {
 
 // End reusable illustration component
 
+// MARK: - Screen Layout Scaffold
+
+struct OnboardingScreenLayout<Content: View>: View {
+    @ViewBuilder var content: () -> Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            content()
+        }
+    }
+}
+
+// End screen layout scaffold
+
 struct OnboardingAnimationState {
     var showHeadline: Bool
     var showBody: Bool
@@ -171,7 +185,7 @@ struct Screen1ContentView: View {
     let animationState: OnboardingAnimationState
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        OnboardingScreenLayout {
             OnboardingHeadline(
                 text: OnboardingCopy.Screen1.headline,
                 isVisible: animationState.showHeadline,
@@ -201,7 +215,7 @@ struct Screen2ContentView: View {
     let animationState: OnboardingAnimationState
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        OnboardingScreenLayout {
             OnboardingIllustration(
                 height: AppTheme.ComponentSizes.illustrationHeight,
                 text: OnboardingCopy.Screen2.illustrationText,
@@ -231,7 +245,7 @@ struct Screen3ContentView: View {
     let animationState: OnboardingAnimationState
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        OnboardingScreenLayout {
             OnboardingHeadline(
                 text: OnboardingCopy.Screen3.headline,
                 isVisible: animationState.showHeadline,
@@ -263,7 +277,7 @@ struct Screen4ContentView: View {
     @Binding var otherText: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        OnboardingScreenLayout {
             OnboardingHeadline(
                 text: OnboardingCopy.Screen4.headline,
                 isVisible: animationState.showHeadline,
@@ -320,7 +334,7 @@ struct Screen5ContentView: View {
     let animationState: OnboardingAnimationState
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        OnboardingScreenLayout {
             OnboardingIllustration(
                 height: AppTheme.ComponentSizes.illustrationHeight,
                 text: OnboardingCopy.Screen5.illustrationText,
@@ -354,7 +368,7 @@ struct EmailCollectionContentView: View {
     let onSubmit: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        OnboardingScreenLayout {
             OnboardingHeadline(
                 text: OnboardingCopy.EmailCollection.headline,
                 isVisible: animationState.showHeadline,
