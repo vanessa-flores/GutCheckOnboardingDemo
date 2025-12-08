@@ -30,7 +30,7 @@ struct OnboardingScreen5View: View {
                             .tracking(AppTheme.Typography.titleTracking)
                             .padding(.bottom, AppTheme.Spacing.lg)
                         
-                        Text("Try small changes. We help you track it. Together, you'll discover what actually helps your body thrive.")
+                        Text("Try small changes. We help you track it. Together, we'll discover what actually helps your body thrive.")
                             .font(AppTheme.Typography.bodyLarge)
                             .foregroundColor(AppTheme.Colors.textPrimary)
                             .lineSpacing(10)
