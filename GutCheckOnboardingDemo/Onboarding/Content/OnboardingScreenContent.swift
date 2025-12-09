@@ -1,10 +1,26 @@
 import SwiftUI
 
+// MARK: - Shared Animation Modifier
+
+struct OnboardingAnimated: ViewModifier {
+    let offset: CGFloat
+
+    func body(content: Content) -> some View {
+        content
+            .offset(x: offset)
+    }
+}
+
+extension View {
+    func onboardingAnimated(offset: CGFloat) -> some View {
+        modifier(OnboardingAnimated(offset: offset))
+    }
+}
+
 // MARK: - Reusable Text Components
 
 struct OnboardingHeadline: View {
     let text: String
-    let isVisible: Bool
     let offset: CGFloat
 
     var body: some View {
@@ -13,20 +29,17 @@ struct OnboardingHeadline: View {
             .foregroundColor(AppTheme.Colors.textPrimary)
             .tracking(AppTheme.Typography.titleTracking)
             .padding(.bottom, AppTheme.Spacing.lg)
-            .opacity(isVisible ? 1 : 0)
-            .offset(x: offset)
+            .onboardingAnimated(offset: offset)
     }
 }
 
 struct OnboardingBody: View {
     let text: String
-    let isVisible: Bool
     let offset: CGFloat
     let bottomPadding: CGFloat?
 
-    init(text: String, isVisible: Bool, offset: CGFloat, bottomPadding: CGFloat? = nil) {
+    init(text: String, offset: CGFloat, bottomPadding: CGFloat? = nil) {
         self.text = text
-        self.isVisible = isVisible
         self.offset = offset
         self.bottomPadding = bottomPadding
     }
@@ -37,29 +50,29 @@ struct OnboardingBody: View {
             .foregroundColor(AppTheme.Colors.textPrimary)
             .lineSpacing(10)
             .padding(.bottom, bottomPadding ?? 0)
-            .opacity(isVisible ? 1 : 0)
-            .offset(x: offset)
+            .onboardingAnimated(offset: offset)
     }
 }
 
-// End reusable text components
+// MARK: - Reusable Illustration Component
 
-// MARK: - Shared Animation Modifier
-
-struct OnboardingAnimated: ViewModifier {
-    let isVisible: Bool
+struct OnboardingIllustration: View {
+    let height: CGFloat
+    let text: String
     let offset: CGFloat
+    let bottomPadding: CGFloat?
 
-    func body(content: Content) -> some View {
-        content
-            .opacity(isVisible ? 1 : 0)
-            .offset(x: offset)
+    init(height: CGFloat, text: String, offset: CGFloat, bottomPadding: CGFloat? = nil) {
+        self.height = height
+        self.text = text
+        self.offset = offset
+        self.bottomPadding = bottomPadding
     }
-}
 
-extension View {
-    func onboardingAnimated(isVisible: Bool, offset: CGFloat) -> some View {
-        modifier(OnboardingAnimated(isVisible: isVisible, offset: offset))
+    var body: some View {
+        IllustrationPlaceholder(height: height, text: text)
+            .padding(.bottom, bottomPadding ?? 0)
+            .onboardingAnimated(offset: offset)
     }
 }
 
@@ -121,41 +134,12 @@ struct StyledTextField: View {
             .onSubmit { onSubmit() }
 
         if let isFocused {
-            base
-                .focused(isFocused)
+            base.focused(isFocused)
         } else {
             base
         }
     }
 }
-
-// End reusable input components
-
-// MARK: - Reusable Illustration Component
-
-struct OnboardingIllustration: View {
-    let height: CGFloat
-    let text: String
-    let isVisible: Bool
-    let offset: CGFloat
-    let bottomPadding: CGFloat?
-
-    init(height: CGFloat, text: String, isVisible: Bool, offset: CGFloat, bottomPadding: CGFloat? = nil) {
-        self.height = height
-        self.text = text
-        self.isVisible = isVisible
-        self.offset = offset
-        self.bottomPadding = bottomPadding
-    }
-
-    var body: some View {
-        IllustrationPlaceholder(height: height, text: text)
-            .padding(.bottom, bottomPadding ?? 0)
-            .onboardingAnimated(isVisible: isVisible, offset: offset)
-    }
-}
-
-// End reusable illustration component
 
 // MARK: - Screen Layout Scaffold
 
@@ -169,41 +153,28 @@ struct OnboardingScreenLayout<Content: View>: View {
     }
 }
 
-// End screen layout scaffold
-
-struct OnboardingAnimationState {
-    var showHeadline: Bool
-    var showBody: Bool
-    var showIllustration: Bool
-    var showInteractiveContent: Bool
-    var contentOffset: CGFloat
-}
-
 // MARK: - Screen 1 Content
 
 struct Screen1ContentView: View {
-    let animationState: OnboardingAnimationState
+    let contentOffset: CGFloat
 
     var body: some View {
         OnboardingScreenLayout {
             OnboardingHeadline(
                 text: OnboardingCopy.Screen1.headline,
-                isVisible: animationState.showHeadline,
-                offset: animationState.contentOffset
+                offset: contentOffset
             )
 
             OnboardingBody(
                 text: OnboardingCopy.Screen1.body,
-                isVisible: animationState.showBody,
-                offset: animationState.contentOffset,
+                offset: contentOffset,
                 bottomPadding: AppTheme.Spacing.xxxl
             )
 
             OnboardingIllustration(
                 height: AppTheme.ComponentSizes.illustrationHeightCompact,
                 text: OnboardingCopy.Screen1.illustrationText,
-                isVisible: animationState.showIllustration,
-                offset: animationState.contentOffset
+                offset: contentOffset
             )
         }
     }
@@ -212,28 +183,25 @@ struct Screen1ContentView: View {
 // MARK: - Screen 2 Content
 
 struct Screen2ContentView: View {
-    let animationState: OnboardingAnimationState
+    let contentOffset: CGFloat
 
     var body: some View {
         OnboardingScreenLayout {
             OnboardingIllustration(
                 height: AppTheme.ComponentSizes.illustrationHeight,
                 text: OnboardingCopy.Screen2.illustrationText,
-                isVisible: animationState.showIllustration,
-                offset: animationState.contentOffset,
+                offset: contentOffset,
                 bottomPadding: AppTheme.Spacing.xl
             )
 
             OnboardingHeadline(
                 text: OnboardingCopy.Screen2.headline,
-                isVisible: animationState.showHeadline,
-                offset: animationState.contentOffset
+                offset: contentOffset
             )
 
             OnboardingBody(
                 text: OnboardingCopy.Screen2.body,
-                isVisible: animationState.showBody,
-                offset: animationState.contentOffset
+                offset: contentOffset
             )
         }
     }
@@ -242,28 +210,25 @@ struct Screen2ContentView: View {
 // MARK: - Screen 3 Content
 
 struct Screen3ContentView: View {
-    let animationState: OnboardingAnimationState
+    let contentOffset: CGFloat
 
     var body: some View {
         OnboardingScreenLayout {
             OnboardingHeadline(
                 text: OnboardingCopy.Screen3.headline,
-                isVisible: animationState.showHeadline,
-                offset: animationState.contentOffset
+                offset: contentOffset
             )
 
             OnboardingBody(
                 text: OnboardingCopy.Screen3.body,
-                isVisible: animationState.showBody,
-                offset: animationState.contentOffset,
+                offset: contentOffset,
                 bottomPadding: AppTheme.Spacing.xxxl
             )
 
             OnboardingIllustration(
                 height: AppTheme.ComponentSizes.illustrationHeightCompact,
                 text: OnboardingCopy.Screen3.illustrationText,
-                isVisible: animationState.showIllustration,
-                offset: animationState.contentOffset
+                offset: contentOffset
             )
         }
     }
@@ -272,7 +237,7 @@ struct Screen3ContentView: View {
 // MARK: - Screen 4 Content (Symptoms)
 
 struct Screen4ContentView: View {
-    let animationState: OnboardingAnimationState
+    let contentOffset: CGFloat
     @Binding var selectedSymptoms: Set<Symptom>
     @Binding var otherText: String
 
@@ -280,14 +245,12 @@ struct Screen4ContentView: View {
         OnboardingScreenLayout {
             OnboardingHeadline(
                 text: OnboardingCopy.Screen4.headline,
-                isVisible: animationState.showHeadline,
-                offset: animationState.contentOffset
+                offset: contentOffset
             )
 
             OnboardingBody(
                 text: OnboardingCopy.Screen4.body,
-                isVisible: animationState.showBody,
-                offset: animationState.contentOffset,
+                offset: contentOffset,
                 bottomPadding: AppTheme.Spacing.xl
             )
 
@@ -301,19 +264,15 @@ struct Screen4ContentView: View {
                     }
                 }
             }
-            .onboardingAnimated(isVisible: animationState.showInteractiveContent, offset: animationState.contentOffset)
+            .onboardingAnimated(offset: contentOffset)
 
             if selectedSymptoms.contains(.other) {
-                otherSymptomTextEditor
-                    .onboardingAnimated(isVisible: animationState.showInteractiveContent, offset: animationState.contentOffset)
+                PlaceholderTextEditor(text: $otherText, placeholder: OnboardingCopy.Screen4.otherTextPlaceholder)
+                    .padding(.top, AppTheme.Spacing.sm)
+                    .padding(.bottom, AppTheme.Spacing.sm)
+                    .onboardingAnimated(offset: contentOffset)
             }
         }
-    }
-
-    private var otherSymptomTextEditor: some View {
-        PlaceholderTextEditor(text: $otherText, placeholder: OnboardingCopy.Screen4.otherTextPlaceholder)
-            .padding(.top, AppTheme.Spacing.sm)
-            .padding(.bottom, AppTheme.Spacing.sm)
     }
 
     private func toggleSymptom(_ symptom: Symptom) {
@@ -331,28 +290,25 @@ struct Screen4ContentView: View {
 // MARK: - Screen 5 Content
 
 struct Screen5ContentView: View {
-    let animationState: OnboardingAnimationState
+    let contentOffset: CGFloat
 
     var body: some View {
         OnboardingScreenLayout {
             OnboardingIllustration(
                 height: AppTheme.ComponentSizes.illustrationHeight,
                 text: OnboardingCopy.Screen5.illustrationText,
-                isVisible: animationState.showIllustration,
-                offset: animationState.contentOffset,
+                offset: contentOffset,
                 bottomPadding: AppTheme.Spacing.xl
             )
 
             OnboardingHeadline(
                 text: OnboardingCopy.Screen5.headline,
-                isVisible: animationState.showHeadline,
-                offset: animationState.contentOffset
+                offset: contentOffset
             )
 
             OnboardingBody(
                 text: OnboardingCopy.Screen5.body,
-                isVisible: animationState.showBody,
-                offset: animationState.contentOffset
+                offset: contentOffset
             )
         }
     }
@@ -361,7 +317,7 @@ struct Screen5ContentView: View {
 // MARK: - Email Collection Content
 
 struct EmailCollectionContentView: View {
-    let animationState: OnboardingAnimationState
+    let contentOffset: CGFloat
     @Binding var email: String
     @Binding var showEmailError: Bool
     var isEmailFocused: FocusState<Bool>.Binding
@@ -371,121 +327,81 @@ struct EmailCollectionContentView: View {
         OnboardingScreenLayout {
             OnboardingHeadline(
                 text: OnboardingCopy.EmailCollection.headline,
-                isVisible: animationState.showHeadline,
-                offset: animationState.contentOffset
+                offset: contentOffset
             )
             .padding(.top, 100)
 
             OnboardingBody(
                 text: OnboardingCopy.EmailCollection.body,
-                isVisible: animationState.showBody,
-                offset: animationState.contentOffset,
+                offset: contentOffset,
                 bottomPadding: AppTheme.Spacing.xl
             )
 
-            emailTextField
-                .onboardingAnimated(isVisible: animationState.showInteractiveContent, offset: animationState.contentOffset)
+            StyledTextField(
+                placeholder: OnboardingCopy.EmailCollection.emailPlaceholder,
+                text: $email,
+                isError: showEmailError,
+                isFocused: isEmailFocused,
+                onSubmit: onSubmit
+            )
+            .onChange(of: email) { _, _ in
+                if showEmailError {
+                    showEmailError = false
+                }
+            }
+            .onboardingAnimated(offset: contentOffset)
 
             if showEmailError {
                 Text(OnboardingCopy.EmailCollection.errorMessage)
                     .font(AppTheme.Typography.caption)
                     .foregroundColor(AppTheme.Colors.error)
                     .padding(.top, AppTheme.Spacing.xs)
-                    .onboardingAnimated(isVisible: animationState.showInteractiveContent, offset: animationState.contentOffset)
-            }
-        }
-    }
-
-    private var emailTextField: some View {
-        StyledTextField(
-            placeholder: OnboardingCopy.EmailCollection.emailPlaceholder,
-            text: $email,
-            isError: showEmailError,
-            isFocused: isEmailFocused,
-            onSubmit: onSubmit
-        )
-        .onChange(of: email) { _, _ in
-            if showEmailError {
-                showEmailError = false
+                    .onboardingAnimated(offset: contentOffset)
             }
         }
     }
 }
-
-// MARK: - Component Previews
-
-#Preview("Headline & Body Components") {
-    OnboardingScreenLayout {
-        OnboardingHeadline(text: "Sample Headline", isVisible: true, offset: 0)
-        OnboardingBody(text: "Sample body text for previewing styles and spacing.", isVisible: true, offset: 0, bottomPadding: AppTheme.Spacing.xl)
-    }
-    .padding()
-}
-
-#Preview("Illustration Component") {
-    OnboardingIllustration(
-        height: AppTheme.ComponentSizes.illustrationHeight,
-        text: "Illustration",
-        isVisible: true,
-        offset: 0,
-        bottomPadding: AppTheme.Spacing.xl
-    )
-    .padding()
-}
-
-#Preview("PlaceholderTextEditor Component") {
-    @Previewable @State var text: String = ""
-    return PlaceholderTextEditor(text: .constant(text), placeholder: "Enter details...")
-        .padding()
-}
-
-#Preview("StyledTextField Component") {
-    struct Wrapper: View {
-        @State var text: String = ""
-        @FocusState var focused: Bool
-        var body: some View {
-            StyledTextField(
-                placeholder: "Email",
-                text: $text,
-                isError: false,
-                isFocused: $focused,
-                onSubmit: {}
-            )
-            .padding()
-        }
-    }
-    return Wrapper()
-}
-
-// End component previews
 
 // MARK: - Previews
 
 #Preview("Screen 1") {
-    Screen1ContentView(
-        animationState: OnboardingAnimationState(
-            showHeadline: true,
-            showBody: true,
-            showIllustration: true,
-            showInteractiveContent: true,
-            contentOffset: 0
-        )
-    )
-    .padding()
+    Screen1ContentView(contentOffset: 0)
+        .padding()
+}
+
+#Preview("Screen 2") {
+    Screen2ContentView(contentOffset: 0)
+        .padding()
+}
+
+#Preview("Screen 3") {
+    Screen3ContentView(contentOffset: 0)
+        .padding()
 }
 
 #Preview("Screen 4") {
     Screen4ContentView(
-        animationState: OnboardingAnimationState(
-            showHeadline: true,
-            showBody: true,
-            showIllustration: true,
-            showInteractiveContent: true,
-            contentOffset: 0
-        ),
+        contentOffset: 0,
         selectedSymptoms: .constant([.fatigue, .brainFog]),
         otherText: .constant("")
     )
     .padding()
 }
 
+#Preview("Screen 5") {
+    Screen5ContentView(contentOffset: 0)
+        .padding()
+}
+
+#Preview("Components") {
+    VStack(spacing: 20) {
+        OnboardingHeadline(text: "Sample Headline", offset: 0)
+        OnboardingBody(text: "Sample body text.", offset: 0, bottomPadding: AppTheme.Spacing.xl)
+        OnboardingIllustration(
+            height: AppTheme.ComponentSizes.illustrationHeight,
+            text: "Illustration",
+            offset: 0
+        )
+    }
+    .padding()
+}

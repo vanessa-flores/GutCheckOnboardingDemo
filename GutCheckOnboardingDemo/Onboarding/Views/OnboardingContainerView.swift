@@ -90,40 +90,32 @@ struct OnboardingContainerView: View {
 
     @ViewBuilder
     private var screenContent: some View {
-        let animationState = OnboardingAnimationState(
-            showHeadline: true,
-            showBody: true,
-            showIllustration: true,
-            showInteractiveContent: true,
-            contentOffset: viewModel.contentOffset
-        )
-        
         switch viewModel.activeScreen {
         case .welcome:
             EmptyView()
-            
+
         case .screen1:
-            Screen1ContentView(animationState: animationState)
-            
+            Screen1ContentView(contentOffset: viewModel.contentOffset)
+
         case .screen2:
-            Screen2ContentView(animationState: animationState)
-            
+            Screen2ContentView(contentOffset: viewModel.contentOffset)
+
         case .screen3:
-            Screen3ContentView(animationState: animationState)
-            
+            Screen3ContentView(contentOffset: viewModel.contentOffset)
+
         case .screen4:
             Screen4ContentView(
-                animationState: animationState,
+                contentOffset: viewModel.contentOffset,
                 selectedSymptoms: $viewModel.selectedSymptoms,
                 otherText: $viewModel.otherText
             )
-            
+
         case .screen5:
-            Screen5ContentView(animationState: animationState)
-            
+            Screen5ContentView(contentOffset: viewModel.contentOffset)
+
         case .emailCollection:
             EmailCollectionContentView(
-                animationState: animationState,
+                contentOffset: viewModel.contentOffset,
                 email: $viewModel.email,
                 showEmailError: $viewModel.showEmailError,
                 isEmailFocused: $isEmailFocused,
