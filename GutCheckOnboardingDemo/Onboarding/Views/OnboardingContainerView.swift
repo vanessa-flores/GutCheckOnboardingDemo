@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct OnboardingContainerView2: View {
+struct OnboardingContainerView: View {
     
     @State private var viewModel: OnboardingViewModel
     

@@ -7,7 +7,7 @@ struct RootView: View {
         Group {
             switch appRouter.currentFlow {
             case .onboarding:
-                OnboardingContainerView2(onComplete: {
+                OnboardingContainerView(onComplete: {
                     appRouter.completeOnboarding()
                 })
                 .sheet(isPresented: $appRouter.onboardingRouter.showingSignIn) {
