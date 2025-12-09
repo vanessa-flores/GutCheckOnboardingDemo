@@ -59,15 +59,15 @@ class OnboardingViewModel {
         case .emailCollection:
             handleEmailSubmit()
         default:
-            animateForward {
-                self.router.goToNextScreen()
+            animateForward { [weak self] in
+                self?.router.goToNextScreen()
             }
         }
     }
-    
+
     func goBack() {
-        animateBackward {
-            self.router.goBack()
+        animateBackward { [weak self] in
+            self?.router.goBack()
         }
     }
     
@@ -91,30 +91,32 @@ class OnboardingViewModel {
         withAnimation(.easeOut(duration: 0.2)) {
             contentOffset = -screenWidth
         }
-        
+
         // After slide out, change screen and prepare new content
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+            guard let self else { return }
             completion()
-            self.contentOffset = self.screenWidth  // Position new content off-screen right
-            
+            self.contentOffset = self.screenWidth
+
             // Slide new content in from right
             withAnimation(.easeOut(duration: 0.2)) {
                 self.contentOffset = 0
             }
         }
     }
-    
+
     private func animateBackward(completion: @escaping () -> Void) {
         // Slide current content out to right
         withAnimation(.easeOut(duration: 0.2)) {
             contentOffset = screenWidth
         }
-        
+
         // After slide out, change screen and prepare new content
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+            guard let self else { return }
             completion()
-            self.contentOffset = -self.screenWidth  // Position new content off-screen left
-            
+            self.contentOffset = -self.screenWidth
+
             // Slide new content in from left
             withAnimation(.easeOut(duration: 0.2)) {
                 self.contentOffset = 0
