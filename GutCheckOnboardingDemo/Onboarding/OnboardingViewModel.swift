@@ -33,6 +33,10 @@ class OnboardingViewModel {
         router.activeScreen.progressIndex
     }
     
+    var canGoBack: Bool {
+        router.canGoBack
+    }
+    
     // MARK: - Init
     
     init(
@@ -61,6 +65,10 @@ class OnboardingViewModel {
         default:
             router.skipToEmailCollection()
         }
+    }
+    
+    func goBack() {
+        router.goBack()
     }
     
     func completeOnboarding() {

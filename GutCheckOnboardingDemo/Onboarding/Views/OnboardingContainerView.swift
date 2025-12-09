@@ -46,7 +46,17 @@ struct OnboardingContainerView: View {
                         .padding(.bottom, AppTheme.Spacing.bottomSafeArea)
                 }
             }
+            .gesture(swipeBackGesture)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    if viewModel.canGoBack {
+                        Button(action: viewModel.goBack) {
+                            Image(systemName: "chevron.left")
+                                .foregroundColor(AppTheme.Colors.textSecondary)
+                        }
+                    }
+                }
+                
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: viewModel.handleSkip) {
                         Image(systemName: "xmark")
@@ -144,5 +154,16 @@ struct OnboardingContainerView: View {
         case .screen5: return OnboardingCopy.Screen5.buttonTitle
         case .emailCollection: return OnboardingCopy.EmailCollection.buttonTitle
         }
+    }
+    
+    // MARK: - Navigation Gesture
+    
+    private var swipeBackGesture: some Gesture {
+        DragGesture(minimumDistance: 50, coordinateSpace: .local)
+            .onEnded { value in
+                if value.translation.width > 100 && viewModel.canGoBack {
+                    viewModel.goBack()
+                }
+            }
     }
 }
