@@ -95,7 +95,7 @@ struct OnboardingContainerView: View {
             showBody: true,
             showIllustration: true,
             showInteractiveContent: true,
-            contentOffset: 0
+            contentOffset: viewModel.contentOffset
         )
         
         switch viewModel.activeScreen {

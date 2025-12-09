@@ -4,16 +4,21 @@ import Observation
 @Observable
 class OnboardingViewModel {
     
-    /// Navigation
+    // Navigation
     var router: OnboardingRouter
     
-    /// Screen 4 State (Symptoms)
+    // Screen 4 State (Symptoms)
     var selectedSymptoms: Set<Symptom> = []
     var otherText: String = ""
     
-    /// Email Collection State
+    // Email Collection State
     var email: String = ""
     var showEmailError: Bool = false
+    
+    // Animation State
+    var contentOffset: CGFloat = 0
+    var showContent: Bool = true
+    let screenWidth = UIScreen.main.bounds.width
     
     // MARK: - Private Properties
     
@@ -54,7 +59,15 @@ class OnboardingViewModel {
         case .emailCollection:
             handleEmailSubmit()
         default:
-            router.goToNextScreen()
+            animateForward {
+                self.router.goToNextScreen()
+            }
+        }
+    }
+    
+    func goBack() {
+        animateBackward {
+            self.router.goBack()
         }
     }
     
@@ -66,13 +79,47 @@ class OnboardingViewModel {
             router.skipToEmailCollection()
         }
     }
-    
-    func goBack() {
-        router.goBack()
-    }
-    
+
     func completeOnboarding() {
         onComplete()
+    }
+    
+    // MARK: - Animations
+    
+    private func animateForward(completion: @escaping () -> Void) {
+        // Slide current content out to left
+        withAnimation(.easeOut(duration: 0.2)) {
+            contentOffset = -screenWidth
+        }
+        
+        // After slide out, change screen and prepare new content
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            completion()
+            self.contentOffset = self.screenWidth  // Position new content off-screen right
+            
+            // Slide new content in from right
+            withAnimation(.easeOut(duration: 0.2)) {
+                self.contentOffset = 0
+            }
+        }
+    }
+    
+    private func animateBackward(completion: @escaping () -> Void) {
+        // Slide current content out to right
+        withAnimation(.easeOut(duration: 0.2)) {
+            contentOffset = screenWidth
+        }
+        
+        // After slide out, change screen and prepare new content
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            completion()
+            self.contentOffset = -self.screenWidth  // Position new content off-screen left
+            
+            // Slide new content in from left
+            withAnimation(.easeOut(duration: 0.2)) {
+                self.contentOffset = 0
+            }
+        }
     }
     
     // MARK: - Email Validation
