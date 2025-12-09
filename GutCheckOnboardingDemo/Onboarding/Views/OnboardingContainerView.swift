@@ -3,6 +3,7 @@ import SwiftUI
 struct OnboardingContainerView: View {
     
     @State private var viewModel: OnboardingViewModel
+    @FocusState private var isEmailFocused: Bool
     
     // MARK: - Init
     
@@ -76,24 +77,48 @@ struct OnboardingContainerView: View {
     }
     
     // MARK: - Screen Content
-    
+
     @ViewBuilder
     private var screenContent: some View {
-        switch viewModel.router.activeScreen {
+        let animationState = OnboardingAnimationState(
+            showHeadline: true,
+            showBody: true,
+            showIllustration: true,
+            showInteractiveContent: true,
+            contentOffset: 0
+        )
+        
+        switch viewModel.activeScreen {
         case .welcome:
             EmptyView()
+            
         case .screen1:
-            Text("Screen 1 content") // Placeholder
+            Screen1ContentView(animationState: animationState)
+            
         case .screen2:
-            Text("Screen 2 content") // Placeholder
+            Screen2ContentView(animationState: animationState)
+            
         case .screen3:
-            Text("Screen 3 content") // Placeholder
+            Screen3ContentView(animationState: animationState)
+            
         case .screen4:
-            Text("Screen 4 content") // Placeholder
+            Screen4ContentView(
+                animationState: animationState,
+                selectedSymptoms: $viewModel.selectedSymptoms,
+                otherText: $viewModel.otherText
+            )
+            
         case .screen5:
-            Text("Screen 5 content") // Placeholder
+            Screen5ContentView(animationState: animationState)
+            
         case .emailCollection:
-            Text("Email collection content") // Placeholder
+            EmailCollectionContentView(
+                animationState: animationState,
+                email: $viewModel.email,
+                showEmailError: $viewModel.showEmailError,
+                isEmailFocused: $isEmailFocused,
+                onSubmit: viewModel.handlePrimaryAction
+            )
         }
     }
     
