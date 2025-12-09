@@ -8,18 +8,9 @@ struct OnboardingContainerView: View {
 
     // MARK: - Animation State
 
-    @State private var contentOpacity: Double = 1.0
     @State private var contentOffset: CGFloat = 0
-    @State private var toolbarOpacity: Double = 1.0
-    @State private var buttonBackgroundOpacity: Double = 1.0
+    @State private var showContent: Bool = true
     @State private var isAnimating: Bool = false
-
-    // Staggered fade-in states
-    @State private var showHeadline: Bool = true
-    @State private var showBody: Bool = true
-    @State private var showIllustration: Bool = true
-    @State private var showInteractiveContent: Bool = true
-    @State private var showButton: Bool = true
     @State private var hasPerformedInitialAnimation: Bool = false
 
     // MARK: - Screen 4 State (Symptoms)
@@ -37,12 +28,16 @@ struct OnboardingContainerView: View {
 
     private var animationState: OnboardingAnimationState {
         OnboardingAnimationState(
-            showHeadline: showHeadline,
-            showBody: showBody,
-            showIllustration: showIllustration,
-            showInteractiveContent: showInteractiveContent,
+            showHeadline: showContent,
+            showBody: showContent,
+            showIllustration: showContent,
+            showInteractiveContent: showContent,
             contentOffset: contentOffset
         )
+    }
+
+    private var slideDistance: CGFloat {
+        UIScreen.main.bounds.width
     }
 
     // MARK: - Init
@@ -63,7 +58,6 @@ struct OnboardingContainerView: View {
                 // Progress dots (fixed at top, only for screens 1-5)
                 if router.activeScreen.showsProgressDots {
                     progressDotsView
-                        .opacity(contentOpacity)
                 }
 
                 // Scrollable content area
@@ -81,14 +75,13 @@ struct OnboardingContainerView: View {
             }
         }
         .onAppear {
-            // Detect first appearance from welcome screen
             if !hasPerformedInitialAnimation && router.activeScreen == .screen1 {
                 performInitialAnimation()
             }
         }
         .gesture(swipeBackGesture)
-        .onChange(of: router.activeScreen) { oldValue, newValue in
-            animateTransition(from: oldValue, to: newValue)
+        .onChange(of: router.activeScreen) { _, _ in
+            animateScreenTransition()
         }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -104,7 +97,6 @@ struct OnboardingContainerView: View {
                     Image(systemName: "xmark")
                         .foregroundColor(AppTheme.Colors.textSecondary)
                 }
-                .opacity(toolbarOpacity)
             }
         }
     }
@@ -129,7 +121,7 @@ struct OnboardingContainerView: View {
     private var screenContent: some View {
         switch router.activeScreen {
         case .welcome:
-            EmptyView() // Welcome is handled separately
+            EmptyView()
 
         case .screen1:
             Screen1ContentView(animationState: animationState)
@@ -166,34 +158,12 @@ struct OnboardingContainerView: View {
     @ViewBuilder
     private var buttonArea: some View {
         VStack(spacing: 0) {
-            // Primary button - conditionally styled for initial animation
-            if hasPerformedInitialAnimation {
-                // After initial animation - use standard button style (solid background)
-                Button(action: handlePrimaryAction) {
-                    Text(primaryButtonTitle)
-                        .opacity(showButton ? 1 : 0)
-                }
-                .buttonStyle(AppTheme.PrimaryButtonStyle())
-                .disabled(isAnimating)
-            } else {
-                // During initial animation ONLY - custom style with animating background
-                Button(action: handlePrimaryAction) {
-                    Text(primaryButtonTitle)
-                        .font(AppTheme.Typography.button)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 18)
-                        .background(
-                            AppTheme.Colors.primaryAction
-                                .opacity(buttonBackgroundOpacity)
-                        )
-                        .cornerRadius(AppTheme.CornerRadius.medium)
-                        .opacity(showButton ? 1 : 0)
-                }
-                .disabled(isAnimating)
+            Button(action: handlePrimaryAction) {
+                Text(primaryButtonTitle)
             }
+            .buttonStyle(AppTheme.PrimaryButtonStyle())
+            .disabled(isAnimating)
 
-            // Secondary button area - always reserve space, but conditionally show button
             if let secondaryAction = secondaryButtonConfig {
                 Button(action: secondaryAction.action) {
                     Text(secondaryAction.title)
@@ -201,9 +171,7 @@ struct OnboardingContainerView: View {
                         .foregroundColor(AppTheme.Colors.textSecondary)
                 }
                 .padding(.top, AppTheme.Spacing.sm)
-                .opacity(showButton ? 1 : 0)
             } else {
-                // Reserve space even when there's no secondary button
                 Spacer()
                     .frame(height: 28)
             }
@@ -284,7 +252,6 @@ struct OnboardingContainerView: View {
     private var swipeBackGesture: some Gesture {
         DragGesture(minimumDistance: 50, coordinateSpace: .local)
             .onEnded { value in
-                // Swipe right to go back
                 if value.translation.width > 100 && router.canGoBack && !isAnimating {
                     router.goBack()
                 }
@@ -293,73 +260,28 @@ struct OnboardingContainerView: View {
 
     // MARK: - Animations
 
-    private func animateTransition(from oldScreen: OnboardingScreen, to newScreen: OnboardingScreen) {
+    private func animateScreenTransition() {
         guard !isAnimating else { return }
-        isAnimating = true
 
         let direction = router.navigationDirection
+        guard direction != .none else { return }
 
-        if direction == .forward {
-            animateForward()
-        } else if direction == .backward {
-            animateBackward()
-        } else {
-            // No animation, just show content
-            isAnimating = false
-        }
-    }
+        isAnimating = true
+        let isForward = direction == .forward
 
-    private func animateForward() {
-        let slideDistance = UIScreen.main.bounds.width
-
-        // Hide content and slide current screen out to the left
+        // Slide out current content
         withAnimation(.easeOut(duration: AppTheme.Animation.slideTransition)) {
-            contentOffset = -slideDistance
-            showHeadline = false
-            showBody = false
-            showIllustration = false
-            showInteractiveContent = false
+            contentOffset = isForward ? -slideDistance : slideDistance
+            showContent = false
         }
 
-        // Almost immediately prepare and slide in new content
+        // Slide in new content
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-            // Position new content off-screen to the right
-            contentOffset = slideDistance
+            contentOffset = isForward ? slideDistance : -slideDistance
+            showContent = true
 
-            // Show and slide in new content
             withAnimation(.easeOut(duration: AppTheme.Animation.slideTransition)) {
-                showHeadline = true
-                showBody = true
-                showIllustration = true
-                showInteractiveContent = true
                 contentOffset = 0
-            }
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + AppTheme.Animation.slideTransition) {
-                isAnimating = false
-            }
-        }
-    }
-
-    private func animateBackward() {
-        let slideDistance = UIScreen.main.bounds.width
-
-        // Old content slides out to the right while new content slides in from left (overlap)
-        withAnimation(.easeOut(duration: AppTheme.Animation.slideTransition)) {
-            contentOffset = slideDistance  // Slide current content right and out
-        }
-
-        // Immediately after starting the slide out, prepare and slide in previous content
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-            // Reset position to left side (off-screen) for previous content
-            contentOffset = -slideDistance
-            showHeadline = true
-            showBody = true
-            showIllustration = true
-            showInteractiveContent = true
-
-            withAnimation(.easeOut(duration: AppTheme.Animation.slideTransition)) {
-                contentOffset = 0  // Slide previous content in from left
             }
 
             DispatchQueue.main.asyncAfter(deadline: .now() + AppTheme.Animation.slideTransition) {
@@ -370,21 +292,10 @@ struct OnboardingContainerView: View {
 
     private func performInitialAnimation() {
         hasPerformedInitialAnimation = true
+        contentOffset = slideDistance
 
-        // Start with content hidden and offset to the right (off-screen)
-        showHeadline = true
-        showBody = true
-        showIllustration = true
-        showInteractiveContent = true
-        showButton = true
-        contentOpacity = 1  // Progress dots visible immediately
-        toolbarOpacity = 1  // X button visible immediately
-        buttonBackgroundOpacity = 1  // Button background visible immediately
-        contentOffset = UIScreen.main.bounds.width  // Start off-screen to the right
-
-        // Content slides in from right (no fade, pure slide)
         withAnimation(.easeOut(duration: AppTheme.Animation.contentFadeIn)) {
-            contentOffset = 0  // Slide to final position
+            contentOffset = 0
         }
     }
 }
