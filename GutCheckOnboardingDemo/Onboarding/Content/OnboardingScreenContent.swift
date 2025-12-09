@@ -434,7 +434,7 @@ struct EmailCollectionContentView: View {
 }
 
 #Preview("PlaceholderTextEditor Component") {
-    @State var text: String = ""
+    @Previewable @State var text: String = ""
     return PlaceholderTextEditor(text: .constant(text), placeholder: "Enter details...")
         .padding()
 }
