@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct WelcomeScreenView: View {
-    var router: OnboardingRouter
+    let onComplete: () -> Void
     @State private var showAppName = false
     @State private var showTagline = false
     @State private var showAccentLine = false
@@ -69,12 +69,12 @@ struct WelcomeScreenView: View {
 
             // Advance to screen 1 after complete fade-out + 0.2s gap
             DispatchQueue.main.asyncAfter(deadline: .now() + 4.2) {
-                router.advanceFromWelcome()
+                onComplete()
             }
         }
     }
 }
 
 #Preview {
-    WelcomeScreenView(router: OnboardingRouter())
+    WelcomeScreenView(onComplete: {})
 }

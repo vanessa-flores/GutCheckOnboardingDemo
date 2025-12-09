@@ -7,33 +7,16 @@ struct RootView: View {
         Group {
             switch appRouter.currentFlow {
             case .onboarding:
-                OnboardingFlowView(appRouter: appRouter)
+                OnboardingContainerView2(onComplete: {
+                    appRouter.completeOnboarding()
+                })
+                .sheet(isPresented: $appRouter.onboardingRouter.showingSignIn) {
+                    SignInView(appRouter: appRouter)
+                }
+                
             case .mainApp:
                 MainAppView(appRouter: appRouter)
             }
-        }
-    }
-}
-
-// MARK: - Onboarding Flow View
-
-struct OnboardingFlowView: View {
-    @State var appRouter: AppRouter
-
-    var body: some View {
-        Group {
-            if !appRouter.onboardingRouter.hasSeenWelcome {
-                // Welcome screen (auto-advances)
-                WelcomeScreenView(router: appRouter.onboardingRouter)
-            } else {
-                // Container view for screens 1-5 and email collection
-                NavigationStack {
-                    OnboardingContainerView(appRouter: appRouter)
-                }
-            }
-        }
-        .sheet(isPresented: $appRouter.onboardingRouter.showingSignIn) {
-            SignInView(appRouter: appRouter)
         }
     }
 }
