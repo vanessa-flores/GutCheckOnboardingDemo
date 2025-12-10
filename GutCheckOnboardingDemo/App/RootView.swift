@@ -8,20 +8,15 @@ struct RootView: View {
             switch appRouter.currentFlow {
             case .onboarding:
                 ZStack {
-                    // Container always exists - use higher opacity to force full render
                     OnboardingContainerView(onComplete: {
                         appRouter.completeOnboarding()
                     })
-                    .opacity(appRouter.hasSeenWelcome ? 1 : 0.001)
 
-                    // Welcome overlays on top initially
-                    if !appRouter.hasSeenWelcome {
-                        WelcomeScreenView(onComplete: {
-                            withAnimation(.easeOut(duration: 0.3)) {
-                                appRouter.hasSeenWelcome = true
-                            }
-                        })
-                    }
+                    WelcomeScreenView(onComplete: {
+                        appRouter.hasSeenWelcome = true
+                    })
+                    .opacity(appRouter.hasSeenWelcome ? 0 : 1)
+                    .animation(.easeOut(duration: 0.3), value: appRouter.hasSeenWelcome)
                 }
                 .sheet(isPresented: $appRouter.onboardingRouter.showingSignIn) {
                     SignInView(appRouter: appRouter)

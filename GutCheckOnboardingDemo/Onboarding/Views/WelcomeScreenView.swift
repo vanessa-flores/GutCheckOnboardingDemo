@@ -65,7 +65,7 @@ struct WelcomeScreenView: View {
                 withAnimation(.easeOut(duration: 0.3)) {
                     fadeOutScreen = true
                 }
-                
+
                 // Call after fade animation completes
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     onComplete()

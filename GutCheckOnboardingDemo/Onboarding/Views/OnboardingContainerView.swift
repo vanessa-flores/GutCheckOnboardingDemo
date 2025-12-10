@@ -19,7 +19,6 @@ struct OnboardingContainerView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
-                // Custom navigation bar (avoids NavigationStack overhead)
                 navigationBar
 
                 if viewModel.showsProgressDots {
@@ -97,23 +96,18 @@ struct OnboardingContainerView: View {
         switch viewModel.activeScreen {
         case .screen1:
             Screen1ContentView(contentOffset: viewModel.contentOffset)
-
         case .screen2:
             Screen2ContentView(contentOffset: viewModel.contentOffset)
-
         case .screen3:
             Screen3ContentView(contentOffset: viewModel.contentOffset)
-
         case .screen4:
             Screen4ContentView(
                 contentOffset: viewModel.contentOffset,
                 selectedSymptoms: $viewModel.selectedSymptoms,
                 otherText: $viewModel.otherText
             )
-
         case .screen5:
             Screen5ContentView(contentOffset: viewModel.contentOffset)
-
         case .emailCollection:
             EmailCollectionContentView(
                 contentOffset: viewModel.contentOffset,
