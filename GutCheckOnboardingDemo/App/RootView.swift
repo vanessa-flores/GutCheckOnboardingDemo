@@ -36,7 +36,6 @@ struct MainAppView: View {
     
     var body: some View {
         TabView(selection: $appRouter.mainAppRouter.selectedTab) {
-            // Dashboard Tab
             DashboardView()
                 .tabItem {
                     Label(
