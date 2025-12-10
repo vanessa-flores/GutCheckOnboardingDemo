@@ -44,10 +44,7 @@ class OnboardingViewModel {
     
     // MARK: - Init
     
-    init(
-        router: OnboardingRouter = OnboardingRouter(),
-        onComplete: @escaping () -> Void
-    ) {
+    init(router: OnboardingRouter = OnboardingRouter(), onComplete: @escaping () -> Void ) {
         self.router = router
         self.onComplete = onComplete
     }

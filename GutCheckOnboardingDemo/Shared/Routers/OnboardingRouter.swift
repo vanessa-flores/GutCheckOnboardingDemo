@@ -8,39 +8,29 @@ enum NavigationDirection {
     case none
 }
 
-/// Handles: Welcome → Screens 1-5 → Email Collection → Dashboard
+/// Handles navigation for screens 1-5 and email collection
 @Observable
 class OnboardingRouter {
 
     // MARK: - Published State
 
-    var currentScreen: OnboardingScreen = .welcome
-    var navigationPath: [OnboardingScreen] = []
-    var hasSeenWelcome: Bool = false
+    var currentScreen: OnboardingScreen = .screen1
+    var navigationPath: [OnboardingScreen] = [.screen1]
     var showingSignIn: Bool = false
-
-    /// Tracks the direction of the last navigation for animation purposes
     var navigationDirection: NavigationDirection = .none
 
     // MARK: - Computed Properties
 
     var activeScreen: OnboardingScreen {
-        navigationPath.last ?? .welcome
+        navigationPath.last ?? .screen1
     }
 
-    /// Whether we can navigate back (not on welcome or first content screen)
     var canGoBack: Bool {
         guard let current = navigationPath.last else { return false }
         return current != .screen1
     }
 
     // MARK: - Navigation Actions
-
-    func advanceFromWelcome() {
-        hasSeenWelcome = true
-        navigationDirection = .forward
-        navigationPath.append(.screen1)
-    }
 
     func goToNextScreen() {
         navigationDirection = .forward
@@ -68,23 +58,9 @@ class OnboardingRouter {
         showingSignIn = true
     }
 
-    func completeOnboarding() {
-        // This will trigger AppRouter to transition to main app
-        // The actual transition is handled by AppRouter.completeOnboarding()
-    }
-
     func reset() {
-        currentScreen = .welcome
-        navigationPath = []
-        hasSeenWelcome = false
-        showingSignIn = false
-        navigationDirection = .none
-    }
-
-    func resetForReturningUser() {
         currentScreen = .screen1
         navigationPath = [.screen1]
-        hasSeenWelcome = true
         showingSignIn = false
         navigationDirection = .none
     }
@@ -93,7 +69,6 @@ class OnboardingRouter {
 // MARK: - Onboarding Screen Enum
 
 enum OnboardingScreen: Hashable, Identifiable {
-    case welcome
     case screen1  // "Your body is changing"
     case screen2  // "Your gut and hormones are deeply connected"
     case screen3  // "Your baseline matters"
@@ -103,7 +78,6 @@ enum OnboardingScreen: Hashable, Identifiable {
 
     var id: String {
         switch self {
-        case .welcome: return "welcome"
         case .screen1: return "screen1"
         case .screen2: return "screen2"
         case .screen3: return "screen3"
@@ -115,7 +89,6 @@ enum OnboardingScreen: Hashable, Identifiable {
 
     var next: OnboardingScreen? {
         switch self {
-        case .welcome: return .screen1
         case .screen1: return .screen2
         case .screen2: return .screen3
         case .screen3: return .screen4
@@ -127,8 +100,7 @@ enum OnboardingScreen: Hashable, Identifiable {
 
     var previous: OnboardingScreen? {
         switch self {
-        case .welcome: return nil
-        case .screen1: return nil  // Can't go back from first content screen
+        case .screen1: return nil
         case .screen2: return .screen1
         case .screen3: return .screen2
         case .screen4: return .screen3
@@ -139,7 +111,6 @@ enum OnboardingScreen: Hashable, Identifiable {
 
     var progressIndex: Int? {
         switch self {
-        case .welcome: return nil
         case .screen1: return 0
         case .screen2: return 1
         case .screen3: return 2

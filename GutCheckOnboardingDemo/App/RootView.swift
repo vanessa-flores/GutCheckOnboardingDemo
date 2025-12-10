@@ -7,9 +7,22 @@ struct RootView: View {
         Group {
             switch appRouter.currentFlow {
             case .onboarding:
-                OnboardingContainerView(onComplete: {
-                    appRouter.completeOnboarding()
-                })
+                ZStack {
+                    // Container always exists - use higher opacity to force full render
+                    OnboardingContainerView(onComplete: {
+                        appRouter.completeOnboarding()
+                    })
+                    .opacity(appRouter.hasSeenWelcome ? 1 : 0.001)
+
+                    // Welcome overlays on top initially
+                    if !appRouter.hasSeenWelcome {
+                        WelcomeScreenView(onComplete: {
+                            withAnimation(.easeOut(duration: 0.3)) {
+                                appRouter.hasSeenWelcome = true
+                            }
+                        })
+                    }
+                }
                 .sheet(isPresented: $appRouter.onboardingRouter.showingSignIn) {
                     SignInView(appRouter: appRouter)
                 }

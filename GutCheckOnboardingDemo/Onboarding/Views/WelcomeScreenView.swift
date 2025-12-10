@@ -60,17 +60,18 @@ struct WelcomeScreenView: View {
                 }
             }
 
-            // Fade out after 3.7s (leaves 0.3s for fade-out animation)
+            // Start fade AND trigger navigation together at 3.7s
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.7) {
                 withAnimation(.easeOut(duration: 0.3)) {
                     fadeOutScreen = true
                 }
+                
+                // Call after fade animation completes
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    onComplete()
+                }
             }
 
-            // Advance to screen 1 after complete fade-out + 0.2s gap
-            DispatchQueue.main.asyncAfter(deadline: .now() + 4.2) {
-                onComplete()
-            }
         }
     }
 }

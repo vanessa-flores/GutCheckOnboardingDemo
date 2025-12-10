@@ -1,70 +1,74 @@
 import SwiftUI
 
 struct OnboardingContainerView: View {
-    
+
     @State private var viewModel: OnboardingViewModel
     @FocusState private var isEmailFocused: Bool
-    
+
     // MARK: - Init
-    
+
     init(onComplete: @escaping () -> Void) {
         self._viewModel = State(initialValue: OnboardingViewModel(onComplete: onComplete))
     }
-    
+
     // MARK: - Body
-        
+
     var body: some View {
-        if viewModel.activeScreen == .welcome {
-            WelcomeScreenView(onComplete: viewModel.router.advanceFromWelcome)
-        } else {
-            mainOnboardingContent
+        ZStack {
+            AppTheme.Colors.background
+                .ignoresSafeArea()
+
+            VStack(spacing: 0) {
+                // Custom navigation bar (avoids NavigationStack overhead)
+                navigationBar
+
+                if viewModel.showsProgressDots {
+                    progressDotsView
+                }
+
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 0) {
+                        screenContent
+                    }
+                    .padding(.horizontal, AppTheme.Spacing.xl)
+                }
+
+                buttonArea
+                    .padding(.horizontal, AppTheme.Spacing.xl)
+                    .padding(.bottom, AppTheme.Spacing.bottomSafeArea)
+            }
         }
+        .gesture(swipeBackGesture)
     }
-    
-    // MARK: - Main Onboarding Content
-    
-    private var mainOnboardingContent: some View {
-        NavigationStack {
-            ZStack {
-                AppTheme.Colors.background
-                    .ignoresSafeArea()
-                
-                VStack(spacing: 0) {
-                    if viewModel.showsProgressDots {
-                        progressDotsView
-                    }
-                    
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 0) {
-                            screenContent
-                        }
-                        .padding(.horizontal, AppTheme.Spacing.xl)
-                    }
-                    
-                    buttonArea
-                        .padding(.horizontal, AppTheme.Spacing.xl)
-                        .padding(.bottom, AppTheme.Spacing.bottomSafeArea)
+
+    // MARK: - Navigation Bar
+
+    private var navigationBar: some View {
+        HStack {
+            // Back button
+            if viewModel.canGoBack {
+                Button(action: viewModel.goBack) {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 17, weight: .medium))
+                        .foregroundColor(AppTheme.Colors.textSecondary)
+                        .frame(width: 44, height: 44)
                 }
+            } else {
+                Spacer()
+                    .frame(width: 44, height: 44)
             }
-            .gesture(swipeBackGesture)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    if viewModel.canGoBack {
-                        Button(action: viewModel.goBack) {
-                            Image(systemName: "chevron.left")
-                                .foregroundColor(AppTheme.Colors.textSecondary)
-                        }
-                    }
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: viewModel.handleSkip) {
-                        Image(systemName: "xmark")
-                            .foregroundColor(AppTheme.Colors.textSecondary)
-                    }
-                }
+
+            Spacer()
+
+            // Close button
+            Button(action: viewModel.handleSkip) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundColor(AppTheme.Colors.textSecondary)
+                    .frame(width: 44, height: 44)
             }
         }
+        .padding(.horizontal, AppTheme.Spacing.sm)
     }
     
     // MARK: - Progress Dots
@@ -91,9 +95,6 @@ struct OnboardingContainerView: View {
     @ViewBuilder
     private var screenContent: some View {
         switch viewModel.activeScreen {
-        case .welcome:
-            EmptyView()
-
         case .screen1:
             Screen1ContentView(contentOffset: viewModel.contentOffset)
 
@@ -138,7 +139,6 @@ struct OnboardingContainerView: View {
     
     private var primaryButtonTitle: String {
         switch viewModel.activeScreen {
-        case .welcome: return ""
         case .screen1: return OnboardingCopy.Screen1.buttonTitle
         case .screen2: return OnboardingCopy.Screen2.buttonTitle
         case .screen3: return OnboardingCopy.Screen3.buttonTitle
