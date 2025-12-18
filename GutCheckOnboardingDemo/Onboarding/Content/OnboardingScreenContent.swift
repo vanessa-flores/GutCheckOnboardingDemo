@@ -333,13 +333,29 @@ struct EmailCollectionContentView: View {
                 text: OnboardingCopy.EmailCollection.headline,
                 offset: contentOffset
             )
-            .padding(.top, 100)
 
             OnboardingBody(
-                text: OnboardingCopy.EmailCollection.body,
+                text: OnboardingCopy.EmailCollection.bodyTop,
                 offset: contentOffset,
-                bottomPadding: AppTheme.Spacing.xl
+                bottomPadding: AppTheme.Spacing.md
             )
+            
+            VStack(alignment: .leading, spacing: AppTheme.Spacing.xs) {
+                ForEach(OnboardingCopy.EmailCollection.emailTopics, id: \.self) { topic in
+                    HStack(alignment: .top, spacing: AppTheme.Spacing.xs) {
+                        Text("•")
+                            .font(AppTheme.Typography.body)
+                            .fontWeight(.bold)
+                            .foregroundColor(AppTheme.Colors.accent)
+                        
+                        Text(topic)
+                            .font(AppTheme.Typography.body)
+                            .foregroundColor(AppTheme.Colors.textPrimary)
+                    }
+                }
+            }
+            .onboardingAnimated(offset: contentOffset)
+            .padding(.bottom, AppTheme.Spacing.xl)
 
             StyledTextField(
                 placeholder: OnboardingCopy.EmailCollection.emailPlaceholder,

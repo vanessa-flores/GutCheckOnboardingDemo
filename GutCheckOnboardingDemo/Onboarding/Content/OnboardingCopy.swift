@@ -55,7 +55,13 @@ struct OnboardingCopy {
 
     struct EmailCollection {
         static let headline = "Want help getting started?"
-        static let body = "We’ll send a few emails to guide you:"
+        static let bodyTop = "We’ll send a few emails to guide you:"
+        static let emailTopics: [String] = [
+            "Understand what’s happening in your body",
+            "Track your baseline effectively",
+            "Learn about the gut-hormone connection",
+            "Set up your first experiments"
+        ]
         static let buttonTitle = "Get started"
         static let secondaryButtonTitle = "Maybe later"
         static let emailPlaceholder = "your@email.com"
