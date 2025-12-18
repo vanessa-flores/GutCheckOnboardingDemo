@@ -194,8 +194,45 @@ struct Screen2ContentView: View {
 
             OnboardingBody(
                 text: OnboardingCopy.Screen2.body,
-                offset: contentOffset
+                offset: contentOffset,
+                bottomPadding: AppTheme.Spacing.xl
             )
+
+            VStack(alignment: .leading, spacing: AppTheme.Spacing.xl) {
+                ForEach(SymptomRepository.allCategories) { category in
+                    SymptomCategoryView(category: category)
+                }
+            }
+            .onboardingAnimated(offset: contentOffset)
+        }
+    }
+}
+
+// MARK: - Symptom Category View
+
+struct SymptomCategoryView: View {
+    let category: SymptomCategory
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
+            Text(category.title)
+                .font(AppTheme.Typography.title3)
+                .foregroundColor(AppTheme.Colors.primaryAction)
+            
+            VStack(alignment: .leading, spacing: AppTheme.Spacing.xs) {
+                ForEach(category.symptoms) { symptom in
+                    HStack(alignment: .top, spacing: AppTheme.Spacing.xs) {
+                        Text("•")
+                            .font(AppTheme.Typography.body)
+                            .fontWeight(.bold)
+                            .foregroundColor(AppTheme.Colors.accent)
+                        
+                        Text(symptom.displayText)
+                            .font(AppTheme.Typography.body)
+                            .foregroundColor(AppTheme.Colors.textSecondary)
+                    }
+                }
+            }
         }
     }
 }
