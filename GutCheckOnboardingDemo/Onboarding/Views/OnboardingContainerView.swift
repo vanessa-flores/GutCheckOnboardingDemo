@@ -14,61 +14,49 @@ struct OnboardingContainerView: View {
     // MARK: - Body
 
     var body: some View {
-        ZStack {
-            AppTheme.Colors.background
-                .ignoresSafeArea()
-
-            VStack(spacing: 0) {
-                navigationBar
-
-                if viewModel.showsProgressDots {
-                    progressDotsView
-                }
-
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 0) {
-                        screenContent
+        
+        NavigationStack {
+            ZStack {
+                AppTheme.Colors.background
+                    .ignoresSafeArea()
+                
+                VStack(spacing: 0) {
+                    if viewModel.showsProgressDots {
+                        progressDotsView
                     }
-                    .padding(.horizontal, AppTheme.Spacing.xl)
-                    .padding([.top, .bottom], AppTheme.Spacing.md)
+                    
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 0) {
+                            screenContent
+                        }
+                        .padding(.horizontal, AppTheme.Spacing.xl)
+                        .padding([.top, .bottom], AppTheme.Spacing.md)
+                    }
+                    
+                    buttonArea
+                        .padding(.horizontal, AppTheme.Spacing.xl)
+                        .padding(.bottom, AppTheme.Spacing.md)
                 }
-
-                buttonArea
-                    .padding(.horizontal, AppTheme.Spacing.xl)
-                    .padding(.bottom, AppTheme.Spacing.md)
+            }
+            .gesture(swipeBackGesture)
+            .toolbar {
+                if viewModel.canGoBack {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button(action: viewModel.goBack) {
+                            Image(systemName: "chevron.left")
+                                .foregroundColor(AppTheme.Colors.textSecondary)
+                        }
+                    }
+                }
+                                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: viewModel.handleSkip) {
+                        Image(systemName: "xmark")
+                            .foregroundColor(AppTheme.Colors.textSecondary)
+                    }
+                }
             }
         }
-        .gesture(swipeBackGesture)
-    }
-
-    // MARK: - Navigation Bar
-
-    private var navigationBar: some View {
-        HStack {
-            // Back button
-            if viewModel.canGoBack {
-                Button(action: viewModel.goBack) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 17, weight: .medium))
-                        .foregroundColor(AppTheme.Colors.textSecondary)
-                        .frame(width: 44, height: 44)
-                }
-            } else {
-                Spacer()
-                    .frame(width: 44, height: 44)
-            }
-
-            Spacer()
-
-            // Close button
-            Button(action: viewModel.handleSkip) {
-                Image(systemName: "xmark")
-                    .font(.system(size: 15, weight: .medium))
-                    .foregroundColor(AppTheme.Colors.textSecondary)
-                    .frame(width: 44, height: 44)
-            }
-        }
-        .padding(.horizontal, AppTheme.Spacing.sm)
     }
     
     // MARK: - Progress Dots
