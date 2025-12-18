@@ -1,6 +1,7 @@
 import SwiftUI
 
 /// Checkbox component for symptom selection in onboarding
+// TODO: - Remove if not used in Getting Started flow
 struct SymptomCheckbox: View {
     let label: String
     let isSelected: Bool
