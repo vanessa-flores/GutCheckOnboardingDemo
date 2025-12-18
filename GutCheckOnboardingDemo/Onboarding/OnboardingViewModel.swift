@@ -154,11 +154,6 @@ class OnboardingViewModel {
     private func handleEmailSubmit() {
         let trimmed = email.trimmingCharacters(in: .whitespaces)
         
-        if trimmed.isEmpty {
-            completeOnboarding()
-            return
-        }
-        
         if validateEmail(trimmed) {
             print("Saving email: \(trimmed)")
             completeOnboarding()
