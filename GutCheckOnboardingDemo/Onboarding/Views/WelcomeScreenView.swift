@@ -1,10 +1,11 @@
 import SwiftUI
 
 struct WelcomeScreenView: View {
-    var router: OnboardingRouter
+    let onComplete: () -> Void
     @State private var showAppName = false
     @State private var showTagline = false
     @State private var showAccentLine = false
+    @State private var fadeOutScreen = false
     
     var body: some View {
         ZStack {
@@ -44,13 +45,14 @@ struct WelcomeScreenView: View {
             }
             .padding(.horizontal, AppTheme.Spacing.xxxl)
         }
+        .opacity(fadeOutScreen ? 0 : 1)
         .onAppear {
-            // App name fades in
+            // App name fades in (0.8s)
             withAnimation(.easeOut(duration: AppTheme.Animation.welcomeAppNameDuration)) {
                 showAppName = true
             }
 
-            // Tagline and accent line fade in after delay
+            // Tagline and accent line fade in after 1.2s delay (0.8s duration)
             DispatchQueue.main.asyncAfter(deadline: .now() + AppTheme.Animation.welcomeTaglineDelay) {
                 withAnimation(.easeOut(duration: AppTheme.Animation.welcomeTaglineDuration)) {
                     showTagline = true
@@ -58,14 +60,22 @@ struct WelcomeScreenView: View {
                 }
             }
 
-            // Auto-advance after total duration
-            DispatchQueue.main.asyncAfter(deadline: .now() + AppTheme.Animation.welcomeAutoAdvanceDelay) {
-                router.advanceFromWelcome()
+            // Start fade AND trigger navigation together at 3.7s
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.7) {
+                withAnimation(.easeOut(duration: 0.3)) {
+                    fadeOutScreen = true
+                }
+
+                // Call after fade animation completes
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    onComplete()
+                }
             }
+
         }
     }
 }
 
 #Preview {
-    WelcomeScreenView(router: OnboardingRouter())
+    WelcomeScreenView(onComplete: {})
 }

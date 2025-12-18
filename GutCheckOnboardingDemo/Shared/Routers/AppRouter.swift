@@ -10,6 +10,7 @@ class AppRouter {
     
     var isAuthenticated: Bool = false
     var hasCompletedOnboarding: Bool = false
+    var hasSeenWelcome: Bool = false
     
     // MARK: - Child Routers
     
@@ -34,11 +35,11 @@ class AppRouter {
     func logout() {
         isAuthenticated = false
         hasCompletedOnboarding = false
+        hasSeenWelcome = false
         currentFlow = .onboarding
         
         mainAppRouter.reset()
-        
-        onboardingRouter.resetForReturningUser()
+        onboardingRouter.reset()
     }
     
     // MARK: - Initialization

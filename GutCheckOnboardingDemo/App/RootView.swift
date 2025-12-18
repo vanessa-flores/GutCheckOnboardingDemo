@@ -7,54 +7,24 @@ struct RootView: View {
         Group {
             switch appRouter.currentFlow {
             case .onboarding:
-                OnboardingFlowView(appRouter: appRouter)
+                ZStack {
+                    OnboardingContainerView(onComplete: {
+                        appRouter.completeOnboarding()
+                    })
+
+                    WelcomeScreenView(onComplete: {
+                        appRouter.hasSeenWelcome = true
+                    })
+                    .opacity(appRouter.hasSeenWelcome ? 0 : 1)
+                    .animation(.easeOut(duration: 0.3), value: appRouter.hasSeenWelcome)
+                }
+                .sheet(isPresented: $appRouter.onboardingRouter.showingSignIn) {
+                    SignInView(appRouter: appRouter)
+                }
+                
             case .mainApp:
                 MainAppView(appRouter: appRouter)
             }
-        }
-    }
-}
-
-// MARK: - Onboarding Flow View
-
-struct OnboardingFlowView: View {
-    @State var appRouter: AppRouter
-    
-    var body: some View {
-        NavigationStack(path: $appRouter.onboardingRouter.navigationPath) {
-            WelcomeScreenView(router: appRouter.onboardingRouter)
-                .navigationDestination(for: OnboardingScreen.self) { screen in
-                    onboardingDestination(for: screen)
-                }
-        }
-        .sheet(isPresented: $appRouter.onboardingRouter.showingSignIn) {
-            SignInView(appRouter: appRouter)
-        }
-    }
-    
-    @ViewBuilder
-    private func onboardingDestination(for screen: OnboardingScreen) -> some View {
-        switch screen {
-        case .welcome:
-            WelcomeScreenView(router: appRouter.onboardingRouter)
-            
-        case .screen1:
-            OnboardingScreen1View(router: appRouter.onboardingRouter)
-            
-        case .screen2:
-            OnboardingScreen2View(router: appRouter.onboardingRouter)
-            
-        case .screen3:
-            OnboardingScreen3View(router: appRouter.onboardingRouter)
-            
-        case .screen4:
-            OnboardingScreen4View(router: appRouter.onboardingRouter)
-            
-        case .screen5:
-            OnboardingScreen5View(router: appRouter.onboardingRouter)
-            
-        case .emailCollection:
-            EmailCollectionView(appRouter: appRouter)
         }
     }
 }
@@ -66,7 +36,6 @@ struct MainAppView: View {
     
     var body: some View {
         TabView(selection: $appRouter.mainAppRouter.selectedTab) {
-            // Dashboard Tab
             DashboardView()
                 .tabItem {
                     Label(
