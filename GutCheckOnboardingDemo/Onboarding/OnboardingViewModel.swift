@@ -41,7 +41,35 @@ class OnboardingViewModel {
     var canGoBack: Bool {
         router.canGoBack
     }
-    
+
+    // MARK: - Button Configuration
+
+    var primaryButtonTitle: String {
+        switch router.activeScreen {
+        case .screen1: return OnboardingCopy.Screen1.buttonTitle
+        case .screen2: return OnboardingCopy.Screen2.buttonTitle
+        case .screen3: return OnboardingCopy.Screen3.buttonTitle
+        case .screen4: return OnboardingCopy.Screen4.buttonTitle
+        case .screen5: return OnboardingCopy.Screen5.buttonTitle
+        case .emailCollection: return OnboardingCopy.EmailCollection.buttonTitle
+        }
+    }
+
+    var secondaryButtonConfig: (title: String, action: () -> Void)? {
+        switch router.activeScreen {
+        case .screen1:
+            return (OnboardingCopy.Screen1.secondaryButtonTitle, { [weak self] in
+                self?.router.showSignIn()
+            })
+        case .emailCollection:
+            return (OnboardingCopy.EmailCollection.secondaryButtonTitle, { [weak self] in
+                self?.completeOnboarding()
+            })
+        default:
+            return nil
+        }
+    }
+
     // MARK: - Init
     
     init(router: OnboardingRouter = OnboardingRouter(), onComplete: @escaping () -> Void ) {

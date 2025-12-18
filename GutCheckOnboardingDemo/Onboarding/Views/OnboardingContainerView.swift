@@ -30,11 +30,12 @@ struct OnboardingContainerView: View {
                         screenContent
                     }
                     .padding(.horizontal, AppTheme.Spacing.xl)
+                    .padding([.top, .bottom], AppTheme.Spacing.md)
                 }
 
                 buttonArea
                     .padding(.horizontal, AppTheme.Spacing.xl)
-                    .padding(.bottom, AppTheme.Spacing.bottomSafeArea)
+                    .padding(.bottom, AppTheme.Spacing.md)
             }
         }
         .gesture(swipeBackGesture)
@@ -120,28 +121,24 @@ struct OnboardingContainerView: View {
     }
     
     // MARK: - Button Area
-    
+
     private var buttonArea: some View {
-        Button(action: viewModel.handlePrimaryAction) {
-            Text(primaryButtonTitle)
+        VStack(spacing: AppTheme.Spacing.xs) {
+            Button(action: viewModel.handlePrimaryAction) {
+                Text(viewModel.primaryButtonTitle)
+            }
+            .buttonStyle(AppTheme.PrimaryButtonStyle())
+
+            if let secondaryConfig = viewModel.secondaryButtonConfig {
+                Button(action: secondaryConfig.action) {
+                    Text(secondaryConfig.title)
+                }
+                .buttonStyle(AppTheme.SecondaryButtonStyle())
+            }
         }
-        .buttonStyle(AppTheme.PrimaryButtonStyle())
-        .padding(.top, AppTheme.Spacing.xl)
+        .padding(.top, AppTheme.Spacing.md)
     }
-    
-    // MARK: - Button Configuration
-    
-    private var primaryButtonTitle: String {
-        switch viewModel.activeScreen {
-        case .screen1: return OnboardingCopy.Screen1.buttonTitle
-        case .screen2: return OnboardingCopy.Screen2.buttonTitle
-        case .screen3: return OnboardingCopy.Screen3.buttonTitle
-        case .screen4: return OnboardingCopy.Screen4.buttonTitle
-        case .screen5: return OnboardingCopy.Screen5.buttonTitle
-        case .emailCollection: return OnboardingCopy.EmailCollection.buttonTitle
-        }
-    }
-    
+
     // MARK: - Navigation Gesture
     
     private var swipeBackGesture: some Gesture {
@@ -152,4 +149,8 @@ struct OnboardingContainerView: View {
                 }
             }
     }
+}
+
+#Preview {
+    OnboardingContainerView(onComplete: {})
 }

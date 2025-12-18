@@ -158,9 +158,6 @@ struct AppTheme {
         
         /// 40pt - Huge spacing (screen edges)
         static let xxxl: CGFloat = 40
-        
-        /// 60pt - Bottom safe area padding (for buttons)
-        static let bottomSafeArea: CGFloat = 60
     }
     
     // MARK: - Corner Radius
@@ -281,13 +278,9 @@ struct AppTheme {
             configuration.label
                 .font(AppTheme.Typography.buttonSecondary)
                 .foregroundColor(AppTheme.Colors.textSecondary)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 14)
+                .padding(.vertical, AppTheme.Spacing.xxs)
+                .padding(.horizontal, AppTheme.Spacing.xxs)
                 .background(Color.clear)
-                .overlay(
-                    RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium)
-                        .stroke(AppTheme.Colors.textSecondary.opacity(0.3), lineWidth: 1)
-                )
                 .opacity(configuration.isPressed ? 0.7 : 1.0)
                 .animation(.easeInOut(duration: AppTheme.Animation.quick), value: configuration.isPressed)
         }
