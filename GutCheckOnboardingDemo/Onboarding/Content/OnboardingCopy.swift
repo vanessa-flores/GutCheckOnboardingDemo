@@ -12,47 +12,47 @@ struct OnboardingCopy {
         static let illustrationText = "Small accent illustration"
     }
 
-    // MARK: - Screen 2: Gut-hormone connection
-
+    // MARK: - Screen 2: You’re in the right place
+    
     struct Screen2 {
-        static let headline = "Your gut and hormones are deeply connected"
-        static let body = "Research shows gut health directly impacts hormone regulation. When your gut struggles, your hormones often follow—and most health apps miss this."
-        static let buttonTitle = "This makes sense"
+        static let headline = "You’re in the right place"
+        static let body = "If you're experiencing any of these, you're not alone—and this isn't all in your head."
+        static let buttonTitle = "This is me"
+        
+    }
+
+    // MARK: - Screen 3: Gut-hormone connection
+    
+    struct Screen3 {
+        static let headline = "There's a reason you're feeling this way"
+        static let body = "Your gut and hormones are deeply connected. Research shows gut health directly impacts hormone regulation. When your gut struggles, your hormones often follow—and most health apps miss this."
+        static let buttonTitle = "Tell me more"
         static let illustrationText = "Gut-hormone connection diagram"
     }
 
-    // MARK: - Screen 3: Baseline matters
-
-    struct Screen3 {
-        static let headline = "Your baseline matters"
-        static let body = "Tracking reveals patterns you'd otherwise miss. Understanding where you start makes it possible to see what actually helps your body."
-        static let buttonTitle = "That makes sense"
-        static let illustrationText = "Line graph showing patterns"
-    }
-
-    // MARK: - Screen 4: Symptoms selection
+    // MARK: - Screen 4: Your body has its own patterns
 
     struct Screen4 {
-        static let headline = "What are you experiencing?"
-        static let body = "Select what you're dealing with. This helps us understand where you're starting from."
-        static let buttonTitle = "Continue"
-        static let otherTextPlaceholder = "Describe your symptoms"
+        static let headline = "Your body has its own patterns"
+        static let body = "Without tracking, symptoms feel random and overwhelming. But when you capture your baseline, patterns emerge—and patterns reveal what your body is trying to tell you."
+        static let buttonTitle = "What's next?"
+        static let illustrationText = "Line graph showing patterns"
     }
 
     // MARK: - Screen 5: Experiments
 
     struct Screen5 {
-        static let headline = "Small experiments, real insights"
-        static let body = "Experiment with your nutrition, sleep, and lifestyle. Track how your body responds. Together, we'll discover what actually helps ease your symptoms."
-        static let buttonTitle = "I'm ready"
-        static let illustrationText = "Experimentation illustration\nA/B comparison"
+        static let headline = "Ready to experiment?"
+        static let body = "Once you know your patterns, you can test what helps. Try small changes to your nutrition, sleep, and lifestyle — and track how your body responds. Together, we'll discover what actually helps ease your symptoms."
+        static let buttonTitle = "Let's do it"
+        static let illustrationText = "Line graph showing patterns"
     }
 
     // MARK: - Email Collection
 
     struct EmailCollection {
-        static let headline = "Learn what's happening in your body"
-        static let body = "Understand the hormonal changes you're experiencing and how gut health plays a bigger role than most doctors mention. Just a few emails to help you get started."
+        static let headline = "Want help getting started?"
+        static let body = "We’ll send a few emails to guide you:"
         static let buttonTitle = "Get started"
         static let secondaryButtonTitle = "Maybe later"
         static let emailPlaceholder = "your@email.com"

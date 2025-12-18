@@ -90,11 +90,7 @@ struct OnboardingContainerView: View {
         case .screen3:
             Screen3ContentView(contentOffset: viewModel.contentOffset)
         case .screen4:
-            Screen4ContentView(
-                contentOffset: viewModel.contentOffset,
-                selectedSymptoms: $viewModel.selectedSymptoms,
-                otherText: $viewModel.otherText
-            )
+            Screen4ContentView(contentOffset: viewModel.contentOffset)
         case .screen5:
             Screen5ContentView(contentOffset: viewModel.contentOffset)
         case .emailCollection:

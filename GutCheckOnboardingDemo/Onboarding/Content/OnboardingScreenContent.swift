@@ -187,13 +187,6 @@ struct Screen2ContentView: View {
 
     var body: some View {
         OnboardingScreenLayout {
-            OnboardingIllustration(
-                height: AppTheme.ComponentSizes.illustrationHeight,
-                text: OnboardingCopy.Screen2.illustrationText,
-                offset: contentOffset,
-                bottomPadding: AppTheme.Spacing.xl
-            )
-
             OnboardingHeadline(
                 text: OnboardingCopy.Screen2.headline,
                 offset: contentOffset
@@ -238,8 +231,6 @@ struct Screen3ContentView: View {
 
 struct Screen4ContentView: View {
     let contentOffset: CGFloat
-    @Binding var selectedSymptoms: Set<Symptom>
-    @Binding var otherText: String
 
     var body: some View {
         OnboardingScreenLayout {
@@ -251,38 +242,14 @@ struct Screen4ContentView: View {
             OnboardingBody(
                 text: OnboardingCopy.Screen4.body,
                 offset: contentOffset,
-                bottomPadding: AppTheme.Spacing.xl
+                bottomPadding: AppTheme.Spacing.xxxl
             )
 
-            VStack(spacing: 0) {
-                ForEach(Symptom.allCases) { symptom in
-                    SymptomCheckbox(
-                        label: symptom.displayText,
-                        isSelected: selectedSymptoms.contains(symptom)
-                    ) {
-                        toggleSymptom(symptom)
-                    }
-                }
-            }
-            .onboardingAnimated(offset: contentOffset)
-
-            if selectedSymptoms.contains(.other) {
-                PlaceholderTextEditor(text: $otherText, placeholder: OnboardingCopy.Screen4.otherTextPlaceholder)
-                    .padding(.top, AppTheme.Spacing.sm)
-                    .padding(.bottom, AppTheme.Spacing.sm)
-                    .onboardingAnimated(offset: contentOffset)
-            }
-        }
-    }
-
-    private func toggleSymptom(_ symptom: Symptom) {
-        if selectedSymptoms.contains(symptom) {
-            selectedSymptoms.remove(symptom)
-            if symptom == .other {
-                otherText = ""
-            }
-        } else {
-            selectedSymptoms.insert(symptom)
+            OnboardingIllustration(
+                height: AppTheme.ComponentSizes.illustrationHeightCompact,
+                text: OnboardingCopy.Screen4.illustrationText,
+                offset: contentOffset
+            )
         }
     }
 }
@@ -380,11 +347,8 @@ struct EmailCollectionContentView: View {
 }
 
 #Preview("Screen 4") {
-    Screen4ContentView(
-        contentOffset: 0,
-        selectedSymptoms: .constant([.fatigue, .brainFog]),
-        otherText: .constant("")
-    )
+    Screen4ContentView(contentOffset: 0)
+        .padding()
     .padding()
 }
 
