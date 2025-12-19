@@ -36,7 +36,7 @@ class GettingStartedViewModel {
         switch router.activeScreen {
         case .goalsMotivations: return GettingStartedCopy.GoalsAndMotivations.buttonTitle
         case .gutHealthAwareness: return GettingStartedCopy.GutHealthAwareness.buttonTitle
-        case .menstrualCycleStatus: return GettingStartedCopy.CurrentCycleStatus.buttonTitle
+        case .menstrualCycleStatus: return GettingStartedCopy.MenstrualCycleStatus.buttonTitle
         case .symptomSelection: return GettingStartedCopy.SymptomSelection.buttonTitle
         }
     }

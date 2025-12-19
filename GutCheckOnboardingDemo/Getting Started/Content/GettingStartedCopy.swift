@@ -88,9 +88,9 @@ struct GettingStartedCopy {
         }
     }
     
-    // MARK: - Current Cycle Status
+    // MARK: - Menstrual Cycle Status
     
-    struct CurrentCycleStatus {
+    struct MenstrualCycleStatus {
         static let headline: String = "How would you describe your menstrual cycle patterns?"
         static let buttonTitle = "Continue"
         
