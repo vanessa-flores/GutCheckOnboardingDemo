@@ -6,108 +6,130 @@ import Foundation
 /// These are seeded into the repository on app launch.
 /// Organized by category with 10 symptoms per category.
 enum SymptomData {
-
+    
     // MARK: - All Symptoms
-
+    
     static let allSymptoms: [Symptom] = {
         var symptoms: [Symptom] = []
         symptoms.append(contentsOf: digestiveSymptoms)
         symptoms.append(contentsOf: hormonalSymptoms)
         symptoms.append(contentsOf: energySymptoms)
+        symptoms.append(contentsOf: sleepSymptoms)
         symptoms.append(contentsOf: painSymptoms)
-        symptoms.append(contentsOf: mentalSymptoms)
-        symptoms.append(contentsOf: skinSymptoms)
+        symptoms.append(contentsOf: skinHarNailsSymptoms)
+        symptoms.append(contentsOf: sensorySymptoms)
+        symptoms.append(contentsOf: urogenitalSymptoms)
+        symptoms.append(contentsOf: otherPhysicalSymptoms)
         return symptoms
     }()
-
-    // MARK: - Digestive Symptoms (10)
-
+    
+    // MARK: - Digestive & Gut Health
+    
     static let digestiveSymptoms: [Symptom] = [
-        Symptom(name: "Bloating", category: .digestive, displayOrder: 1),
-        Symptom(name: "Gas", category: .digestive, displayOrder: 2),
-        Symptom(name: "Constipation", category: .digestive, displayOrder: 3),
-        Symptom(name: "Diarrhea", category: .digestive, displayOrder: 4),
-        Symptom(name: "Nausea", category: .digestive, displayOrder: 5),
-        Symptom(name: "Acid Reflux", category: .digestive, displayOrder: 6),
-        Symptom(name: "Stomach Cramps", category: .digestive, displayOrder: 7),
-        Symptom(name: "Loss of Appetite", category: .digestive, displayOrder: 8),
-        Symptom(name: "Food Sensitivities", category: .digestive, displayOrder: 9),
-        Symptom(name: "Indigestion", category: .digestive, displayOrder: 10)
+        Symptom(name: "Acid Reflux/GERD", category: .digestiveGutHealth, displayOrder: 0),
+        Symptom(name: "Bloating", category: .digestiveGutHealth, displayOrder: 1),
+        Symptom(name: "Constipation", category: .digestiveGutHealth, displayOrder: 2),
+        Symptom(name: "Diarrhea", category: .digestiveGutHealth, displayOrder: 3),
+        Symptom(name: "Digestive problems/IBS", category: .digestiveGutHealth, displayOrder: 4),
+        Symptom(name: "Gas", category: .digestiveGutHealth, displayOrder: 5),
+        Symptom(name: "Slow digestion", category: .digestiveGutHealth, displayOrder: 6),
+        Symptom(name: "Nausea", category: .digestiveGutHealth, displayOrder: 7),
+        Symptom(name: "Food Food intolerances", category: .digestiveGutHealth, displayOrder: 8),
     ]
-
-    // MARK: - Hormonal Symptoms (10)
-
+    
+    // MARK: - Cycle & Hormonal
+    
     static let hormonalSymptoms: [Symptom] = [
-        Symptom(name: "Hot Flashes", category: .hormonal, displayOrder: 1),
-        Symptom(name: "Night Sweats", category: .hormonal, displayOrder: 2),
-        Symptom(name: "Irregular Periods", category: .hormonal, displayOrder: 3),
-        Symptom(name: "Heavy Bleeding", category: .hormonal, displayOrder: 4),
-        Symptom(name: "Spotting", category: .hormonal, displayOrder: 5),
-        Symptom(name: "Breast Tenderness", category: .hormonal, displayOrder: 6),
-        Symptom(name: "Water Retention", category: .hormonal, displayOrder: 7),
-        Symptom(name: "Weight Changes", category: .hormonal, displayOrder: 8),
-        Symptom(name: "Low Libido", category: .hormonal, displayOrder: 9),
-        Symptom(name: "Vaginal Dryness", category: .hormonal, displayOrder: 10)
+        Symptom(name: "Irregular periods", category: .cycleHormonal, displayOrder: 0),
+        Symptom(name: "Heavy bleeding", category: .cycleHormonal, displayOrder: 1),
+        Symptom(name: "Spotting", category: .cycleHormonal, displayOrder: 2),
+        Symptom(name: "Dark/different colored blood", category: .cycleHormonal, displayOrder: 3),
+        Symptom(name: "Extreme PMS symptoms", category: .cycleHormonal, displayOrder: 4),
+        Symptom(name: "Breast Soreness", category: .cycleHormonal, displayOrder: 5),
     ]
-
-    // MARK: - Energy & Sleep Symptoms (10)
-
+    
+    // MARK: - Energy, Mood & Mental Clarity
+    
     static let energySymptoms: [Symptom] = [
-        Symptom(name: "Fatigue", category: .energySleep, displayOrder: 1),
-        Symptom(name: "Insomnia", category: .energySleep, displayOrder: 2),
-        Symptom(name: "Difficulty Falling Asleep", category: .energySleep, displayOrder: 3),
-        Symptom(name: "Waking During Night", category: .energySleep, displayOrder: 4),
-        Symptom(name: "Morning Grogginess", category: .energySleep, displayOrder: 5),
-        Symptom(name: "Afternoon Energy Crash", category: .energySleep, displayOrder: 6),
-        Symptom(name: "Restless Sleep", category: .energySleep, displayOrder: 7),
-        Symptom(name: "Vivid Dreams", category: .energySleep, displayOrder: 8),
-        Symptom(name: "Sleep Apnea Symptoms", category: .energySleep, displayOrder: 9),
-        Symptom(name: "Exhaustion After Rest", category: .energySleep, displayOrder: 10)
+        Symptom(name: "Anxiety", category: .energyMoodMental, displayOrder: 0),
+        Symptom(name: "Brain Fog", category: .energyMoodMental, displayOrder: 1),
+        Symptom(name: "Depression", category: .energyMoodMental, displayOrder: 2),
+        Symptom(name: "Mood Swings", category: .energyMoodMental, displayOrder: 3),
+        Symptom(name: "Fatigue", category: .energyMoodMental, displayOrder: 4),
+        Symptom(name: "Irritability", category: .energyMoodMental, displayOrder: 5),
+        Symptom(name: "Social withdrawl", category: .energyMoodMental, displayOrder: 6),
     ]
-
-    // MARK: - Pain & Discomfort Symptoms (10)
-
+    
+    // MARK: - Sleep & Temperature
+    
+    static let sleepSymptoms: [Symptom] = [
+        Symptom(name: "Hot flashes", category: .sleepTemperature, displayOrder: 0),
+        Symptom(name: "Night sweats", category: .sleepTemperature, displayOrder: 1),
+        Symptom(name: "Cold flashes", category: .sleepTemperature, displayOrder: 2),
+        Symptom(name: "Difficulty sleeping", category: .sleepTemperature, displayOrder: 3),
+    ]
+    
+    // MARK: - Physical & Pain
+    
     static let painSymptoms: [Symptom] = [
-        Symptom(name: "Headaches", category: .painDiscomfort, displayOrder: 1),
-        Symptom(name: "Migraines", category: .painDiscomfort, displayOrder: 2),
-        Symptom(name: "Joint Pain", category: .painDiscomfort, displayOrder: 3),
-        Symptom(name: "Muscle Aches", category: .painDiscomfort, displayOrder: 4),
-        Symptom(name: "Back Pain", category: .painDiscomfort, displayOrder: 5),
-        Symptom(name: "Neck Tension", category: .painDiscomfort, displayOrder: 6),
-        Symptom(name: "Pelvic Pain", category: .painDiscomfort, displayOrder: 7),
-        Symptom(name: "Menstrual Cramps", category: .painDiscomfort, displayOrder: 8),
-        Symptom(name: "Jaw Tension/TMJ", category: .painDiscomfort, displayOrder: 9),
-        Symptom(name: "General Body Aches", category: .painDiscomfort, displayOrder: 10)
+        Symptom(name: "Body aches", category: .physicalPain, displayOrder: 0),
+        Symptom(name: "Headaches", category: .physicalPain, displayOrder: 1),
+        Symptom(name: "Migraines", category: .physicalPain, displayOrder: 2),
+        Symptom(name: "Joint/muscle pain", category: .physicalPain, displayOrder: 3),
+        Symptom(name: "Frozen shoulder", category: .physicalPain, displayOrder: 4),
+        Symptom(name: "Muscle mass loss", category: .physicalPain, displayOrder: 5),
+        Symptom(name: "Heart racing", category: .physicalPain, displayOrder: 6),
+        Symptom(name: "Heart palpitations", category: .physicalPain, displayOrder: 7),
+        Symptom(name: "Dizziness/vertigo", category: .physicalPain, displayOrder: 8),
+        Symptom(name: "Balance issues", category: .physicalPain, displayOrder: 9),
+        Symptom(name: "Feeling clumsy/uncoordinated", category: .physicalPain, displayOrder: 10),
     ]
-
-    // MARK: - Mental & Emotional Symptoms (10)
-
-    static let mentalSymptoms: [Symptom] = [
-        Symptom(name: "Anxiety", category: .mentalEmotional, displayOrder: 1),
-        Symptom(name: "Mood Swings", category: .mentalEmotional, displayOrder: 2),
-        Symptom(name: "Irritability", category: .mentalEmotional, displayOrder: 3),
-        Symptom(name: "Depression", category: .mentalEmotional, displayOrder: 4),
-        Symptom(name: "Brain Fog", category: .mentalEmotional, displayOrder: 5),
-        Symptom(name: "Difficulty Concentrating", category: .mentalEmotional, displayOrder: 6),
-        Symptom(name: "Memory Issues", category: .mentalEmotional, displayOrder: 7),
-        Symptom(name: "Feeling Overwhelmed", category: .mentalEmotional, displayOrder: 8),
-        Symptom(name: "Low Motivation", category: .mentalEmotional, displayOrder: 9),
-        Symptom(name: "Emotional Sensitivity", category: .mentalEmotional, displayOrder: 10)
+    
+    // MARK: - Skin, Hair & Nails
+    
+    static let skinHarNailsSymptoms: [Symptom] = [
+        Symptom(name: "Acne", category: .skinHairNails, displayOrder: 0),
+        Symptom(name: "Brittle hair/nails", category: .skinHairNails, displayOrder: 1),
+        Symptom(name: "Hair loss", category: .skinHairNails, displayOrder: 2),
+        Symptom(name: "Unwanted hair growth", category: .skinHairNails, displayOrder: 3),
+        Symptom(name: "Skin changes", category: .skinHairNails, displayOrder: 4),
+        Symptom(name: "Skin crawling", category: .skinHairNails, displayOrder: 5),
+        Symptom(name: "Dry skin", category: .skinHairNails, displayOrder: 6),
+        Symptom(name: "Itchiness (overall skin)", category: .skinHairNails, displayOrder: 7),
+        Symptom(name: "Sensitive skin", category: .skinHairNails, displayOrder: 8),
     ]
+    
+    // MARK: - Sensory
+    
+    static let sensorySymptoms: [Symptom] = [
+        Symptom(name: "Sensitive teeth", category: .sensory, displayOrder: 0),
+        Symptom(name: "Sensitivity to sound", category: .sensory, displayOrder: 1),
+        Symptom(name: "Sense of smell changes", category: .sensory, displayOrder: 2),
+        Symptom(name: "Tingling extremities", category: .sensory, displayOrder: 3),
+        Symptom(name: "Tinnitus", category: .sensory, displayOrder: 4),
+        Symptom(name: "Itchy ears", category: .sensory, displayOrder: 5),
+        Symptom(name: "Burning mouth", category: .sensory, displayOrder: 6),
+        Symptom(name: "Dry mouth", category: .sensory, displayOrder: 7),
+        Symptom(name: "Dry eyes", category: .sensory, displayOrder: 8),
+    ]
+    
+    // MARK: - Urogenital
+    
+    static let urogenitalSymptoms: [Symptom] = [
+        Symptom(name: "Low/decreased libido", category: .urogenital, displayOrder: 0),
+        Symptom(name: "Stress incontinence", category: .urogenital, displayOrder: 1),
+        Symptom(name: "Urinary Tract Infections (UTIs)", category: .urogenital, displayOrder: 2),
+    ]
+    
+    // MARK: - Other Physical
 
-    // MARK: - Skin & Hair Symptoms (10)
-
-    static let skinSymptoms: [Symptom] = [
-        Symptom(name: "Acne", category: .skinHair, displayOrder: 1),
-        Symptom(name: "Dry Skin", category: .skinHair, displayOrder: 2),
-        Symptom(name: "Oily Skin", category: .skinHair, displayOrder: 3),
-        Symptom(name: "Rashes", category: .skinHair, displayOrder: 4),
-        Symptom(name: "Itchy Skin", category: .skinHair, displayOrder: 5),
-        Symptom(name: "Hair Thinning", category: .skinHair, displayOrder: 6),
-        Symptom(name: "Hair Loss", category: .skinHair, displayOrder: 7),
-        Symptom(name: "Brittle Nails", category: .skinHair, displayOrder: 8),
-        Symptom(name: "Facial Hair Growth", category: .skinHair, displayOrder: 9),
-        Symptom(name: "Skin Sensitivity", category: .skinHair, displayOrder: 10)
+    static let otherPhysicalSymptoms: [Symptom] = [
+        Symptom(name: "Allergies (new, different)", category: .otherPhysical, displayOrder: 1),
+        Symptom(name: "Body odor changes", category: .otherPhysical, displayOrder: 2),
+        Symptom(name: "Gum/dental problems", category: .otherPhysical, displayOrder: 3),
+        Symptom(name: "Restless Leg Syndrome", category: .otherPhysical, displayOrder: 4),
+        Symptom(name: "Swelling of hands/feet", category: .otherPhysical, displayOrder: 5),
+        Symptom(name: "Weight gain/changes", category: .otherPhysical, displayOrder: 6),
     ]
 }
 
@@ -126,10 +148,4 @@ extension SymptomData {
             .sorted { $0.displayOrder < $1.displayOrder }
             .map { $0.name }
     }
-
-    /// Count of symptoms per category
-    static var symptomsPerCategory: Int { 10 }
-
-    /// Total symptom count
-    static var totalSymptomCount: Int { 60 }
 }
