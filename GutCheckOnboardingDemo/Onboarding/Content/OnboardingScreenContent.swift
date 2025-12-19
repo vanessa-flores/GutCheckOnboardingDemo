@@ -199,7 +199,7 @@ struct Screen2ContentView: View {
             )
 
             VStack(alignment: .leading, spacing: AppTheme.Spacing.xl) {
-                ForEach(SymptomRepository.allCategories) { category in
+                ForEach(OnboardingSymptomRepository.allCategories) { category in
                     SymptomCategoryView(category: category)
                 }
             }
@@ -211,7 +211,7 @@ struct Screen2ContentView: View {
 // MARK: - Symptom Category View
 
 struct SymptomCategoryView: View {
-    let category: SymptomCategory
+    let category: OnboardingSymptomCategory
     
     var body: some View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {

@@ -1,6 +1,6 @@
 import Foundation
 
-struct SymptomRepository {
+struct OnboardingSymptomRepository {
     
     static let allCategories: [OnboardingSymptomCategory] = [
         OnboardingSymptomCategory(

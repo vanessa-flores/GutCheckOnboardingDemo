@@ -19,8 +19,8 @@ struct OnboardingCopy {
         static let body = "If you're experiencing any of these, you're not alone—and this isn't all in your head."
         static let buttonTitle = "This is me"
         
-        static var symptomCategories: [SymptomCategory] {
-            SymptomRepository.allCategories
+        static var symptomCategories: [OnboardingSymptomCategory] {
+            OnboardingSymptomRepository.allCategories
         }
     }
 
