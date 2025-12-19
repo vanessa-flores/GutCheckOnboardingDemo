@@ -18,6 +18,10 @@ class GettingStartedViewModel {
     
     // MARK: - Computed Properties
     
+    var activeScreen: GettingStartedScreen {
+        router.activeScreen
+    }
+    
     var progressIndex: Int {
         router.activeScreen.progressIndex
     }
