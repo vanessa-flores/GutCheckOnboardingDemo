@@ -1,8 +1,8 @@
 import Foundation
 
-struct SymptomCategory: Identifiable {
+struct OnboardingSymptomCategory: Identifiable {
     let id: String
     let title: String
-    let symptoms: [Symptom]
+    let symptoms: [OnboardingSymptom]
     let displayOrder: Int
 }
