@@ -2,9 +2,6 @@ import Foundation
 
 // MARK: - Symptom
 
-/// Master reference for a trackable symptom.
-/// These are seeded from SymptomData and represent the complete list of symptoms users can track.
-/// Designed for easy backend integration - swap repository implementation when ready.
 struct Symptom: Codable, Identifiable, Equatable, Hashable {
     let id: UUID
     let name: String
@@ -29,7 +26,6 @@ struct Symptom: Codable, Identifiable, Equatable, Hashable {
 // MARK: - Symptom Extensions
 
 extension Symptom {
-    /// User-friendly display text for the symptom
     var displayText: String {
         name
     }
