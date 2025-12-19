@@ -335,7 +335,7 @@ struct EmailCollectionContentView: View {
             )
 
             OnboardingBody(
-                text: OnboardingCopy.EmailCollection.bodyTop,
+                text: OnboardingCopy.EmailCollection.body,
                 offset: contentOffset,
                 bottomPadding: AppTheme.Spacing.md
             )
