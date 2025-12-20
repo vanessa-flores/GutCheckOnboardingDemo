@@ -13,7 +13,7 @@ struct GettingStartedCopy {
             Option.allCases.sorted(by: { $0.displayOrder < $1.displayOrder })
         }
         
-        enum Option: String, CaseIterable, Identifiable {
+        enum Option: String, CaseIterable, Identifiable, Hashable {
             case understandWhatsHappening
             case curiousGutHormoneConnection
             case discoverWhatHelps

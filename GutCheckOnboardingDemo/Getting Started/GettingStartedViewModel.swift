@@ -11,7 +11,12 @@ class GettingStartedViewModel {
     var contentOffset: CGFloat = 0
     var showContent: Bool = true
     let screenWidth = UIScreen.main.bounds.width
-    
+
+    // MARK: - Question State
+
+    // Question 1: Goals/Motivations (multi-select)
+    var selectedGoals: Set<GettingStartedCopy.GoalsAndMotivations.Option> = []
+
     // MARK: - Private Properties
     
     private let onComplete: () -> Void
@@ -44,7 +49,20 @@ class GettingStartedViewModel {
         case .symptomSelection: return GettingStartedCopy.SymptomSelection.buttonTitle
         }
     }
-    
+
+    var isPrimaryButtonEnabled: Bool {
+        switch router.activeScreen {
+        case .goalsMotivations:
+            return !selectedGoals.isEmpty
+        case .gutHealthAwareness:
+            return true // Always enabled for single-select
+        case .menstrualCycleStatus:
+            return true // Always enabled for single-select
+        case .symptomSelection:
+            return true // Will implement symptom selection logic later
+        }
+    }
+
     // MARK: - Init
     
     init(router: GettingStartedRouter = GettingStartedRouter(), onComplete: @escaping () -> Void) {
@@ -53,7 +71,15 @@ class GettingStartedViewModel {
     }
     
     // MARK: - Actions
-    
+
+    func toggleGoal(_ goal: GettingStartedCopy.GoalsAndMotivations.Option) {
+        if selectedGoals.contains(goal) {
+            selectedGoals.remove(goal)
+        } else {
+            selectedGoals.insert(goal)
+        }
+    }
+
     func handlePrimaryAction() {
         switch router.activeScreen {
         case .symptomSelection:

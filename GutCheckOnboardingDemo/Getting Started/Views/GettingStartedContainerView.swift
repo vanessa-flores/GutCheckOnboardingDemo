@@ -75,7 +75,10 @@ struct GettingStartedContainerView: View {
     private var screenContent: some View {
         switch viewModel.activeScreen {
         case .goalsMotivations:
-            GoalsAndMotivationsView(contentOffset: viewModel.contentOffset)
+            GoalsAndMotivationsView(
+                contentOffset: viewModel.contentOffset,
+                viewModel: viewModel
+            )
         case .gutHealthAwareness:
             GutHealthAwarenessView(contentOffset: viewModel.contentOffset)
         case .menstrualCycleStatus:
@@ -93,6 +96,7 @@ struct GettingStartedContainerView: View {
                 Text(viewModel.primaryButtonTitle)
             }
             .buttonStyle(AppTheme.PrimaryButtonStyle())
+            .disabled(!viewModel.isPrimaryButtonEnabled)
         }
         .padding(.top, AppTheme.Spacing.md)
     }

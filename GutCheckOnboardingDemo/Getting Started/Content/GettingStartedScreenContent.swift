@@ -11,7 +11,7 @@ struct GettingStartedHeadline: View {
             .font(AppTheme.Typography.title2)
             .foregroundColor(AppTheme.Colors.textPrimary)
             .tracking(AppTheme.Typography.title2Tracking)
-            .padding(.bottom, AppTheme.Spacing.lg)
+            .padding(.bottom, AppTheme.Spacing.sm)
             .onboardingAnimated(offset: offset)
     }
 }
@@ -54,7 +54,8 @@ struct GettingStartedScreenLayout<Content: View>: View {
 
 struct GoalsAndMotivationsView: View {
     let contentOffset: CGFloat
-    
+    @Bindable var viewModel: GettingStartedViewModel
+
     var body: some View {
         GettingStartedScreenLayout {
             GettingStartedHeadline(
@@ -64,8 +65,22 @@ struct GoalsAndMotivationsView: View {
             
             GettingStartedHelperText(
                 text: GettingStartedCopy.GoalsAndMotivations.helperText,
-                offset: contentOffset
+                offset: contentOffset,
+                bottomPadding: AppTheme.Spacing.md
             )
+
+            VStack(spacing: AppTheme.Spacing.md) {
+                ForEach(GettingStartedCopy.GoalsAndMotivations.options) { option in
+                    SelectableCard(
+                        text: option.description,
+                        isSelected: viewModel.selectedGoals.contains(option),
+                        onTap: {
+                            viewModel.toggleGoal(option)
+                        }
+                    )
+                    .onboardingAnimated(offset: contentOffset)
+                }
+            }
         }
     }
 }
