@@ -8,9 +8,9 @@ struct GettingStartedHeadline: View {
 
     var body: some View {
         Text(text)
-            .font(AppTheme.Typography.title)
+            .font(AppTheme.Typography.title2)
             .foregroundColor(AppTheme.Colors.textPrimary)
-            .tracking(AppTheme.Typography.titleTracking)
+            .tracking(AppTheme.Typography.title2Tracking)
             .padding(.bottom, AppTheme.Spacing.lg)
             .onboardingAnimated(offset: offset)
     }
@@ -66,8 +66,6 @@ struct GoalsAndMotivationsView: View {
                 text: GettingStartedCopy.GoalsAndMotivations.helperText,
                 offset: contentOffset
             )
-            
-            
         }
     }
 }
