@@ -11,6 +11,7 @@ class AppRouter {
     var isAuthenticated: Bool = false
     var hasCompletedOnboarding: Bool = false
     var hasSeenWelcome: Bool = false
+    var hasCompletedGettingStarted: Bool = false
     
     // MARK: - Child Routers
     
@@ -22,8 +23,14 @@ class AppRouter {
     func completeOnboarding() {
         hasCompletedOnboarding = true
         currentFlow = .mainApp
-        
+
         onboardingRouter.reset()
+    }
+
+    func completeGettingStarted() {
+        hasCompletedGettingStarted = true
+        // In production, this is where you'd save Getting Started answers to backend
+        // For demo, just update the flag
     }
     
     func signIn() {
@@ -36,8 +43,9 @@ class AppRouter {
         isAuthenticated = false
         hasCompletedOnboarding = false
         hasSeenWelcome = false
+        hasCompletedGettingStarted = false
         currentFlow = .onboarding
-        
+
         mainAppRouter.reset()
         onboardingRouter.reset()
     }

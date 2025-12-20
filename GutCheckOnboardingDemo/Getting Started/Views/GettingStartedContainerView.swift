@@ -1,9 +1,10 @@
 import SwiftUI
 
 struct GettingStartedContainerView: View {
-    
+
+    @Environment(\.dismiss) private var dismiss
     @State private var viewModel: GettingStartedViewModel
-    
+
     // MARK: - Init
 
     init(onComplete: @escaping () -> Void) {
@@ -13,39 +14,40 @@ struct GettingStartedContainerView: View {
     // MARK: - Body
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                AppTheme.Colors.background
-                    .ignoresSafeArea()
-                
-                VStack(spacing: 0) {
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 0) {
-                            screenContent
-                        }
-                        .padding(.horizontal, AppTheme.Spacing.xl)
-                        .padding([.top, .bottom], AppTheme.Spacing.md)
+        ZStack {
+            AppTheme.Colors.background
+                .ignoresSafeArea()
+
+            VStack(spacing: 0) {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 0) {
+                        screenContent
                     }
-                    
-                    buttonArea
-                        .padding(.horizontal, AppTheme.Spacing.xl)
-                        .padding(.bottom, AppTheme.Spacing.md)
+                    .padding(.horizontal, AppTheme.Spacing.xl)
+                    .padding([.top, .bottom], AppTheme.Spacing.md)
+                }
+
+                buttonArea
+                    .padding(.horizontal, AppTheme.Spacing.xl)
+                    .padding(.bottom, AppTheme.Spacing.md)
+            }
+        }
+        .gesture(swipeBackGesture)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: handleBackAction) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(AppTheme.Colors.textSecondary)
                 }
             }
-            .gesture(swipeBackGesture)
-            .toolbar {
-                if viewModel.canGoBack {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button(action: viewModel.goBack) {
-                            Image(systemName: "chevron.left")
-                                .foregroundColor(AppTheme.Colors.textSecondary)
-                        }
-                    }
-                }
-                                
-                ToolbarItem(placement: .principal) {
-                    progressDotsView
-                }
+
+            ToolbarItem(placement: .principal) {
+                progressDotsView
+            }
+        }
+        .onChange(of: viewModel.isFlowComplete) { _, isComplete in
+            if isComplete {
+                dismiss()
             }
         }
     }
@@ -101,13 +103,22 @@ struct GettingStartedContainerView: View {
         .padding(.top, AppTheme.Spacing.md)
     }
     
-    // MARK: - Navigation Gesture
-    
+    // MARK: - Navigation
+
+    private func handleBackAction() {
+        if viewModel.router.activeScreen == .goalsMotivations {
+            viewModel.router.reset()
+            dismiss()
+        } else {
+            viewModel.goBack()
+        }
+    }
+
     private var swipeBackGesture: some Gesture {
         DragGesture(minimumDistance: 50, coordinateSpace: .local)
             .onEnded { value in
-                if value.translation.width > 100 && viewModel.canGoBack {
-                    viewModel.goBack()
+                if value.translation.width > 100 {
+                    handleBackAction()
                 }
             }
     }

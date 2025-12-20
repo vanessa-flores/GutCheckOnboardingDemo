@@ -17,6 +17,9 @@ class GettingStartedViewModel {
     // Question 1: Goals/Motivations (multi-select)
     var selectedGoals: Set<GettingStartedCopy.GoalsAndMotivations.Option> = []
 
+    // Flow completion state
+    var isFlowComplete: Bool = false
+
     // MARK: - Private Properties
     
     private let onComplete: () -> Void
@@ -99,6 +102,7 @@ class GettingStartedViewModel {
     
     func completeGettingStarted() {
         onComplete()
+        isFlowComplete = true
     }
     
     // MARK: - Animations
