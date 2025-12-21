@@ -34,7 +34,7 @@ enum SymptomData {
         Symptom(name: "Gas", category: .digestiveGutHealth, displayOrder: 5),
         Symptom(name: "Slow digestion", category: .digestiveGutHealth, displayOrder: 6),
         Symptom(name: "Nausea", category: .digestiveGutHealth, displayOrder: 7),
-        Symptom(name: "Food Food intolerances", category: .digestiveGutHealth, displayOrder: 8),
+        Symptom(name: "Food intolerances", category: .digestiveGutHealth, displayOrder: 8),
     ]
     
     // MARK: - Cycle & Hormonal
@@ -45,16 +45,16 @@ enum SymptomData {
         Symptom(name: "Spotting", category: .cycleHormonal, displayOrder: 2),
         Symptom(name: "Dark/different colored blood", category: .cycleHormonal, displayOrder: 3),
         Symptom(name: "Extreme PMS symptoms", category: .cycleHormonal, displayOrder: 4),
-        Symptom(name: "Breast Soreness", category: .cycleHormonal, displayOrder: 5),
+        Symptom(name: "Breast soreness", category: .cycleHormonal, displayOrder: 5),
     ]
     
     // MARK: - Energy, Mood & Mental Clarity
     
     static let energySymptoms: [Symptom] = [
         Symptom(name: "Anxiety", category: .energyMoodMental, displayOrder: 0),
-        Symptom(name: "Brain Fog", category: .energyMoodMental, displayOrder: 1),
+        Symptom(name: "Brain fog", category: .energyMoodMental, displayOrder: 1),
         Symptom(name: "Depression", category: .energyMoodMental, displayOrder: 2),
-        Symptom(name: "Mood Swings", category: .energyMoodMental, displayOrder: 3),
+        Symptom(name: "Mood swings", category: .energyMoodMental, displayOrder: 3),
         Symptom(name: "Fatigue", category: .energyMoodMental, displayOrder: 4),
         Symptom(name: "Irritability", category: .energyMoodMental, displayOrder: 5),
         Symptom(name: "Social withdrawl", category: .energyMoodMental, displayOrder: 6),
@@ -124,12 +124,12 @@ enum SymptomData {
     // MARK: - Other Physical
 
     static let otherPhysicalSymptoms: [Symptom] = [
-        Symptom(name: "Allergies (new, different)", category: .otherPhysical, displayOrder: 1),
-        Symptom(name: "Body odor changes", category: .otherPhysical, displayOrder: 2),
-        Symptom(name: "Gum/dental problems", category: .otherPhysical, displayOrder: 3),
-        Symptom(name: "Restless Leg Syndrome", category: .otherPhysical, displayOrder: 4),
-        Symptom(name: "Swelling of hands/feet", category: .otherPhysical, displayOrder: 5),
-        Symptom(name: "Weight gain/changes", category: .otherPhysical, displayOrder: 6),
+        Symptom(name: "Allergies (new, different)", category: .otherPhysical, displayOrder: 0),
+        Symptom(name: "Body odor changes", category: .otherPhysical, displayOrder: 1),
+        Symptom(name: "Gum/dental problems", category: .otherPhysical, displayOrder: 2),
+        Symptom(name: "Restless Leg Syndrome", category: .otherPhysical, displayOrder: 3),
+        Symptom(name: "Swelling of hands/feet", category: .otherPhysical, displayOrder: 4),
+        Symptom(name: "Weight gain/changes", category: .otherPhysical, displayOrder: 5),
     ]
 }
 
