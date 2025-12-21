@@ -14,11 +14,12 @@ class GettingStartedViewModel {
 
     // MARK: - Question State
 
-    // Question 1: Goals/Motivations (multi-select)
     var selectedGoals: Set<GettingStartedCopy.GoalsAndMotivations.Option> = []
+    var selectedGutHealthAwareness: GettingStartedCopy.GutHealthAwareness.Option? = nil
+    var selectedCycleStatus: GettingStartedCopy.MenstrualCycleStatus.Option? = nil
 
     // Flow completion state
-    var isFlowComplete: Bool = false
+    var isGettingStartedComplete: Bool = false
 
     // MARK: - Private Properties
     
@@ -83,6 +84,14 @@ class GettingStartedViewModel {
         }
     }
 
+    func selectGutHealthAwareness(_ option: GettingStartedCopy.GutHealthAwareness.Option) {
+        selectedGutHealthAwareness = option
+    }
+
+    func selectCycleStatus(_ option: GettingStartedCopy.MenstrualCycleStatus.Option) {
+        selectedCycleStatus = option
+    }
+
     func handlePrimaryAction() {
         switch router.activeScreen {
         case .symptomSelection:
@@ -102,7 +111,7 @@ class GettingStartedViewModel {
     
     func completeGettingStarted() {
         onComplete()
-        isFlowComplete = true
+        isGettingStartedComplete = true
     }
     
     // MARK: - Animations

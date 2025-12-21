@@ -63,7 +63,7 @@ struct GettingStartedCopy {
             Option.allCases.sorted(by: { $0.displayOrder < $1.displayOrder })
         }
         
-        enum Option: String, CaseIterable, Identifiable {
+        enum Option: String, CaseIterable, Identifiable, Equatable {
             case workingOnIt
             case awareAndCurious
             case interestedToLearn
@@ -98,7 +98,7 @@ struct GettingStartedCopy {
             Option.allCases.sorted(by: { $0.displayOrder < $1.displayOrder })
         }
         
-        enum Option: String, CaseIterable, Identifiable {
+        enum Option: String, CaseIterable, Identifiable, Equatable {
             case regularCycles
             case irregularCycles
             case mostlyAbsent

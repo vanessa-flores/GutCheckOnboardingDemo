@@ -45,7 +45,7 @@ struct GettingStartedContainerView: View {
                 progressDotsView
             }
         }
-        .onChange(of: viewModel.isFlowComplete) { _, isComplete in
+        .onChange(of: viewModel.isGettingStartedComplete) { _, isComplete in
             if isComplete {
                 dismiss()
             }
@@ -82,9 +82,15 @@ struct GettingStartedContainerView: View {
                 viewModel: viewModel
             )
         case .gutHealthAwareness:
-            GutHealthAwarenessView(contentOffset: viewModel.contentOffset)
+            GutHealthAwarenessView(
+                contentOffset: viewModel.contentOffset,
+                viewModel: viewModel
+            )
         case .menstrualCycleStatus:
-            MestrualCycleStatusView(contentOffset: viewModel.contentOffset)
+            MestrualCycleStatusView(
+                contentOffset: viewModel.contentOffset,
+                viewModel: viewModel
+            )
         case .symptomSelection:
             SymptomSelectionView(contentOffset: viewModel.contentOffset)
         }

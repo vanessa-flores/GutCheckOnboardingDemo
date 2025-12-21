@@ -89,13 +89,27 @@ struct GoalsAndMotivationsView: View {
 
 struct GutHealthAwarenessView: View {
     let contentOffset: CGFloat
-    
+    @Bindable var viewModel: GettingStartedViewModel
+
     var body: some View {
         GettingStartedScreenLayout {
             GettingStartedHeadline(
                 text: GettingStartedCopy.GutHealthAwareness.headline,
                 offset: contentOffset
             )
+
+            VStack(spacing: AppTheme.Spacing.md) {
+                ForEach(GettingStartedCopy.GutHealthAwareness.options) { option in
+                    SelectableCard(
+                        text: option.description,
+                        isSelected: viewModel.selectedGutHealthAwareness == option,
+                        onTap: {
+                            viewModel.selectGutHealthAwareness(option)
+                        }
+                    )
+                    .onboardingAnimated(offset: contentOffset)
+                }
+            }
         }
     }
 }
@@ -104,13 +118,27 @@ struct GutHealthAwarenessView: View {
 
 struct MestrualCycleStatusView: View {
     let contentOffset: CGFloat
-    
+    @Bindable var viewModel: GettingStartedViewModel
+
     var body: some View {
         GettingStartedScreenLayout {
             GettingStartedHeadline(
                 text: GettingStartedCopy.MenstrualCycleStatus.headline,
                 offset: contentOffset
             )
+
+            VStack(spacing: AppTheme.Spacing.md) {
+                ForEach(GettingStartedCopy.MenstrualCycleStatus.options) { option in
+                    SelectableCard(
+                        text: option.description,
+                        isSelected: viewModel.selectedCycleStatus == option,
+                        onTap: {
+                            viewModel.selectCycleStatus(option)
+                        }
+                    )
+                    .onboardingAnimated(offset: contentOffset)
+                }
+            }
         }
     }
 }
