@@ -147,13 +147,128 @@ struct MestrualCycleStatusView: View {
 
 struct SymptomSelectionView: View {
     let contentOffset: CGFloat
-    
+    @Bindable var viewModel: GettingStartedViewModel
+
+    @State private var expandedCategories: Set<SymptomCategory> = []
+
     var body: some View {
         GettingStartedScreenLayout {
             GettingStartedHeadline(
                 text: GettingStartedCopy.SymptomSelection.headline,
                 offset: contentOffset
             )
+
+            GettingStartedHelperText(
+                text: GettingStartedCopy.SymptomSelection.helperText,
+                offset: contentOffset,
+                bottomPadding: AppTheme.Spacing.md
+            )
+
+            Text("\(viewModel.selectedSymptomCount) symptoms selected")
+                .font(.system(size: 15, weight: .medium))
+                .foregroundColor(AppTheme.Colors.textSecondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.bottom, AppTheme.Spacing.xl)
+                .onboardingAnimated(offset: contentOffset)
+
+            ForEach(GettingStartedCopy.SymptomSelection.featuredCategories, id: \.category) { item in
+                CategorySection(
+                    category: item.category,
+                    symptoms: item.symptoms,
+                    isExpanded: expandedCategories.contains(item.category),
+                    selectedSymptomIds: viewModel.selectedSymptomIds,
+                    onToggleCategory: {
+                        toggleCategory(item.category)
+                    },
+                    onToggleSymptom: { symptomId in
+                        viewModel.toggleSymptom(symptomId)
+                    }
+                )
+                .onboardingAnimated(offset: contentOffset)
+            }
+
+            ForEach(GettingStartedCopy.SymptomSelection.otherCategories, id: \.category) { item in
+                CategorySection(
+                    category: item.category,
+                    symptoms: item.symptoms,
+                    isExpanded: expandedCategories.contains(item.category),
+                    selectedSymptomIds: viewModel.selectedSymptomIds,
+                    onToggleCategory: {
+                        toggleCategory(item.category)
+                    },
+                    onToggleSymptom: { symptomId in
+                        viewModel.toggleSymptom(symptomId)
+                    }
+                )
+                .onboardingAnimated(offset: contentOffset)
+            }
         }
+        .onAppear {
+            // Expand featured categories by default
+            let featured = GettingStartedCopy.SymptomSelection.featuredCategories.map { $0.category }
+            expandedCategories = Set(featured)
+        }
+    }
+
+    private func toggleCategory(_ category: SymptomCategory) {
+        withAnimation(.easeInOut(duration: 0.3)) {
+            if expandedCategories.contains(category) {
+                expandedCategories.remove(category)
+            } else {
+                expandedCategories.insert(category)
+            }
+        }
+    }
+}
+
+// MARK: - Category Section Component
+
+struct CategorySection: View {
+    let category: SymptomCategory
+    let symptoms: [Symptom]
+    let isExpanded: Bool
+    let selectedSymptomIds: Set<UUID>
+    let onToggleCategory: () -> Void
+    let onToggleSymptom: (UUID) -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Button(action: onToggleCategory) {
+                HStack {
+                    Text(category.rawValue)
+                        .font(AppTheme.Typography.title3)
+                        .foregroundColor(AppTheme.Colors.textPrimary)
+
+                    Spacer()
+
+                    Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(AppTheme.Colors.textSecondary)
+                }
+                .padding(.vertical, 16)
+            }
+            .buttonStyle(PlainButtonStyle())
+
+            if isExpanded {
+                WrappingHStack(alignment: .leading, horizontalSpacing: 8, verticalSpacing: 12) {
+                    ForEach(symptoms) { symptom in
+                        SymptomTag(
+                            text: symptom.name,
+                            isSelected: selectedSymptomIds.contains(symptom.id),
+                            onTap: {
+                                onToggleSymptom(symptom.id)
+                            }
+                        )
+                    }
+                }
+                .padding(.bottom, AppTheme.Spacing.xl)
+            }
+        }
+        .overlay(
+            Rectangle()
+                .frame(height: 1)
+                .foregroundColor(AppTheme.Colors.textSecondary.opacity(0.1)),
+            alignment: .bottom
+        )
     }
 }

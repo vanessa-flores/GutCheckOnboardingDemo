@@ -17,6 +17,7 @@ class GettingStartedViewModel {
     var selectedGoals: Set<GettingStartedCopy.GoalsAndMotivations.Option> = []
     var selectedGutHealthAwareness: GettingStartedCopy.GutHealthAwareness.Option? = nil
     var selectedCycleStatus: GettingStartedCopy.MenstrualCycleStatus.Option? = nil
+    var selectedSymptomIds: Set<UUID> = []
 
     // Flow completion state
     var isGettingStartedComplete: Bool = false
@@ -42,7 +43,11 @@ class GettingStartedViewModel {
     var canGoBack: Bool {
         router.canGoBack
     }
-    
+
+    var selectedSymptomCount: Int {
+        selectedSymptomIds.count
+    }
+
     // MARK: - Button Configuration
 
     var primaryButtonTitle: String {
@@ -63,7 +68,7 @@ class GettingStartedViewModel {
         case .menstrualCycleStatus:
             return true // Always enabled for single-select
         case .symptomSelection:
-            return true // Will implement symptom selection logic later
+            return !selectedSymptomIds.isEmpty
         }
     }
 
@@ -90,6 +95,14 @@ class GettingStartedViewModel {
 
     func selectCycleStatus(_ option: GettingStartedCopy.MenstrualCycleStatus.Option) {
         selectedCycleStatus = option
+    }
+
+    func toggleSymptom(_ symptomId: UUID) {
+        if selectedSymptomIds.contains(symptomId) {
+            selectedSymptomIds.remove(symptomId)
+        } else {
+            selectedSymptomIds.insert(symptomId)
+        }
     }
 
     func handlePrimaryAction() {
@@ -155,7 +168,7 @@ class GettingStartedViewModel {
     }
     
     private func handleSymptomSelection() {
-        print("Saving selected symptoms...")
+        print("Saving \(selectedSymptomIds.count) selected symptoms...")
         completeGettingStarted()
     }
 }

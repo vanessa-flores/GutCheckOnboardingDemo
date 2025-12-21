@@ -92,7 +92,10 @@ struct GettingStartedContainerView: View {
                 viewModel: viewModel
             )
         case .symptomSelection:
-            SymptomSelectionView(contentOffset: viewModel.contentOffset)
+            SymptomSelectionView(
+                contentOffset: viewModel.contentOffset,
+                viewModel: viewModel
+            )
         }
     }
     
