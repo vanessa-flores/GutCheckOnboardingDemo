@@ -7,10 +7,6 @@ class OnboardingViewModel {
     // Navigation
     var router: OnboardingRouter
     
-    // Screen 4 State (Symptoms)
-    var selectedSymptoms: Set<Symptom> = []
-    var otherText: String = ""
-    
     // Email Collection State
     var email: String = ""
     var showEmailError: Bool = false
@@ -72,7 +68,7 @@ class OnboardingViewModel {
 
     // MARK: - Init
     
-    init(router: OnboardingRouter = OnboardingRouter(), onComplete: @escaping () -> Void ) {
+    init(router: OnboardingRouter = OnboardingRouter(), onComplete: @escaping () -> Void) {
         self.router = router
         self.onComplete = onComplete
     }
