@@ -1,23 +1,23 @@
 import Foundation
 
-struct SymptomRepository {
+struct OnboardingSymptomRepository {
     
-    static let allCategories: [SymptomCategory] = [
-        SymptomCategory(
+    static let allCategories: [OnboardingSymptomCategory] = [
+        OnboardingSymptomCategory(
             id: "cycle_hormonal",
             title: "Cycle & Hormonal",
             symptoms: [
-                Symptom(
+                OnboardingSymptom(
                     id: "severe_pms",
                     displayText: "Severe PMS",
                     categoryId: "cycle_hormonal"
                 ),
-                Symptom(
+                OnboardingSymptom(
                     id: "cycle_changes",
                     displayText: "Menstrual cycle changes",
                     categoryId: "cycle_hormonal"
                 ),
-                Symptom(
+                OnboardingSymptom(
                     id: "night_sweats",
                     displayText: "Night sweats or hot flashes",
                     categoryId: "cycle_hormonal"
@@ -25,21 +25,21 @@ struct SymptomRepository {
             ],
             displayOrder: 1
         ),
-        SymptomCategory(
+        OnboardingSymptomCategory(
             id: "mental_emotional",
             title: "Mental & Emotional",
             symptoms: [
-                Symptom(
+                OnboardingSymptom(
                     id: "anxiety_depression",
                     displayText: "Anxiety or depression",
                     categoryId: "mental_emotional"
                 ),
-                Symptom(
+                OnboardingSymptom(
                     id: "mood_changes",
                     displayText: "Mood changes or irritability",
                     categoryId: "mental_emotional"
                 ),
-                Symptom(
+                OnboardingSymptom(
                     id: "brain_fog",
                     displayText: "Brain fog or difficulty concentrating",
                     categoryId: "mental_emotional"
@@ -47,21 +47,21 @@ struct SymptomRepository {
             ],
             displayOrder: 2
         ),
-        SymptomCategory(
+        OnboardingSymptomCategory(
             id: "physical_energy",
             title: "Physical & Energy",
             symptoms: [
-                Symptom(
+                OnboardingSymptom(
                     id: "migraines",
                     displayText: "Migraines or headaches",
                     categoryId: "physical_energy"
                 ),
-                Symptom(
+                OnboardingSymptom(
                     id: "fatigue",
                     displayText: "Fatigue or low energy",
                     categoryId: "physical_energy"
                 ),
-                Symptom(
+                OnboardingSymptom(
                     id: "sleep_issues",
                     displayText: "Sleep issues",
                     categoryId: "physical_energy"
@@ -69,26 +69,26 @@ struct SymptomRepository {
             ],
             displayOrder: 3
         ),
-        SymptomCategory(
+        OnboardingSymptomCategory(
             id: "digestive_metabolic",
             title: "Digestive & Metabolic",
             symptoms: [
-                Symptom(
+                OnboardingSymptom(
                     id: "bloating_ibs",
                     displayText: "Bloating or IBS",
                     categoryId: "digestive_metabolic"
                 ),
-                Symptom(
+                OnboardingSymptom(
                     id: "acid_reflux",
                     displayText: "Acid reflux / GERD",
                     categoryId: "digestive_metabolic"
                 ),
-                Symptom(
+                OnboardingSymptom(
                     id: "weight_gain",
                     displayText: "Weight gain or body composition changes",
                     categoryId: "digestive_metabolic"
                 ),
-                Symptom(
+                OnboardingSymptom(
                     id: "cholesterol_insulin",
                     displayText: "High cholesterol or insulin resistance",
                     categoryId: "digestive_metabolic"
@@ -100,15 +100,15 @@ struct SymptomRepository {
     
     // MARK: - Convenience Accessors
     
-    static var allSymptoms: [Symptom] {
+    static var allSymptoms: [OnboardingSymptom] {
         allCategories.flatMap { $0.symptoms }
     }
     
-    static func symptom(withId id: String) -> Symptom? {
+    static func symptom(withId id: String) -> OnboardingSymptom? {
         allSymptoms.first { $0.id == id }
     }
     
-    static func category(withId id: String) -> SymptomCategory? {
+    static func category(withId id: String) -> OnboardingSymptomCategory? {
         allCategories.first { $0.id == id }
     }
 }

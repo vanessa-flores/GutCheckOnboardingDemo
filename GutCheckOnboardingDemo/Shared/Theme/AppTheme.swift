@@ -70,7 +70,11 @@ struct AppTheme {
         /// 18pt Regular - Use for standard body text
         /// Scales with accessibility settings relative to .body
         static let body = Font.system(size: 18, weight: .regular).width(.standard)
-        
+
+        /// 17pt Regular - Use for form options, list items in Getting Started
+        /// Scales with accessibility settings relative to .body
+        static let bodyMedium = Font.system(size: 17, weight: .regular).width(.standard)
+
         /// 16pt Regular - Use for secondary body text
         /// Scales with accessibility settings relative to .callout
         static let bodySmall = Font.system(size: 16, weight: .regular).width(.standard)
@@ -115,7 +119,12 @@ struct AppTheme {
         static func bodyDynamic() -> Font {
             Font.custom("SF Pro Display", size: 18, relativeTo: .body)
         }
-        
+
+        /// Body medium with Dynamic Type - scales from 17pt base
+        static func bodyMediumDynamic() -> Font {
+            Font.custom("SF Pro Display", size: 17, relativeTo: .body)
+        }
+
         /// Button with Dynamic Type - scales from 17pt base
         static func buttonDynamic() -> Font {
             Font.custom("SF Pro Display", size: 17, relativeTo: .headline).weight(.semibold)
@@ -128,8 +137,11 @@ struct AppTheme {
         /// Use for titles (32pt) - tracking value: -0.32 (1% of font size)
         static let titleTracking: CGFloat = -0.32
         
+        /// Use for titles (24pt) - tracking value: -0.24 (1% of font size)
+        static let title2Tracking: CGFloat = -0.24
+        
         // MARK: Usage Note
-        // Use static properties (e.g., .largeTitle) for fixed sizes
+        // Use static properties (e.g., .largeTitle, .bodyMedium) for fixed sizes
         // Use functions (e.g., .largeTitleDynamic()) when you need Dynamic Type support
     }
     
