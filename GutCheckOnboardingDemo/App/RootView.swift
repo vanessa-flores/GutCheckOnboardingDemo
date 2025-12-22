@@ -44,6 +44,12 @@ struct MainAppView: View {
                     )
                 }
                 .tag(MainTab.dashboard)
+            
+            LogView()
+                .tabItem {
+                    Label(MainTab.log.title, systemImage: MainTab.log.icon)
+                }
+                .tag(MainTab.log)
         }
     }
 }
