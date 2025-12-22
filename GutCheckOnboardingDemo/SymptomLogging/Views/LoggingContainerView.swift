@@ -115,5 +115,5 @@ struct CyclePlaceholderView: View {
 }
 
 #Preview {
-    LogView()
+    LoggingContainerView()
 }

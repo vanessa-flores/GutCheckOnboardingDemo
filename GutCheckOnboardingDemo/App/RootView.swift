@@ -45,7 +45,7 @@ struct MainAppView: View {
                 }
                 .tag(MainTab.dashboard)
             
-            LogView()
+            LoggingContainerView()
                 .tabItem {
                     Label(MainTab.log.title, systemImage: MainTab.log.icon)
                 }
