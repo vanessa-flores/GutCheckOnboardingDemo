@@ -22,7 +22,7 @@ struct SymptomRow: View {
     }
 
     private var severityText: String? {
-        currentLog?.severity.rawValue
+        currentLog?.severity?.rawValue
     }
 
     // MARK: - Body
@@ -36,6 +36,7 @@ struct SymptomRow: View {
                 // Expanded content (severity picker + remove button)
                 if isExpanded && isLogged {
                     expandedContent
+                        .transition(.opacity.combined(with: .move(edge: .top)))
                 }
             }
             .padding(AppTheme.Spacing.md)
@@ -45,6 +46,7 @@ struct SymptomRow: View {
         }
         .buttonStyle(PlainButtonStyle())
         .animation(.easeInOut(duration: AppTheme.Animation.standard), value: isExpanded)
+        .animation(.easeInOut(duration: AppTheme.Animation.standard), value: isLogged)
     }
 
     // MARK: - Main Content
@@ -56,6 +58,7 @@ struct SymptomRow: View {
                 Image(systemName: "checkmark.circle.fill")
                     .font(.system(size: 20))
                     .foregroundColor(AppTheme.Colors.success)
+                    .transition(.scale.combined(with: .opacity))
             }
 
             // Symptom info
@@ -71,6 +74,7 @@ struct SymptomRow: View {
                         Text("(\(severity))")
                             .font(AppTheme.Typography.bodyMedium)
                             .foregroundColor(AppTheme.Colors.textSecondary)
+                            .transition(.opacity)
                     }
                 }
 
@@ -79,6 +83,7 @@ struct SymptomRow: View {
                     Text("Tap to log")
                         .font(AppTheme.Typography.caption)
                         .foregroundColor(AppTheme.Colors.textSecondary)
+                        .transition(.opacity)
                 }
             }
 

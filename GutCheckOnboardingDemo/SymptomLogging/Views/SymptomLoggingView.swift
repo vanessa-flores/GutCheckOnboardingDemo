@@ -80,13 +80,17 @@ struct SymptomLoggingView: View {
                     currentLog: viewModel.getLog(for: symptom),
                     isExpanded: viewModel.isExpanded(symptom),
                     onTap: {
-                        handleSymptomTap(symptom)
+                        withAnimation(.easeInOut(duration: AppTheme.Animation.standard)) {
+                            handleSymptomTap(symptom)
+                        }
                     },
                     onSelectSeverity: { severity in
                         viewModel.updateSeverity(symptom, severity: severity)
                     },
                     onRemove: {
-                        viewModel.removeLog(symptom)
+                        withAnimation(.easeInOut(duration: AppTheme.Animation.standard)) {
+                            viewModel.removeLog(symptom)
+                        }
                     }
                 )
             }

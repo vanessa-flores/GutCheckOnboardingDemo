@@ -100,13 +100,13 @@ class SymptomLoggingViewModel {
             return
         }
 
-        // Create new log
+        // Create new log (severity is nil by default, user can optionally set it)
         let log = SymptomLog(
             userId: userId,
             symptomId: symptom.id,
             date: Date(),
             timestamp: Date(),
-            severity: severity ?? .moderate
+            severity: severity
         )
 
         // Save to repository

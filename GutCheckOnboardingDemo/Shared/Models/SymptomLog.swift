@@ -11,7 +11,7 @@ struct SymptomLog: Codable, Identifiable, Equatable {
     let symptomId: UUID
     let date: Date         // Day of logging, normalized to start of day
     let timestamp: Date    // Exact time logged (for quick-capture ordering)
-    var severity: Severity
+    var severity: Severity?  // Optional - user may skip severity selection
     var notes: String?
 
     // MARK: - Initialization
@@ -22,7 +22,7 @@ struct SymptomLog: Codable, Identifiable, Equatable {
         symptomId: UUID,
         date: Date,
         timestamp: Date = Date(),
-        severity: Severity,
+        severity: Severity? = nil,
         notes: String? = nil
     ) {
         self.id = id
