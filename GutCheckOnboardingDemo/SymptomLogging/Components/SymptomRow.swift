@@ -90,60 +90,16 @@ struct SymptomRow: View {
 
     private var expandedContent: some View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.md) {
-            // Severity picker placeholder (will be implemented in Task 4)
-            severityPickerPlaceholder
+            // Severity picker
+            SeverityPicker(
+                currentSeverity: currentLog?.severity,
+                onSelect: onSelectSeverity
+            )
 
             // Remove button
             removeButton
         }
         .padding(.top, AppTheme.Spacing.md)
-    }
-
-    // MARK: - Severity Picker Placeholder
-
-    private var severityPickerPlaceholder: some View {
-        VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-            Text("How severe? (optional)")
-                .font(AppTheme.Typography.caption)
-                .foregroundColor(AppTheme.Colors.textSecondary)
-
-            HStack(spacing: 8) {
-                ForEach(Severity.allCases, id: \.self) { severity in
-                    severityPill(severity)
-                }
-            }
-        }
-    }
-
-    private func severityPill(_ severity: Severity) -> some View {
-        let isSelected = currentLog?.severity == severity
-
-        return Button(action: {
-            onSelectSeverity(severity)
-        }) {
-            Text(severity.rawValue)
-                .font(AppTheme.Typography.bodySmall)
-                .foregroundColor(isSelected ? AppTheme.Colors.primaryAction : AppTheme.Colors.textSecondary)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 10)
-                .padding(.horizontal, 16)
-                .background(
-                    isSelected
-                        ? AppTheme.Colors.primaryAction.opacity(0.1)
-                        : Color.clear
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(
-                            isSelected
-                                ? AppTheme.Colors.primaryAction
-                                : AppTheme.Colors.textSecondary.opacity(0.3),
-                            lineWidth: isSelected ? 1.5 : 1
-                        )
-                )
-                .cornerRadius(8)
-        }
-        .buttonStyle(PlainButtonStyle())
     }
 
     // MARK: - Remove Button
