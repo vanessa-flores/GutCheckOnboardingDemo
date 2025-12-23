@@ -12,6 +12,7 @@ class QuickLogViewModel {
 
     private let repository: InMemorySymptomRepository
     private let userId: UUID
+    private let appRouter: AppRouter
 
     // MARK: - Computed Properties
 
@@ -29,10 +30,12 @@ class QuickLogViewModel {
 
     init(
         repository: InMemorySymptomRepository = .shared,
-        userId: UUID
+        userId: UUID,
+        appRouter: AppRouter
     ) {
         self.repository = repository
         self.userId = userId
+        self.appRouter = appRouter
         self.eventSymptoms = Self.loadEventSymptoms(from: repository)
     }
 
@@ -71,6 +74,6 @@ class QuickLogViewModel {
 
     /// Navigates to the Dashboard tab
     func navigateToDashboard() {
-        // Will be implemented when wiring up navigation
+        appRouter.mainAppRouter.selectTab(.dashboard)
     }
 }

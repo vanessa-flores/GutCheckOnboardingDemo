@@ -45,7 +45,7 @@ struct MainAppView: View {
                 }
                 .tag(MainTab.dashboard)
             
-            LoggingContainerView(userId: appRouter.currentUserId)
+            LoggingContainerView(userId: appRouter.currentUserId, appRouter: appRouter)
                 .tabItem {
                     Label(MainTab.log.title, systemImage: MainTab.log.icon)
                 }

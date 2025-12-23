@@ -2,6 +2,7 @@ import SwiftUI
 
 struct LoggingContainerView: View {
     let userId: UUID
+    let appRouter: AppRouter
     @State private var selectedSegment: LogSegment = .quickLog
 
     var body: some View {
@@ -19,7 +20,7 @@ struct LoggingContainerView: View {
                 Group {
                     switch selectedSegment {
                     case .quickLog:
-                        QuickLogView(userId: userId)
+                        QuickLogView(userId: userId, appRouter: appRouter)
                     case .allSymptoms:
                         SymptomLoggingView(userId: userId)
                     case .cycle:
@@ -76,5 +77,5 @@ struct CyclePlaceholderView: View {
 }
 
 #Preview {
-    LoggingContainerView(userId: UUID())
+    LoggingContainerView(userId: UUID(), appRouter: AppRouter())
 }

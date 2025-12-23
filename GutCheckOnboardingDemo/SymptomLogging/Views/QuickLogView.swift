@@ -8,8 +8,11 @@ struct QuickLogView: View {
 
     // MARK: - Initialization
 
-    init(userId: UUID) {
-        self._viewModel = State(initialValue: QuickLogViewModel(userId: userId))
+    init(userId: UUID, appRouter: AppRouter) {
+        self._viewModel = State(initialValue: QuickLogViewModel(
+            userId: userId,
+            appRouter: appRouter
+        ))
     }
 
     // MARK: - Body
@@ -93,7 +96,7 @@ struct QuickLogView: View {
 
 #Preview {
     NavigationStack {
-        QuickLogView(userId: UUID())
+        QuickLogView(userId: UUID(), appRouter: AppRouter())
             .navigationTitle("Quick Log")
             .navigationBarTitleDisplayMode(.inline)
     }
