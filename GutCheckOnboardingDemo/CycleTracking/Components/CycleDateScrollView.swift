@@ -27,8 +27,10 @@ struct CycleDateScrollView: View {
                 .foregroundColor(AppTheme.Colors.textPrimary)
                 .tracking(AppTheme.Typography.title2Tracking)
                 .padding(.horizontal, AppTheme.Spacing.xl)
-            
-            Divider()
+
+
+            // MARK: - Separator with Center Indicator
+            DateSeparatorWithIndicator()
 
             // MARK: - Scrollable Date View
             ScrollView(.horizontal, showsIndicators: false) {
@@ -36,15 +38,24 @@ struct CycleDateScrollView: View {
                     ForEach(weekDays, id: \.self) { date in
                         VStack(spacing: AppTheme.Spacing.xs) {
                             // Day letter for this specific date
-                            Text(dayLetter(for: date))
-                                .font(AppTheme.Typography.caption)
-                                .foregroundColor(
-                                    isToday(date)
-                                        ? AppTheme.Colors.textPrimary
-                                        : AppTheme.Colors.textSecondary
-                                )
-                                .fontWeight(isToday(date) ? .bold : .regular)
-                                .frame(width: 40)
+                            ZStack {
+                                // Circle background for today
+                                if isToday(date) {
+                                    Circle()
+                                        .fill(AppTheme.Colors.textPrimary)
+                                        .frame(width: 20, height: 20)
+                                }
+
+                                Text(dayLetter(for: date))
+                                    .font(AppTheme.Typography.caption)
+                                    .foregroundColor(
+                                        isToday(date)
+                                            ? AppTheme.Colors.background  // White/light text on dark circle
+                                            : AppTheme.Colors.textSecondary
+                                    )
+                                    .fontWeight(isToday(date) ? .bold : .regular)
+                            }
+                            .frame(width: 40, height: 40)
 
                             // Day circle
                             DayCircle(
@@ -173,7 +184,7 @@ private struct DayCircle: View {
                 }
             }
         }
-        .frame(width: 40, height: 40)
+        .frame(width: 44, height: 44)
     }
 
     private var circleColor: Color {
@@ -181,6 +192,29 @@ private struct DayCircle: View {
             return AppTheme.Colors.error
         } else {
             return AppTheme.Colors.textSecondary.opacity(0.1)
+        }
+    }
+}
+
+// MARK: - Date Separator with Indicator
+
+private struct DateSeparatorWithIndicator: View {
+    var body: some View {
+        VStack(spacing: 0) {
+            // Separator line
+            Rectangle()
+                .fill(AppTheme.Colors.textSecondary.opacity(0.1))
+                .frame(height: 1)
+
+            // Triangle indicator attached to bottom of separator
+            HStack {
+                Spacer()
+                Image(systemName: "arrowtriangle.down.fill")
+                    .font(AppTheme.Typography.caption2)
+                    .foregroundColor(AppTheme.Colors.textPrimary)
+                Spacer()
+            }
+            .offset(y: -1)  // Pull up slightly to attach to separator
         }
     }
 }
