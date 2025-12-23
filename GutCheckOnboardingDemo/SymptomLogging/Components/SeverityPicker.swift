@@ -30,6 +30,8 @@ struct SeverityPicker: View {
                             onSelect(severity)
                         }
                     )
+                    .accessibilityLabel("\(severity.rawValue) severity")
+                    .accessibilityHint(currentSeverity == severity ? "Currently selected" : "Double tap to select")
                 }
             }
         }

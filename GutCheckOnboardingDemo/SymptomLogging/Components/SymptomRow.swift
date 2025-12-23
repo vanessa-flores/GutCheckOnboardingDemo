@@ -47,6 +47,30 @@ struct SymptomRow: View {
         .buttonStyle(PlainButtonStyle())
         .animation(.easeInOut(duration: AppTheme.Animation.standard), value: isExpanded)
         .animation(.easeInOut(duration: AppTheme.Animation.standard), value: isLogged)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilityHint(accessibilityHint)
+    }
+
+    // MARK: - Accessibility
+
+    private var accessibilityLabel: String {
+        var label = symptom.name
+        if isLogged {
+            label += ", logged"
+            if let severity = severityText {
+                label += ", \(severity)"
+            }
+        }
+        return label
+    }
+
+    private var accessibilityHint: String {
+        if isLogged {
+            return isExpanded ? "Double tap to collapse" : "Double tap to expand and adjust severity"
+        } else {
+            return "Double tap to log this symptom"
+        }
     }
 
     // MARK: - Main Content
@@ -121,6 +145,7 @@ struct SymptomRow: View {
             .foregroundColor(AppTheme.Colors.error)
         }
         .buttonStyle(PlainButtonStyle())
+        .accessibilityLabel("Remove \(symptom.name) from today's log")
     }
 }
 

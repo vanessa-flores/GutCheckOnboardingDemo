@@ -20,7 +20,7 @@ struct LoggingContainerView: View {
                     case .all:
                         AllLogsPlaceholderView()
                     case .symptoms:
-                        SymptomsPlaceholderView()
+                        SymptomLoggingView()
                     case .cycle:
                         CyclePlaceholderView()
                     }
