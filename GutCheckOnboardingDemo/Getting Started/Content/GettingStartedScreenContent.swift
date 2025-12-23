@@ -245,7 +245,7 @@ struct CategorySection: View {
                         .font(.system(size: 16, weight: .medium))
                         .foregroundColor(AppTheme.Colors.textSecondary)
                 }
-                .padding(.vertical, 16)
+                .padding(.vertical, AppTheme.Spacing.md)
             }
             .buttonStyle(PlainButtonStyle())
 

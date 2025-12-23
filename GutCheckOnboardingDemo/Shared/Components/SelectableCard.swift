@@ -77,6 +77,6 @@ struct SelectableCard: View {
             onTap: {}
         )
     }
-    .padding(24)
+    .padding(AppTheme.Spacing.xl)
     .background(AppTheme.Colors.background)
 }

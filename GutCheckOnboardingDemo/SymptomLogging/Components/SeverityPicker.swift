@@ -62,14 +62,14 @@ private struct SeverityPill: View {
                 .foregroundColor(isSelected ? AppTheme.Colors.primaryAction : AppTheme.Colors.textSecondary)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 10)
-                .padding(.horizontal, 16)
+                .padding(.horizontal, AppTheme.Spacing.md)
                 .background(
                     isSelected
                         ? AppTheme.Colors.primaryAction.opacity(0.1)
                         : Color.clear
                 )
                 .overlay(
-                    RoundedRectangle(cornerRadius: 8)
+                    RoundedRectangle(cornerRadius: AppTheme.CornerRadius.xlarge)
                         .stroke(
                             isSelected
                                 ? AppTheme.Colors.primaryAction
@@ -77,7 +77,7 @@ private struct SeverityPill: View {
                             lineWidth: isSelected ? 1.5 : 1
                         )
                 )
-                .cornerRadius(8)
+                .cornerRadius(AppTheme.CornerRadius.xlarge)
         }
         .buttonStyle(PlainButtonStyle())
         .scaleEffect(isPressed ? 0.95 : 1.0)

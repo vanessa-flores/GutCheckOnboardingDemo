@@ -82,7 +82,7 @@ struct QuickLogView: View {
                     .font(AppTheme.Typography.bodySmall)
 
                 Image(systemName: "arrow.right")
-                    .font(.system(size: 14))
+                    .font(AppTheme.Typography.caption)
             }
             .foregroundColor(AppTheme.Colors.accent)
         }

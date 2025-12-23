@@ -26,7 +26,7 @@ struct EventSymptomPill: View {
                         .foregroundColor(.white)
                 }
             }
-            .padding(.horizontal, 16)
+            .padding(.horizontal, AppTheme.Spacing.md)
             .frame(height: 44)
             .background(
                 isAnimating
@@ -34,13 +34,13 @@ struct EventSymptomPill: View {
                     : AppTheme.Colors.surface
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 22)
+                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.xlarge)
                     .strokeBorder(
                         isAnimating ? Color.clear : AppTheme.Colors.textSecondary.opacity(0.3),
                         lineWidth: 1.5
                     )
             )
-            .cornerRadius(22)
+            .cornerRadius(AppTheme.CornerRadius.xlarge)
             .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 2)
             .scaleEffect(scale)
         }
@@ -106,6 +106,6 @@ struct EventSymptomPill: View {
             )
         }
     }
-    .padding(24)
+    .padding(AppTheme.Spacing.xl)
     .background(AppTheme.Colors.background)
 }
