@@ -65,7 +65,7 @@ class AppRouter {
         
         // Check if user has completed onboarding (e.g., from UserDefaults)
         // For now, always start with onboarding
-        self.currentFlow = .onboarding
+        self.currentFlow = .mainApp
     }
 }
 
