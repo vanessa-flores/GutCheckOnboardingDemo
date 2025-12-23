@@ -100,15 +100,12 @@ struct CycleDateScrollView: View {
     private func generateWeekDays() {
         let calendar = Calendar.current
 
-        // Get the start of the current week (Sunday)
-        guard let weekStart = calendar.dateInterval(of: .weekOfYear, for: today)?.start else {
-            weekDays = []
-            return
-        }
+        // Generate 45 days before today + today + 45 days after
+        // Total: 91 days for scrollable range
+        let daysRange = -45...45
 
-        // Generate 7 days starting from Sunday
-        weekDays = (0..<7).compactMap { dayOffset in
-            calendar.date(byAdding: .day, value: dayOffset, to: weekStart)
+        weekDays = daysRange.compactMap { dayOffset in
+            calendar.date(byAdding: .day, value: dayOffset, to: today.startOfDay)
         }
     }
 }
