@@ -15,18 +15,12 @@ struct CycleTrackingView: View {
                 VStack(spacing: AppTheme.Spacing.xl) {
 
                     // MARK: - Week View Section
-                    // TODO: Add CycleWeekView component here
-                    VStack(spacing: AppTheme.Spacing.md) {
-                        Text("Week View")
-                            .font(AppTheme.Typography.title2)
-                            .foregroundColor(AppTheme.Colors.textPrimary)
-
-                        Text("Coming in next step")
-                            .font(AppTheme.Typography.body)
-                            .foregroundColor(AppTheme.Colors.textSecondary)
-                    }
-                    .padding(.horizontal, AppTheme.Spacing.xl)
-                    .padding(.vertical, AppTheme.Spacing.lg)
+                    CycleWeekView(
+                        currentCycle: viewModel.currentCycle,
+                        onDayTapped: { date in
+                            viewModel.startPeriod(on: date)
+                        }
+                    )
 
                     // MARK: - Log Section (Placeholder)
                     VStack(alignment: .leading, spacing: AppTheme.Spacing.md) {
