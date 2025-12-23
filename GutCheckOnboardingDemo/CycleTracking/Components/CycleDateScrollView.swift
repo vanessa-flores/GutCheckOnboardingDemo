@@ -26,6 +26,7 @@ struct CycleDateScrollView: View {
                 .fontWeight(.bold)
                 .foregroundColor(AppTheme.Colors.textPrimary)
                 .tracking(AppTheme.Typography.title2Tracking)
+                .padding(.horizontal, AppTheme.Spacing.xl)
             
             Divider()
 
@@ -62,7 +63,6 @@ struct CycleDateScrollView: View {
             .scrollPosition(id: $centeredDate, anchor: .center)
             .contentMargins(.horizontal, edgePadding, for: .scrollContent)
         }
-        .padding(.horizontal, AppTheme.Spacing.xl)
         .padding(.vertical, AppTheme.Spacing.lg)
         .onAppear {
             generateWeekDays()
