@@ -22,7 +22,8 @@ struct EventSymptomPill: View {
 
                 if isAnimating {
                     Image(systemName: "checkmark")
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(AppTheme.Typography.bodySmall)
+                        .fontWeight(.semibold)
                         .foregroundColor(.white)
                 }
             }

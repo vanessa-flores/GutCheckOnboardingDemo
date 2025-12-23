@@ -51,7 +51,8 @@ struct QuickLogView: View {
             VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
                 // Category header (all caps, gray)
                 Text(category.rawValue.uppercased())
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(AppTheme.Typography.caption2)
+                    .fontWeight(.semibold)
                     .foregroundColor(AppTheme.Colors.textSecondary)
                     .padding(.horizontal, AppTheme.Spacing.md)
 

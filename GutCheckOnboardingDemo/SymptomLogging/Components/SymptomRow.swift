@@ -80,7 +80,7 @@ struct SymptomRow: View {
             // Checkmark for logged state
             if isLogged {
                 Image(systemName: "checkmark.circle.fill")
-                    .font(.system(size: 20))
+                    .font(AppTheme.Typography.bodyLarge)
                     .foregroundColor(AppTheme.Colors.success)
                     .transition(.scale.combined(with: .opacity))
             }
@@ -137,7 +137,8 @@ struct SymptomRow: View {
         Button(action: onRemove) {
             HStack(spacing: AppTheme.Spacing.xs) {
                 Image(systemName: "xmark")
-                    .font(.system(size: 12, weight: .medium))
+                    .font(AppTheme.Typography.caption2)
+                    .fontWeight(.medium)
 
                 Text("Remove this symptom")
                     .font(AppTheme.Typography.caption)

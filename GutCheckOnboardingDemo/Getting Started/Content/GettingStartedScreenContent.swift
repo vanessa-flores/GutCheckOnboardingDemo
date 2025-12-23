@@ -165,7 +165,7 @@ struct SymptomSelectionView: View {
             )
 
             Text("\(viewModel.selectedSymptomCount) symptoms selected")
-                .font(.system(size: 15, weight: .medium))
+                .font(AppTheme.Typography.buttonSecondary)
                 .foregroundColor(AppTheme.Colors.textSecondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.bottom, AppTheme.Spacing.xl)
@@ -242,7 +242,8 @@ struct CategorySection: View {
                     Spacer()
 
                     Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
-                        .font(.system(size: 16, weight: .medium))
+                        .font(AppTheme.Typography.bodySmall)
+                        .fontWeight(.medium)
                         .foregroundColor(AppTheme.Colors.textSecondary)
                 }
                 .padding(.vertical, AppTheme.Spacing.md)
