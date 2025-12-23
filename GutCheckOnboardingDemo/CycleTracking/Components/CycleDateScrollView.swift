@@ -18,13 +18,16 @@ struct CycleDateScrollView: View {
     }
 
     var body: some View {
-        VStack(spacing: AppTheme.Spacing.md) {
+        VStack(spacing: AppTheme.Spacing.sm) {
 
             // MARK: - Date Header
             Text(displayedDateHeaderText)
-                .font(AppTheme.Typography.title2)
+                .font(AppTheme.Typography.title3)
+                .fontWeight(.bold)
                 .foregroundColor(AppTheme.Colors.textPrimary)
                 .tracking(AppTheme.Typography.title2Tracking)
+            
+            Divider()
 
             // MARK: - Scrollable Date View
             ScrollView(.horizontal, showsIndicators: false) {
