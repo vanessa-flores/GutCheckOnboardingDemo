@@ -15,7 +15,7 @@ struct CycleTrackingView: View {
                 VStack(spacing: AppTheme.Spacing.xl) {
 
                     // MARK: - Week View Section
-                    CycleWeekView(
+                    CycleDateScrollView(
                         currentCycle: viewModel.currentCycle,
                         onDayTapped: { date in
                             viewModel.startPeriod(on: date)

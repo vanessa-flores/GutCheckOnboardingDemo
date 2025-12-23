@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CycleWeekView: View {
+struct CycleDateScrollView: View {
     let currentCycle: CycleLog?
     let onDayTapped: (Date) -> Void
 
@@ -160,7 +160,7 @@ private struct DayCircle: View {
 
 #Preview {
     VStack {
-        CycleWeekView(
+        CycleDateScrollView(
             currentCycle: nil,
             onDayTapped: { date in
                 print("Tapped date: \(date)")
@@ -170,7 +170,7 @@ private struct DayCircle: View {
         Spacer()
 
         // Preview with ongoing cycle
-        CycleWeekView(
+        CycleDateScrollView(
             currentCycle: CycleLog(
                 userId: UUID(),
                 startDate: Calendar.current.date(byAdding: .day, value: -2, to: Date())!,
