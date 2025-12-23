@@ -1,11 +1,5 @@
 import SwiftUI
 
-// MARK: - Dashboard Route
-
-enum DashboardRoute: Hashable {
-    case gettingStarted
-}
-
 // MARK: - Dashboard View
 
 struct DashboardView: View {
