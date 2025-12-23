@@ -34,7 +34,13 @@ class AppRouter {
         // In production, this is where you'd save Getting Started answers to backend
         // For demo, just update the flag
     }
-    
+
+    // MARK: - Navigation Helpers
+
+    func selectMainAppTab(_ tab: MainTab) {
+        mainAppRouter.selectTab(tab)
+    }
+
     func signIn() {
         isAuthenticated = true
         hasCompletedOnboarding = true

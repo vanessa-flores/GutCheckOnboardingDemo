@@ -74,6 +74,6 @@ class QuickLogViewModel {
 
     /// Navigates to the Dashboard tab
     func navigateToDashboard() {
-        appRouter.mainAppRouter.selectTab(.dashboard)
+        appRouter.selectMainAppTab(.dashboard)
     }
 }
