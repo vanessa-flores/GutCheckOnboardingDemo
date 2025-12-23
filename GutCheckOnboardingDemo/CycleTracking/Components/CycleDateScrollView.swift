@@ -18,7 +18,7 @@ struct CycleDateScrollView: View {
     }
 
     var body: some View {
-        VStack(spacing: AppTheme.Spacing.sm) {
+        VStack(spacing: AppTheme.Spacing.xs) {
 
             // MARK: - Date Header
             Text(displayedDateHeaderText)
@@ -43,19 +43,19 @@ struct CycleDateScrollView: View {
                                 if isToday(date) {
                                     Circle()
                                         .fill(AppTheme.Colors.textPrimary)
-                                        .frame(width: 20, height: 20)
+                                        .frame(width: 26, height: 26)
                                 }
 
                                 Text(dayLetter(for: date))
                                     .font(AppTheme.Typography.caption)
                                     .foregroundColor(
                                         isToday(date)
-                                            ? AppTheme.Colors.background  // White/light text on dark circle
+                                            ? AppTheme.Colors.background
                                             : AppTheme.Colors.textSecondary
                                     )
                                     .fontWeight(isToday(date) ? .bold : .regular)
+                                    .frame(minWidth: 26)  // Minimum width for alignment, not fixed
                             }
-                            .frame(width: 40, height: 40)
 
                             // Day circle
                             DayCircle(
@@ -74,7 +74,8 @@ struct CycleDateScrollView: View {
             .scrollPosition(id: $centeredDate, anchor: .center)
             .contentMargins(.horizontal, edgePadding, for: .scrollContent)
         }
-        .padding(.vertical, AppTheme.Spacing.lg)
+        .padding(.top, AppTheme.Spacing.md)
+        .padding(.bottom, AppTheme.Spacing.sm)
         .onAppear {
             generateWeekDays()
             // Center on today initially
@@ -107,10 +108,11 @@ struct CycleDateScrollView: View {
 
     /// Calculate edge padding to show ~3.5 days on each side
     private var edgePadding: CGFloat {
-        let dayWidth: CGFloat = 40 + AppTheme.Spacing.sm  // circle + spacing
+        let dayWidth: CGFloat = 44 + AppTheme.Spacing.sm  // circle frame + spacing
         let screenWidth = UIScreen.main.bounds.width
         // Show approximately 7 days total (3.5 on each side of center)
-        return (screenWidth - (7 * dayWidth)) / 2
+        let calculatedPadding = (screenWidth - (7 * dayWidth)) / 2
+        return max(calculatedPadding, 0)  // Ensure non-negative padding
     }
 
     private func dayLetter(for date: Date) -> String {
@@ -183,8 +185,8 @@ private struct DayCircle: View {
                         .offset(y: 24)
                 }
             }
+            .frame(width: 44, height: 44)  // Unified frame to contain both circles
         }
-        .frame(width: 44, height: 44)
     }
 
     private var circleColor: Color {
@@ -203,19 +205,16 @@ private struct DateSeparatorWithIndicator: View {
         VStack(spacing: 0) {
             // Separator line
             Rectangle()
-                .fill(AppTheme.Colors.textSecondary.opacity(0.1))
+                .fill(AppTheme.Colors.textSecondary.opacity(0.2))
                 .frame(height: 1)
 
             // Triangle indicator attached to bottom of separator
-            HStack {
-                Spacer()
-                Image(systemName: "arrowtriangle.down.fill")
-                    .font(AppTheme.Typography.caption2)
-                    .foregroundColor(AppTheme.Colors.textPrimary)
-                Spacer()
-            }
-            .offset(y: -1)  // Pull up slightly to attach to separator
+            Image(systemName: "arrowtriangle.down.fill")
+                .font(.system(size: 10))
+                .foregroundColor(AppTheme.Colors.textPrimary)
+                .offset(y: -1)
         }
+        .padding(.top, AppTheme.Spacing.xs)
     }
 }
 
