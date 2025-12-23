@@ -80,12 +80,13 @@ struct CycleDateScrollView: View {
     private var displayedDateHeaderText: String {
         let displayDate = centeredDate ?? today
         let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE, MMMM d"
 
         // Show "Today" if centered date is today
         if Calendar.current.isDate(displayDate, inSameDayAs: today) {
+            formatter.dateFormat = "MMMM d"
             return "Today, \(formatter.string(from: displayDate))"
         } else {
+            formatter.dateFormat = "EEEE, MMMM d"
             return formatter.string(from: displayDate)
         }
     }
