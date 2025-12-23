@@ -101,8 +101,8 @@ struct PlaceholderTextEditor: View {
                 Text(placeholder)
                     .font(AppTheme.Typography.bodySmall)
                     .foregroundColor(AppTheme.Colors.textSecondary.opacity(0.6))
-                    .padding(.top, 20)
-                    .padding(.leading, 20)
+                    .padding(.top, AppTheme.Spacing.lg)
+                    .padding(.leading, AppTheme.Spacing.lg)
                     .allowsHitTesting(false)
             }
         }

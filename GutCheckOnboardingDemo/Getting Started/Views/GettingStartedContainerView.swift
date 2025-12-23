@@ -4,11 +4,13 @@ struct GettingStartedContainerView: View {
 
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: GettingStartedViewModel
+    let userId: UUID
 
     // MARK: - Init
 
-    init(onComplete: @escaping () -> Void) {
-        self._viewModel = State(initialValue: GettingStartedViewModel(onComplete: onComplete))
+    init(userId: UUID, onComplete: @escaping () -> Void) {
+        self.userId = userId
+        self._viewModel = State(initialValue: GettingStartedViewModel(userId: userId, onComplete: onComplete))
     }
     
     // MARK: - Body
@@ -136,5 +138,5 @@ struct GettingStartedContainerView: View {
 // MARK: - Preview
 
 #Preview {
-    GettingStartedContainerView(onComplete: {})
+    GettingStartedContainerView(userId: UUID(), onComplete: {})
 }

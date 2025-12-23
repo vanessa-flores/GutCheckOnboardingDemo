@@ -23,7 +23,9 @@ class GettingStartedViewModel {
     var isGettingStartedComplete: Bool = false
 
     // MARK: - Private Properties
-    
+
+    private let repository: InMemorySymptomRepository
+    private let userId: UUID
     private let onComplete: () -> Void
     
     // MARK: - Computed Properties
@@ -73,9 +75,16 @@ class GettingStartedViewModel {
     }
 
     // MARK: - Init
-    
-    init(router: GettingStartedRouter = GettingStartedRouter(), onComplete: @escaping () -> Void) {
+
+    init(
+        router: GettingStartedRouter = GettingStartedRouter(),
+        repository: InMemorySymptomRepository = .shared,
+        userId: UUID,
+        onComplete: @escaping () -> Void
+    ) {
         self.router = router
+        self.repository = repository
+        self.userId = userId
         self.onComplete = onComplete
     }
     
@@ -168,7 +177,19 @@ class GettingStartedViewModel {
     }
     
     private func handleSymptomSelection() {
-        print("Saving \(selectedSymptomIds.count) selected symptoms...")
+        saveSymptomPreferences()
         completeGettingStarted()
+    }
+
+    private func saveSymptomPreferences() {
+        // Create UserSymptomPreference for each selected symptom
+        let preferences = selectedSymptomIds.map { symptomId in
+            UserSymptomPreference.track(symptomId: symptomId, for: userId)
+        }
+
+        // Save all preferences to repository
+        repository.savePreferences(preferences, for: userId)
+
+        print("Saved \(preferences.count) symptom preferences for user \(userId)")
     }
 }
