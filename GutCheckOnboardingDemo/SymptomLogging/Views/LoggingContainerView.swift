@@ -1,8 +1,9 @@
 import SwiftUI
 
 struct LoggingContainerView: View {
+    let userId: UUID
     @State private var selectedSegment: LogSegment = .symptoms
-    
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -20,7 +21,7 @@ struct LoggingContainerView: View {
                     case .all:
                         AllLogsPlaceholderView()
                     case .symptoms:
-                        SymptomLoggingView()
+                        SymptomLoggingView(userId: userId)
                     case .cycle:
                         CyclePlaceholderView()
                     }
@@ -115,5 +116,5 @@ struct CyclePlaceholderView: View {
 }
 
 #Preview {
-    LoggingContainerView()
+    LoggingContainerView(userId: UUID())
 }

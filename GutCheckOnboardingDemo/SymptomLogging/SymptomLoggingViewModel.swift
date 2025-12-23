@@ -65,7 +65,7 @@ class SymptomLoggingViewModel {
 
     init(
         repository: InMemorySymptomRepository = .shared,
-        userId: UUID = UUID()
+        userId: UUID
     ) {
         self.repository = repository
         self.userId = userId
@@ -84,6 +84,10 @@ class SymptomLoggingViewModel {
         todaysLogs = repository.logs(for: userId, on: Date())
 
         isLoading = false
+    }
+    
+    func getUserSymptomPreferences() -> [UserSymptomPreference] {
+        repository.preferences(for: userId)
     }
 
     // MARK: - Symptom Logging

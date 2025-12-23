@@ -45,7 +45,7 @@ struct MainAppView: View {
                 }
                 .tag(MainTab.dashboard)
             
-            LoggingContainerView()
+            LoggingContainerView(userId: appRouter.currentUserId)
                 .tabItem {
                     Label(MainTab.log.title, systemImage: MainTab.log.icon)
                 }
@@ -153,6 +153,7 @@ struct DashboardView: View {
                 switch route {
                 case .gettingStarted:
                     GettingStartedContainerView(
+                        userId: appRouter.currentUserId,
                         onComplete: {
                             appRouter.completeGettingStarted()
                         }

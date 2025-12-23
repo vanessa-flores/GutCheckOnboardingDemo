@@ -8,7 +8,13 @@ struct SymptomLoggingView: View {
 
     // MARK: - Properties
 
-    @State private var viewModel = SymptomLoggingViewModel()
+    @State private var viewModel: SymptomLoggingViewModel
+
+    // MARK: - Init
+
+    init(userId: UUID) {
+        self._viewModel = State(initialValue: SymptomLoggingViewModel(userId: userId))
+    }
 
     // MARK: - Body
 
@@ -169,9 +175,9 @@ struct SymptomLoggingView: View {
 // MARK: - Preview
 
 #Preview("With Symptoms") {
-    SymptomLoggingView()
+    SymptomLoggingView(userId: UUID())
 }
 
 #Preview("Empty State") {
-    SymptomLoggingView()
+    SymptomLoggingView(userId: UUID())
 }

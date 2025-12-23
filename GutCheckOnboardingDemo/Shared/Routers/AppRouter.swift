@@ -13,6 +13,8 @@ class AppRouter {
     var hasSeenWelcome: Bool = false
     var hasCompletedGettingStarted: Bool = false
     
+    let currentUserId: UUID
+    
     // MARK: - Child Routers
     
     var onboardingRouter = OnboardingRouter()
@@ -53,6 +55,8 @@ class AppRouter {
     // MARK: - Initialization
     
     init() {
+        self.currentUserId = UUID()
+        
         // Check if user has completed onboarding (e.g., from UserDefaults)
         // For now, always start with onboarding
         self.currentFlow = .onboarding
