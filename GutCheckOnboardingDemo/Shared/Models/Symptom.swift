@@ -7,6 +7,7 @@ struct Symptom: Codable, Identifiable, Equatable, Hashable {
     let name: String
     let category: SymptomCategory
     let displayOrder: Int
+    let isEventBased: Bool
 
     // MARK: - Initialization
 
@@ -14,12 +15,14 @@ struct Symptom: Codable, Identifiable, Equatable, Hashable {
         id: UUID = UUID(),
         name: String,
         category: SymptomCategory,
-        displayOrder: Int
+        displayOrder: Int,
+        isEventBased: Bool = false
     ) {
         self.id = id
         self.name = name
         self.category = category
         self.displayOrder = displayOrder
+        self.isEventBased = isEventBased
     }
 }
 
