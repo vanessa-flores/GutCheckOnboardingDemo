@@ -13,9 +13,8 @@ struct CycleDateScrollView: View {
         static let minimumEdgePadding: CGFloat = 8
 
         // Pill shape proportions
-        static let itemHeightToWidthRatio: CGFloat = 1.2  // Height = width × 1.4 for pill shape
-        static let cornerRadius: CGFloat = 12
-        static let focusedCornerRadius: CGFloat = 14
+        static let itemHeightToWidthRatio: CGFloat = 1.2  // Height = width × 1.2 for pill shape
+        // Corner radius is calculated as itemWidth / 2 for perfect semicircular ends
 
         // Day letter section
         static let todayCircleSize: CGFloat = 20
@@ -79,6 +78,9 @@ struct CycleDateScrollView: View {
     private var focusedHeight: CGFloat {
         Layout.calculateFocusedHeight(itemHeight: itemHeight)
     }
+    private var cornerRadius: CGFloat {
+        itemWidth / 2  // Half-width creates perfect semicircular ends
+    }
 
     // MARK: - Initialization
 
@@ -115,6 +117,7 @@ struct CycleDateScrollView: View {
                             itemWidth: itemWidth,
                             itemHeight: itemHeight,
                             focusedHeight: focusedHeight,
+                            cornerRadius: cornerRadius,
                             onTap: { onDayTapped(date) }
                         )
                     }
@@ -211,23 +214,21 @@ private struct DayPill: View {
     let itemWidth: CGFloat
     let itemHeight: CGFloat
     let focusedHeight: CGFloat
+    let cornerRadius: CGFloat
     let onTap: () -> Void
 
     private var currentHeight: CGFloat {
         isCentered ? focusedHeight : itemHeight
     }
 
-    private var currentCornerRadius: CGFloat {
-        isCentered
-            ? CycleDateScrollView.Layout.focusedCornerRadius
-            : CycleDateScrollView.Layout.cornerRadius
-    }
+    // Corner radius stays constant (doesn't animate with focus)
+    // itemWidth / 2 creates perfect semicircular pill ends
 
     var body: some View {
         Button(action: onTap) {
             ZStack {
                 // Background pill
-                RoundedRectangle(cornerRadius: currentCornerRadius)
+                RoundedRectangle(cornerRadius: cornerRadius)
                     .fill(pillColor)
                     .frame(
                         width: itemWidth,
@@ -310,6 +311,7 @@ private struct DayItemView: View {
     let itemWidth: CGFloat
     let itemHeight: CGFloat
     let focusedHeight: CGFloat
+    let cornerRadius: CGFloat
     let onTap: () -> Void
 
     var body: some View {
@@ -325,6 +327,7 @@ private struct DayItemView: View {
                 itemWidth: itemWidth,
                 itemHeight: itemHeight,
                 focusedHeight: focusedHeight,
+                cornerRadius: cornerRadius,
                 onTap: onTap
             )
         }
