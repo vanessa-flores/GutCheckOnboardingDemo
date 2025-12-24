@@ -9,8 +9,8 @@ struct CycleDateScrollView: View {
     fileprivate enum Layout {
         static let dayCircleSize: CGFloat = 44
         static let todayCircleSize: CGFloat = 20
-        static let daySpacing: CGFloat = AppTheme.Spacing.sm
-        static let visibleDays: CGFloat = 7
+        static let daySpacing: CGFloat = 4
+        static let visibleDays: CGFloat = 8
         static let triangleSize: CGFloat = 12
         static let centeredDayScale: CGFloat = 1.2
     }
