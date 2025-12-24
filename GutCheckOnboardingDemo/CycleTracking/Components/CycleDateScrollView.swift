@@ -68,25 +68,7 @@ struct CycleDateScrollView: View {
                 HStack(spacing: Layout.daySpacing) {
                     ForEach(weekDays, id: \.self) { date in
                         VStack(spacing: Layout.dayLetterSpacing) {
-                            // Day letter for this specific date
-                            ZStack {
-                                // Circle background for today
-                                if isToday(date) {
-                                    Circle()
-                                        .fill(AppTheme.Colors.textPrimary)
-                                        .frame(width: Layout.todayCircleSize, height: Layout.todayCircleSize)
-                                }
-
-                                Text(dayLetter(for: date))
-                                    .font(AppTheme.Typography.caption2)
-                                    .foregroundColor(
-                                        isToday(date)
-                                            ? AppTheme.Colors.background
-                                            : AppTheme.Colors.textSecondary
-                                    )
-                                    .fontWeight(isToday(date) ? .bold : .regular)
-                                    .frame(minWidth: Layout.dayLetterMinWidth)
-                            }
+                            DayLetterView(date: date, isToday: isToday(date))
 
                             DayCircle(
                                 date: date,
@@ -150,12 +132,6 @@ struct CycleDateScrollView: View {
         let calculatedPadding = (screenWidth - totalContentWidth) / 2
 
         return max(calculatedPadding, 0)  // Ensure non-negative padding
-    }
-
-    private func dayLetter(for date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEEEE"  // Single letter (S, M, T, etc.)
-        return formatter.string(from: date).uppercased()
     }
 
     private func isToday(_ date: Date) -> Bool {
@@ -244,6 +220,41 @@ private struct DayCircle: View {
         } else {
             return AppTheme.Colors.textSecondary.opacity(0.1)
         }
+    }
+}
+
+// MARK: - Day Letter Component
+
+private struct DayLetterView: View {
+    let date: Date
+    let isToday: Bool
+
+    var body: some View {
+        ZStack {
+            // Circle background for today
+            if isToday {
+                Circle()
+                    .fill(AppTheme.Colors.textPrimary)
+                    .frame(width: CycleDateScrollView.Layout.todayCircleSize,
+                           height: CycleDateScrollView.Layout.todayCircleSize)
+            }
+
+            Text(dayLetter)
+                .font(AppTheme.Typography.caption2)
+                .foregroundColor(
+                    isToday
+                        ? AppTheme.Colors.background
+                        : AppTheme.Colors.textSecondary
+                )
+                .fontWeight(isToday ? .bold : .regular)
+                .frame(minWidth: CycleDateScrollView.Layout.dayLetterMinWidth)
+        }
+    }
+
+    private var dayLetter: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEEEE"  // Single letter
+        return formatter.string(from: date).uppercased()
     }
 }
 
