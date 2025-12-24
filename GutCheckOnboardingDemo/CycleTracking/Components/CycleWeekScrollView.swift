@@ -7,6 +7,7 @@ struct CycleWeekScrollView: View {
     // MARK: - State
 
     @State private var centeredDate: Date?
+    @State private var weekDays: [Date] = []
     private let today = Date()
 
     // MARK: - Layout Constants
@@ -15,6 +16,20 @@ struct CycleWeekScrollView: View {
         static let separatorHeight: CGFloat = 1
         static let triangleSize: CGFloat = 12
         static let triangleOffset: CGFloat = 1
+
+        // Day item sizing
+        static let itemSpacing: CGFloat = 4
+        static let itemWidth: CGFloat = 48
+        static let itemHeightToWidthRatio: CGFloat = 1.2
+
+        // Computed
+        static var itemHeight: CGFloat {
+            itemWidth * itemHeightToWidthRatio
+        }
+
+        static var cornerRadius: CGFloat {
+            itemWidth / 2  // Half width for pill shape
+        }
     }
 
     // MARK: - Initialization
@@ -37,13 +52,32 @@ struct CycleWeekScrollView: View {
             // MARK: - Separator with Triangle
             separatorWithTriangle
 
-            Spacer()
+            // MARK: - Scrollable Week View
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: Layout.itemSpacing) {
+                    ForEach(weekDays, id: \.self) { date in
+                        dayPill(for: date)
+                    }
+                }
+            }
         }
         .padding(.top, AppTheme.Spacing.md)
         .onAppear {
-            // Initialize centered date to today
+            generateWeekDays()
             centeredDate = today.startOfDay
         }
+    }
+
+    // MARK: - Day Pill
+
+    private func dayPill(for date: Date) -> some View {
+        RoundedRectangle(cornerRadius: Layout.cornerRadius)
+            .fill(AppTheme.Colors.textSecondary.opacity(0.1))
+            .frame(
+                width: Layout.itemWidth,
+                height: Layout.itemHeight
+            )
+            .id(date)
     }
 
     // MARK: - Separator View
@@ -82,6 +116,19 @@ struct CycleWeekScrollView: View {
         } else {
             formatter.dateFormat = "EEEE, MMMM d"
             return formatter.string(from: displayDate)
+        }
+    }
+
+    // MARK: - Generate Days
+
+    private func generateWeekDays() {
+        let calendar = Calendar.current
+
+        // Generate 45 days before and after today (91 days total)
+        let daysRange = -45...45
+
+        weekDays = daysRange.compactMap { dayOffset in
+            calendar.date(byAdding: .day, value: dayOffset, to: today.startOfDay)
         }
     }
 }
