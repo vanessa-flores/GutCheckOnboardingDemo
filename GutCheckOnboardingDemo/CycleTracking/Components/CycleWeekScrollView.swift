@@ -9,6 +9,11 @@ struct CycleWeekScrollView: View {
     @State private var centeredDate: Date?
     @State private var weekDays: [Date] = []
     private let today = Date()
+    private let screenWidth = UIScreen.main.bounds.width
+
+    private var edgePadding: CGFloat {
+        Layout.calculateEdgePadding(screenWidth: screenWidth)
+    }
 
     // MARK: - Layout Constants
 
@@ -29,6 +34,29 @@ struct CycleWeekScrollView: View {
 
         static var cornerRadius: CGFloat {
             itemWidth / 2  // Half width for pill shape
+        }
+
+        // Focused scaling
+        static let focusedHeightScale: CGFloat = 1.3
+
+        static var focusedItemHeight: CGFloat {
+            itemHeight * focusedHeightScale
+        }
+
+        // Day letter sizing
+        static let dayLetterMinWidth: CGFloat = 26
+        static let todayCircleSize: CGFloat = 20
+        static let dayVerticalSpacing: CGFloat = 6
+
+        // Edge padding
+        static let minimumEdgePadding: CGFloat = 8
+
+        // Computed: edge padding to allow first/last items to center
+        static func calculateEdgePadding(screenWidth: CGFloat) -> CGFloat {
+            // Padding should allow first and last items to scroll to screen center
+            // Formula: half screen width minus half item width
+            let calculatedPadding = (screenWidth / 2) - (itemWidth / 2)
+            return max(calculatedPadding, minimumEdgePadding)
         }
     }
 
@@ -59,7 +87,11 @@ struct CycleWeekScrollView: View {
                         dayPill(for: date)
                     }
                 }
+                .scrollTargetLayout()
             }
+            .scrollPosition(id: $centeredDate, anchor: .center)
+            .scrollTargetBehavior(.viewAligned)
+            .contentMargins(.horizontal, edgePadding, for: .scrollContent)
         }
         .padding(.top, AppTheme.Spacing.md)
         .onAppear {
@@ -71,13 +103,13 @@ struct CycleWeekScrollView: View {
     // MARK: - Day Pill
 
     private func dayPill(for date: Date) -> some View {
-        RoundedRectangle(cornerRadius: Layout.cornerRadius)
-            .fill(AppTheme.Colors.textSecondary.opacity(0.1))
-            .frame(
-                width: Layout.itemWidth,
-                height: Layout.itemHeight
-            )
-            .id(date)
+        DayPillView(
+            date: date,
+            isToday: Calendar.current.isDate(date, inSameDayAs: today),
+            isPeriodDay: isPeriodDay(date),
+            isCentered: isCenteredDate(date),
+            onTap: { onDayTapped(date) }
+        )
     }
 
     // MARK: - Separator View
@@ -131,13 +163,126 @@ struct CycleWeekScrollView: View {
             calendar.date(byAdding: .day, value: dayOffset, to: today.startOfDay)
         }
     }
+
+    // MARK: - Helper Methods
+
+    private func isPeriodDay(_ date: Date) -> Bool {
+        guard let cycle = currentCycle else { return false }
+
+        // Check if date is on or after start date
+        guard date >= cycle.startDate else { return false }
+
+        // If cycle has end date, check if date is before or on end date
+        if let endDate = cycle.endDate {
+            return date <= endDate
+        }
+
+        // If no end date (ongoing), date is a period day if it's not in the future
+        return date <= Date()
+    }
+
+    private func isCenteredDate(_ date: Date) -> Bool {
+        guard let centered = centeredDate else { return false }
+        return Calendar.current.isDate(date, inSameDayAs: centered)
+    }
+}
+
+// MARK: - Day Pill Component
+
+private struct DayPillView: View {
+    let date: Date
+    let isToday: Bool
+    let isPeriodDay: Bool
+    let isCentered: Bool
+    let onTap: () -> Void
+
+    var body: some View {
+        Button(action: onTap) {
+            VStack(spacing: CycleWeekScrollView.Layout.dayVerticalSpacing) {
+                // Day letter
+                dayLetterView
+
+                // Pill shape
+                RoundedRectangle(cornerRadius: CycleWeekScrollView.Layout.cornerRadius)
+                    .fill(pillColor)
+                    .frame(
+                        width: CycleWeekScrollView.Layout.itemWidth,
+                        height: currentHeight
+                    )
+                    .animation(.easeInOut(duration: 0.2), value: isCentered)
+            }
+            .frame(width: CycleWeekScrollView.Layout.itemWidth)
+        }
+        .buttonStyle(.plain)
+        .id(date)
+    }
+
+    private var currentHeight: CGFloat {
+        isCentered ? CycleWeekScrollView.Layout.focusedItemHeight : CycleWeekScrollView.Layout.itemHeight
+    }
+
+    private var pillColor: Color {
+        if isPeriodDay {
+            return AppTheme.Colors.error
+        } else {
+            return AppTheme.Colors.textSecondary.opacity(0.1)
+        }
+    }
+
+    private var dayLetterView: some View {
+        ZStack {
+            // Circle background for today
+            if isToday {
+                Circle()
+                    .fill(AppTheme.Colors.textPrimary)
+                    .frame(
+                        width: CycleWeekScrollView.Layout.todayCircleSize,
+                        height: CycleWeekScrollView.Layout.todayCircleSize
+                    )
+            }
+
+            Text(dayLetter)
+                .font(AppTheme.Typography.caption2)
+                .foregroundColor(
+                    isToday
+                        ? AppTheme.Colors.background
+                        : AppTheme.Colors.textSecondary
+                )
+                .fontWeight(isToday ? .bold : .regular)
+                .frame(minWidth: CycleWeekScrollView.Layout.dayLetterMinWidth)
+        }
+    }
+
+    private var dayLetter: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEEEE"  // Single letter (M, T, W, etc.)
+        return formatter.string(from: date).uppercased()
+    }
 }
 
 // MARK: - Preview
 
-#Preview {
+#Preview("No Cycle") {
     CycleWeekScrollView(
         currentCycle: nil,
+        onDayTapped: { date in
+            print("Tapped: \(date)")
+        }
+    )
+    .background(AppTheme.Colors.background)
+}
+
+#Preview("With Cycle") {
+    CycleWeekScrollView(
+        currentCycle: CycleLog(
+            userId: UUID(),
+            startDate: Calendar.current.date(byAdding: .day, value: -3, to: Date())!,
+            endDate: nil,
+            flowHeaviness: .medium,
+            hasSpotting: false,
+            crampsSeverity: nil,
+            notes: nil
+        ),
         onDayTapped: { date in
             print("Tapped: \(date)")
         }
