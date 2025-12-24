@@ -15,7 +15,8 @@ struct CycleDateScrollView: View {
         static let focusedHeightScale: CGFloat = 1.3
 
         // Edge padding calculation (device-independent)
-        static let visibleItems: CGFloat = 7
+        // 8 items = shows 7 full items + ~0.5 item clipped on each edge
+        static let visibleItems: CGFloat = 8
         static let minimumEdgePadding: CGFloat = 8
 
         // Day letter section
