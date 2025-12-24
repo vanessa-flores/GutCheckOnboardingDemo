@@ -11,7 +11,7 @@ struct CycleDateScrollView: View {
         static let dayCircleSize: CGFloat = 44
         static let todayCircleSize: CGFloat = 20
         static let daySpacing: CGFloat = 4
-        static let visibleDays: CGFloat = 8
+        static let visibleDays: CGFloat = 7.0
         static let centeredDayScale: CGFloat = 1.2
 
         // Day letter section
@@ -290,12 +290,17 @@ private struct DateSeparatorWithIndicator: View {
                 .fill(AppTheme.Colors.textSecondary.opacity(0.2))
                 .frame(height: CycleDateScrollView.Layout.separatorHeight)
 
-            Image(systemName: "triangleshape.fill")
-                .font(.system(size: CycleDateScrollView.Layout.triangleSize))
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .offset(y: CycleDateScrollView.Layout.triangleOffset)
-                .rotationEffect(.degrees(180))
+            HStack {
+                Spacer()
+                Image(systemName: "triangleshape.fill")
+                    .font(.system(size: CycleDateScrollView.Layout.triangleSize))
+                    .foregroundColor(AppTheme.Colors.textPrimary)
+                    .offset(y: CycleDateScrollView.Layout.triangleOffset)
+                    .rotationEffect(.degrees(180))
+                Spacer()
+            }
         }
+        .frame(maxWidth: .infinity)
     }
 }
 
