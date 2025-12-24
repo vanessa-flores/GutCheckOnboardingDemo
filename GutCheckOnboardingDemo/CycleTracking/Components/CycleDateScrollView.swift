@@ -13,6 +13,11 @@ struct CycleDateScrollView: View {
         static let visibleDays: CGFloat = 8
         static let triangleSize: CGFloat = 12
         static let centeredDayScale: CGFloat = 1.2
+
+        // Computed: maximum day size when scaled
+        static var maxDaySize: CGFloat {
+            dayCircleSize * centeredDayScale
+        }
     }
 
     // MARK: - Private State
