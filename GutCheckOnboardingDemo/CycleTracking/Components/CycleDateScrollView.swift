@@ -67,19 +67,14 @@ struct CycleDateScrollView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: Layout.daySpacing) {
                     ForEach(weekDays, id: \.self) { date in
-                        VStack(spacing: Layout.dayLetterSpacing) {
-                            DayLetterView(date: date, isToday: isToday(date))
-
-                            DayCircle(
-                                date: date,
-                                isToday: isToday(date),
-                                isPeriodDay: isPeriodDay(date),
-                                hasSpotting: false,
-                                isCentered: isCenteredDate(date),
-                                onTap: { onDayTapped(date) }
-                            )
-                            .id(date)  // Important for scrollPosition
-                        }
+                        DayItemView(
+                            date: date,
+                            isToday: isToday(date),
+                            isPeriodDay: isPeriodDay(date),
+                            hasSpotting: false,
+                            isCentered: isCenteredDate(date),
+                            onTap: { onDayTapped(date) }
+                        )
                     }
                 }
                 .scrollTargetLayout()
@@ -255,6 +250,34 @@ private struct DayLetterView: View {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEEE"  // Single letter
         return formatter.string(from: date).uppercased()
+    }
+}
+
+// MARK: - Day Item Component
+
+private struct DayItemView: View {
+    let date: Date
+    let isToday: Bool
+    let isPeriodDay: Bool
+    let hasSpotting: Bool
+    let isCentered: Bool
+    let onTap: () -> Void
+
+    var body: some View {
+        VStack(spacing: CycleDateScrollView.Layout.dayLetterSpacing) {
+            DayLetterView(date: date, isToday: isToday)
+
+            DayCircle(
+                date: date,
+                isToday: isToday,
+                isPeriodDay: isPeriodDay,
+                hasSpotting: hasSpotting,
+                isCentered: isCentered,
+                onTap: onTap
+            )
+        }
+        .frame(width: CycleDateScrollView.Layout.maxDaySize)
+        .id(date)
     }
 }
 
