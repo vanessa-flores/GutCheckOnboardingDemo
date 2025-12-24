@@ -10,7 +10,6 @@ struct CycleDateScrollView: View {
         // Layout constraints
         static let visibleItems: CGFloat = 8
         static let itemSpacing: CGFloat = 4
-        static let minimumEdgePadding: CGFloat = 8
 
         // Pill shape proportions
         static let itemHeightToWidthRatio: CGFloat = 1.2  // Height = width × 1.2 for pill shape
@@ -35,16 +34,13 @@ struct CycleDateScrollView: View {
         // Triangle
         static let triangleSize: CGFloat = 12
 
-        // Computed: calculate item width based on screen width
+        // Computed: calculate item width based on screen width (edge-to-edge)
         static func calculateItemWidth(screenWidth: CGFloat) -> CGFloat {
             // Total spacing width between items
             let totalSpacing = (visibleItems - 1) * itemSpacing
 
-            // Account for minimum edge padding on both sides
-            let edgePadding = 2 * minimumEdgePadding
-
-            // Available width for items
-            let availableWidth = screenWidth - totalSpacing - edgePadding
+            // Available width for items (full screen width minus spacing)
+            let availableWidth = screenWidth - totalSpacing
 
             // Divide equally among visible items
             return availableWidth / visibleItems
@@ -159,11 +155,9 @@ struct CycleDateScrollView: View {
         }
     }
 
-    /// Calculate edge padding (minimal since we size items to fill screen)
+    /// No edge padding - items extend to screen edges for edge-to-edge scrolling
     private var edgePadding: CGFloat {
-        // Items are sized to fill screen with minimal edge padding
-        // This ensures consistent layout across devices
-        return Layout.minimumEdgePadding
+        return 0
     }
 
     private func isToday(_ date: Date) -> Bool {
