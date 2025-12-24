@@ -204,10 +204,17 @@ private struct DayCircle: View {
             }
             .scaleEffect(isCentered ? CycleDateScrollView.Layout.centeredDayScale : 1.0)
             .animation(.easeInOut(duration: 0.2), value: isCentered)
-            .frame(width: CycleDateScrollView.Layout.dayCircleSize * CycleDateScrollView.Layout.centeredDayScale,
-                   height: CycleDateScrollView.Layout.dayCircleSize * CycleDateScrollView.Layout.centeredDayScale)
+            .frame(
+                width: CycleDateScrollView.Layout.dayCircleSize * CycleDateScrollView.Layout.centeredDayScale,
+                height: CycleDateScrollView.Layout.dayCircleSize * CycleDateScrollView.Layout.centeredDayScale,
+                alignment: .center
+            )
         }
         .buttonStyle(.plain)
+        .frame(
+            width: CycleDateScrollView.Layout.dayCircleSize * CycleDateScrollView.Layout.centeredDayScale,
+            height: CycleDateScrollView.Layout.dayCircleSize * CycleDateScrollView.Layout.centeredDayScale
+        )
     }
 
     private var circleColor: Color {
