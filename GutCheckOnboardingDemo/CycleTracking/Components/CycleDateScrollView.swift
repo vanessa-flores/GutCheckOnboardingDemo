@@ -67,7 +67,7 @@ struct CycleDateScrollView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: Layout.daySpacing) {
                     ForEach(weekDays, id: \.self) { date in
-                        VStack(spacing: AppTheme.Spacing.sm) {
+                        VStack(spacing: Layout.dayLetterSpacing) {
                             // Day letter for this specific date
                             ZStack {
                                 // Circle background for today
@@ -85,7 +85,7 @@ struct CycleDateScrollView: View {
                                             : AppTheme.Colors.textSecondary
                                     )
                                     .fontWeight(isToday(date) ? .bold : .regular)
-                                    .frame(minWidth: 26)
+                                    .frame(minWidth: Layout.dayLetterMinWidth)
                             }
 
                             DayCircle(
@@ -140,7 +140,7 @@ struct CycleDateScrollView: View {
     /// Calculate edge padding accounting for scaled centered day
     private var edgePadding: CGFloat {
         // Account for maximum possible size (when centered and scaled)
-        let maxDaySize = Layout.dayCircleSize * Layout.centeredDayScale
+        let maxDaySize = Layout.maxDaySize
 
         // Total width = (number of days × max day width) + (spacing gaps between days)
         let totalContentWidth = (Layout.visibleDays * maxDaySize) +
@@ -218,22 +218,23 @@ private struct DayCircle: View {
                 if hasSpotting && !isPeriodDay {
                     Circle()
                         .fill(AppTheme.Colors.warning)
-                        .frame(width: 6, height: 6)
-                        .offset(y: 24)
+                        .frame(width: CycleDateScrollView.Layout.spottingDotSize,
+                               height: CycleDateScrollView.Layout.spottingDotSize)
+                        .offset(y: CycleDateScrollView.Layout.spottingDotOffset)
                 }
             }
             .scaleEffect(isCentered ? CycleDateScrollView.Layout.centeredDayScale : 1.0)
             .animation(.easeInOut(duration: 0.2), value: isCentered)
             .frame(
-                width: CycleDateScrollView.Layout.dayCircleSize * CycleDateScrollView.Layout.centeredDayScale,
-                height: CycleDateScrollView.Layout.dayCircleSize * CycleDateScrollView.Layout.centeredDayScale,
+                width: CycleDateScrollView.Layout.maxDaySize,
+                height: CycleDateScrollView.Layout.maxDaySize,
                 alignment: .center
             )
         }
         .buttonStyle(.plain)
         .frame(
-            width: CycleDateScrollView.Layout.dayCircleSize * CycleDateScrollView.Layout.centeredDayScale,
-            height: CycleDateScrollView.Layout.dayCircleSize * CycleDateScrollView.Layout.centeredDayScale
+            width: CycleDateScrollView.Layout.maxDaySize,
+            height: CycleDateScrollView.Layout.maxDaySize
         )
     }
 
@@ -253,12 +254,12 @@ private struct DateSeparatorWithIndicator: View {
         VStack(spacing: 0) {
             Rectangle()
                 .fill(AppTheme.Colors.textSecondary.opacity(0.2))
-                .frame(height: 1)
+                .frame(height: CycleDateScrollView.Layout.separatorHeight)
 
             Image(systemName: "triangleshape.fill")
                 .font(.system(size: CycleDateScrollView.Layout.triangleSize))
                 .foregroundColor(AppTheme.Colors.textPrimary)
-                .offset(y: 1)
+                .offset(y: CycleDateScrollView.Layout.triangleOffset)
                 .rotationEffect(.degrees(180))
         }
     }
