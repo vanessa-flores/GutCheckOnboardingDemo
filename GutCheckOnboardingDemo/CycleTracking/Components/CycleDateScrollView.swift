@@ -10,13 +10,16 @@ struct CycleDateScrollView: View {
         // Day sizing
         static let dayCircleSize: CGFloat = 44
         static let todayCircleSize: CGFloat = 20
-        static let daySpacing: CGFloat = 4
-        static let visibleDays: CGFloat = 7.0
+        static let daySpacing: CGFloat = 0
         static let centeredDayScale: CGFloat = 1.2
+
+        // Edge padding calculation (tuned for triangle alignment)
+        static let paddingDivisor: CGFloat = 5.9
 
         // Day letter section
         static let dayLetterMinWidth: CGFloat = 26
-        static let dayLetterSpacing: CGFloat = AppTheme.Spacing.sm
+        static let dayLetterSpacing: CGFloat = 0
+        static let dayVerticalSpacing: CGFloat = 4
 
         // Spotting indicator
         static let spottingDotSize: CGFloat = 6
@@ -114,19 +117,14 @@ struct CycleDateScrollView: View {
         }
     }
 
-    /// Calculate edge padding accounting for scaled centered day
+    /// Calculate edge padding to center days under triangle
     private var edgePadding: CGFloat {
-        // Account for maximum possible size (when centered and scaled)
-        let maxDaySize = Layout.maxDaySize
-
-        // Total width = (number of days × max day width) + (spacing gaps between days)
-        let totalContentWidth = (Layout.visibleDays * maxDaySize) +
-                               ((Layout.visibleDays - 1) * Layout.daySpacing)
-
+        // Simple approach: divide screen width by a tuned divisor
+        // This creates equal padding on both sides for proper centering
+        // Higher divisor = less padding = more days visible
+        // Lower divisor = more padding = fewer days visible
         let screenWidth = UIScreen.main.bounds.width
-        let calculatedPadding = (screenWidth - totalContentWidth) / 2
-
-        return max(calculatedPadding, 0)  // Ensure non-negative padding
+        return screenWidth / Layout.paddingDivisor
     }
 
     private func isToday(_ date: Date) -> Bool {
@@ -264,7 +262,7 @@ private struct DayItemView: View {
     let onTap: () -> Void
 
     var body: some View {
-        VStack(spacing: CycleDateScrollView.Layout.dayLetterSpacing) {
+        VStack(spacing: CycleDateScrollView.Layout.dayVerticalSpacing) {
             DayLetterView(date: date, isToday: isToday)
 
             DayCircle(
