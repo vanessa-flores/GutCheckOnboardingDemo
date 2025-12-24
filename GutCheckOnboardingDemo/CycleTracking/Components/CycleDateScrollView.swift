@@ -203,16 +203,15 @@ private struct DayCircle: View {
 private struct DateSeparatorWithIndicator: View {
     var body: some View {
         VStack(spacing: 0) {
-            // Separator line
             Rectangle()
                 .fill(AppTheme.Colors.textSecondary.opacity(0.2))
                 .frame(height: 1)
 
-            // Triangle indicator attached to bottom of separator
-            Image(systemName: "arrowtriangle.down.fill")
-                .font(.system(size: 10))
+            Image(systemName: "triangleshape.fill")
+                .font(.system(size: 12))
                 .foregroundColor(AppTheme.Colors.textPrimary)
-                .offset(y: -1)
+                .offset(y: 1)
+                .rotationEffect(.degrees(180))
         }
         .padding(.top, AppTheme.Spacing.xs)
     }
