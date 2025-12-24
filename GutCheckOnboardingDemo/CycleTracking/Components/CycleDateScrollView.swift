@@ -36,18 +36,18 @@ struct CycleDateScrollView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: AppTheme.Spacing.sm) {
                     ForEach(weekDays, id: \.self) { date in
-                        VStack(spacing: AppTheme.Spacing.xs) {
+                        VStack(spacing: AppTheme.Spacing.sm) {
                             // Day letter for this specific date
                             ZStack {
                                 // Circle background for today
                                 if isToday(date) {
                                     Circle()
                                         .fill(AppTheme.Colors.textPrimary)
-                                        .frame(width: 26, height: 26)
+                                        .frame(width: 20, height: 20)
                                 }
 
                                 Text(dayLetter(for: date))
-                                    .font(AppTheme.Typography.caption)
+                                    .font(AppTheme.Typography.caption2)
                                     .foregroundColor(
                                         isToday(date)
                                             ? AppTheme.Colors.background
@@ -57,7 +57,6 @@ struct CycleDateScrollView: View {
                                     .frame(minWidth: 26)  // Minimum width for alignment, not fixed
                             }
 
-                            // Day circle
                             DayCircle(
                                 date: date,
                                 isToday: isToday(date),
@@ -213,7 +212,6 @@ private struct DateSeparatorWithIndicator: View {
                 .offset(y: 1)
                 .rotationEffect(.degrees(180))
         }
-        .padding(.top, AppTheme.Spacing.xs)
     }
 }
 
