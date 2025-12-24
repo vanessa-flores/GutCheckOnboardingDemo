@@ -8,8 +8,9 @@ struct CycleDateScrollView: View {
 
     fileprivate enum Layout {
         // Layout constraints
-        static let visibleItems: CGFloat = 8
+        static let targetVisibleItems: CGFloat = 7.5  // Target: show ~7.5 items (7 full + partials)
         static let itemSpacing: CGFloat = 4
+        static let edgePaddingPercent: CGFloat = 0.04  // 4% of screen width on each side
 
         // Pill shape proportions
         static let itemHeightToWidthRatio: CGFloat = 1.2  // Height = width × 1.2 for pill shape
@@ -34,16 +35,19 @@ struct CycleDateScrollView: View {
         // Triangle
         static let triangleSize: CGFloat = 12
 
-        // Computed: calculate item width based on screen width (edge-to-edge)
+        // Computed: calculate item width with percentage-based edge padding
         static func calculateItemWidth(screenWidth: CGFloat) -> CGFloat {
-            // Total spacing width between items
-            let totalSpacing = (visibleItems - 1) * itemSpacing
+            // Edge padding on each side (percentage of screen width)
+            let edgePadding = screenWidth * edgePaddingPercent * 2
 
-            // Available width for items (full screen width minus spacing)
-            let availableWidth = screenWidth - totalSpacing
+            // Total spacing between items
+            let totalSpacing = (targetVisibleItems - 1) * itemSpacing
 
-            // Divide equally among visible items
-            return availableWidth / visibleItems
+            // Available width for items
+            let availableWidth = screenWidth - totalSpacing - edgePadding
+
+            // Divide among target visible items
+            return availableWidth / targetVisibleItems
         }
 
         // Computed: item height based on width ratio
@@ -155,9 +159,9 @@ struct CycleDateScrollView: View {
         }
     }
 
-    /// No edge padding - items extend to screen edges for edge-to-edge scrolling
+    /// Calculate edge padding as percentage of screen width
     private var edgePadding: CGFloat {
-        return 0
+        return screenWidth * Layout.edgePaddingPercent
     }
 
     private func isToday(_ date: Date) -> Bool {
