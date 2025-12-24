@@ -4,6 +4,16 @@ struct CycleDateScrollView: View {
     let currentCycle: CycleLog?
     let onDayTapped: (Date) -> Void
 
+    // MARK: - Layout Constants
+
+    fileprivate enum Layout {
+        static let dayCircleSize: CGFloat = 44
+        static let todayCircleSize: CGFloat = 20
+        static let daySpacing: CGFloat = AppTheme.Spacing.sm
+        static let visibleDays: CGFloat = 7
+        static let triangleSize: CGFloat = 12
+    }
+
     // MARK: - Private State
 
     @State private var weekDays: [Date] = []
@@ -34,7 +44,7 @@ struct CycleDateScrollView: View {
 
             // MARK: - Scrollable Date View
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: AppTheme.Spacing.sm) {
+                HStack(spacing: Layout.daySpacing) {
                     ForEach(weekDays, id: \.self) { date in
                         VStack(spacing: AppTheme.Spacing.sm) {
                             // Day letter for this specific date
@@ -43,7 +53,7 @@ struct CycleDateScrollView: View {
                                 if isToday(date) {
                                     Circle()
                                         .fill(AppTheme.Colors.textPrimary)
-                                        .frame(width: 20, height: 20)
+                                        .frame(width: Layout.todayCircleSize, height: Layout.todayCircleSize)
                                 }
 
                                 Text(dayLetter(for: date))
@@ -71,6 +81,7 @@ struct CycleDateScrollView: View {
                 .scrollTargetLayout()
             }
             .scrollPosition(id: $centeredDate, anchor: .center)
+            .scrollTargetBehavior(.viewAligned)
             .contentMargins(.horizontal, edgePadding, for: .scrollContent)
         }
         .padding(.top, AppTheme.Spacing.md)
@@ -107,10 +118,14 @@ struct CycleDateScrollView: View {
 
     /// Calculate edge padding to show ~3.5 days on each side
     private var edgePadding: CGFloat {
-        let dayWidth: CGFloat = 44 + AppTheme.Spacing.sm  // circle frame + spacing
+        // Total width = (number of days × day width) + (spacing gaps between days)
+        // For 7 days, there are 6 spacing gaps
+        let totalContentWidth = (Layout.visibleDays * Layout.dayCircleSize) +
+                               ((Layout.visibleDays - 1) * Layout.daySpacing)
+
         let screenWidth = UIScreen.main.bounds.width
-        // Show approximately 7 days total (3.5 on each side of center)
-        let calculatedPadding = (screenWidth - (7 * dayWidth)) / 2
+        let calculatedPadding = (screenWidth - totalContentWidth) / 2
+
         return max(calculatedPadding, 0)  // Ensure non-negative padding
     }
 
@@ -167,13 +182,15 @@ private struct DayCircle: View {
                 // Background circle
                 Circle()
                     .fill(circleColor)
-                    .frame(width: 40, height: 40)
+                    .frame(width: CycleDateScrollView.Layout.dayCircleSize - 4,
+                           height: CycleDateScrollView.Layout.dayCircleSize - 4)
 
                 // Today indicator (outline)
                 if isToday {
                     Circle()
                         .strokeBorder(AppTheme.Colors.primaryAction, lineWidth: 2)
-                        .frame(width: 44, height: 44)
+                        .frame(width: CycleDateScrollView.Layout.dayCircleSize,
+                               height: CycleDateScrollView.Layout.dayCircleSize)
                 }
 
                 // Spotting dot (below circle)
@@ -184,7 +201,8 @@ private struct DayCircle: View {
                         .offset(y: 24)
                 }
             }
-            .frame(width: 44, height: 44)  // Unified frame to contain both circles
+            .frame(width: CycleDateScrollView.Layout.dayCircleSize,
+                   height: CycleDateScrollView.Layout.dayCircleSize)
         }
     }
 
@@ -207,7 +225,7 @@ private struct DateSeparatorWithIndicator: View {
                 .frame(height: 1)
 
             Image(systemName: "triangleshape.fill")
-                .font(.system(size: 12))
+                .font(.system(size: CycleDateScrollView.Layout.triangleSize))
                 .foregroundColor(AppTheme.Colors.textPrimary)
                 .offset(y: 1)
                 .rotationEffect(.degrees(180))
