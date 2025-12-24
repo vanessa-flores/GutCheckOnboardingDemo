@@ -7,25 +7,27 @@ struct CycleDateScrollView: View {
     // MARK: - Layout Constants
 
     fileprivate enum Layout {
-        // Item sizing (will become rounded rectangle in Phase 2)
-        static let itemWidth: CGFloat = 48
-        static let itemHeight: CGFloat = 40
-        static let todayCircleSize: CGFloat = 20
-        static let itemSpacing: CGFloat = 4
-        static let focusedHeightScale: CGFloat = 1.3
-
-        // Edge padding calculation (device-independent)
-        // 8 items = shows 7 full items + ~0.5 item clipped on each edge
+        // Layout constraints
         static let visibleItems: CGFloat = 8
+        static let itemSpacing: CGFloat = 4
         static let minimumEdgePadding: CGFloat = 8
 
+        // Pill shape proportions
+        static let itemHeightToWidthRatio: CGFloat = 1.2  // Height = width × 1.4 for pill shape
+        static let cornerRadius: CGFloat = 12
+        static let focusedCornerRadius: CGFloat = 14
+
         // Day letter section
+        static let todayCircleSize: CGFloat = 20
         static let dayLetterMinWidth: CGFloat = 26
-        static let dayVerticalSpacing: CGFloat = 4
+        static let dayVerticalSpacing: CGFloat = 6
+
+        // Item scaling
+        static let focusedHeightScale: CGFloat = 1.3
 
         // Spotting indicator
         static let spottingDotSize: CGFloat = 6
-        static let spottingDotOffset: CGFloat = 24
+        static let spottingDotOffset: CGFloat = 22
 
         // Separator
         static let separatorHeight: CGFloat = 1
@@ -34,14 +36,29 @@ struct CycleDateScrollView: View {
         // Triangle
         static let triangleSize: CGFloat = 12
 
-        // Computed: focused item height (height × scale)
-        static var focusedItemHeight: CGFloat {
-            itemHeight * focusedHeightScale
+        // Computed: calculate item width based on screen width
+        static func calculateItemWidth(screenWidth: CGFloat) -> CGFloat {
+            // Total spacing width between items
+            let totalSpacing = (visibleItems - 1) * itemSpacing
+
+            // Account for minimum edge padding on both sides
+            let edgePadding = 2 * minimumEdgePadding
+
+            // Available width for items
+            let availableWidth = screenWidth - totalSpacing - edgePadding
+
+            // Divide equally among visible items
+            return availableWidth / visibleItems
         }
 
-        // Computed: maximum item width (stays constant, for compatibility)
-        static var maxItemWidth: CGFloat {
-            itemWidth  // Width doesn't scale
+        // Computed: item height based on width ratio
+        static func calculateItemHeight(itemWidth: CGFloat) -> CGFloat {
+            return itemWidth * itemHeightToWidthRatio
+        }
+
+        // Computed: focused item height
+        static func calculateFocusedHeight(itemHeight: CGFloat) -> CGFloat {
+            return itemHeight * focusedHeightScale
         }
     }
 
@@ -50,6 +67,18 @@ struct CycleDateScrollView: View {
     @State private var weekDays: [Date] = []
     @State private var centeredDate: Date?
     private let today = Date()
+
+    // Dynamic layout dimensions
+    private let screenWidth = UIScreen.main.bounds.width
+    private var itemWidth: CGFloat {
+        Layout.calculateItemWidth(screenWidth: screenWidth)
+    }
+    private var itemHeight: CGFloat {
+        Layout.calculateItemHeight(itemWidth: itemWidth)
+    }
+    private var focusedHeight: CGFloat {
+        Layout.calculateFocusedHeight(itemHeight: itemHeight)
+    }
 
     // MARK: - Initialization
 
@@ -83,6 +112,9 @@ struct CycleDateScrollView: View {
                             isPeriodDay: isPeriodDay(date),
                             hasSpotting: false,
                             isCentered: isCenteredDate(date),
+                            itemWidth: itemWidth,
+                            itemHeight: itemHeight,
+                            focusedHeight: focusedHeight,
                             onTap: { onDayTapped(date) }
                         )
                     }
@@ -124,20 +156,11 @@ struct CycleDateScrollView: View {
         }
     }
 
-    /// Calculate edge padding to show fixed number of visible items on all devices
+    /// Calculate edge padding (minimal since we size items to fill screen)
     private var edgePadding: CGFloat {
-        let screenWidth = UIScreen.main.bounds.width
-
-        // Calculate content width for visible items
-        // 7 items × 48pt + 6 gaps × 4pt = 360pt content
-        let contentWidth = (Layout.visibleItems * Layout.itemWidth) +
-                          ((Layout.visibleItems - 1) * Layout.itemSpacing)
-
-        // Padding is whatever's left over, split between both sides
-        let padding = (screenWidth - contentWidth) / 2
-
-        // Ensure at least minimal padding (safety check for small screens)
-        return max(padding, Layout.minimumEdgePadding)
+        // Items are sized to fill screen with minimal edge padding
+        // This ensures consistent layout across devices
+        return Layout.minimumEdgePadding
     }
 
     private func isToday(_ date: Date) -> Bool {
@@ -177,50 +200,62 @@ struct CycleDateScrollView: View {
     }
 }
 
-// MARK: - Day Circle Component
+// MARK: - Day Pill Component
 
-private struct DayCircle: View {
+private struct DayPill: View {
     let date: Date
     let isToday: Bool
     let isPeriodDay: Bool
     let hasSpotting: Bool
     let isCentered: Bool
+    let itemWidth: CGFloat
+    let itemHeight: CGFloat
+    let focusedHeight: CGFloat
     let onTap: () -> Void
+
+    private var currentHeight: CGFloat {
+        isCentered ? focusedHeight : itemHeight
+    }
+
+    private var currentCornerRadius: CGFloat {
+        isCentered
+            ? CycleDateScrollView.Layout.focusedCornerRadius
+            : CycleDateScrollView.Layout.cornerRadius
+    }
 
     var body: some View {
         Button(action: onTap) {
             ZStack {
-                // Background circle
-                Circle()
-                    .fill(circleColor)
-                    .frame(width: CycleDateScrollView.Layout.itemWidth - 8,
-                           height: CycleDateScrollView.Layout.itemWidth - 8)
+                // Background pill
+                RoundedRectangle(cornerRadius: currentCornerRadius)
+                    .fill(pillColor)
+                    .frame(
+                        width: itemWidth,
+                        height: currentHeight
+                    )
 
-                // Spotting dot (below circle)
+                // Spotting dot (below pill)
                 if hasSpotting && !isPeriodDay {
                     Circle()
                         .fill(AppTheme.Colors.warning)
-                        .frame(width: CycleDateScrollView.Layout.spottingDotSize,
-                               height: CycleDateScrollView.Layout.spottingDotSize)
+                        .frame(
+                            width: CycleDateScrollView.Layout.spottingDotSize,
+                            height: CycleDateScrollView.Layout.spottingDotSize
+                        )
                         .offset(y: CycleDateScrollView.Layout.spottingDotOffset)
                 }
             }
-            .scaleEffect(isCentered ? CycleDateScrollView.Layout.focusedHeightScale : 1.0)
-            .animation(.easeInOut(duration: 0.2), value: isCentered)
             .frame(
-                width: CycleDateScrollView.Layout.itemWidth,
-                height: CycleDateScrollView.Layout.itemWidth,
+                width: itemWidth,
+                height: focusedHeight,
                 alignment: .center
             )
+            .animation(.easeInOut(duration: 0.2), value: isCentered)
         }
         .buttonStyle(.plain)
-        .frame(
-            width: CycleDateScrollView.Layout.itemWidth,
-            height: CycleDateScrollView.Layout.itemWidth
-        )
     }
 
-    private var circleColor: Color {
+    private var pillColor: Color {
         if isPeriodDay {
             return AppTheme.Colors.error
         } else {
@@ -272,22 +307,28 @@ private struct DayItemView: View {
     let isPeriodDay: Bool
     let hasSpotting: Bool
     let isCentered: Bool
+    let itemWidth: CGFloat
+    let itemHeight: CGFloat
+    let focusedHeight: CGFloat
     let onTap: () -> Void
 
     var body: some View {
         VStack(spacing: CycleDateScrollView.Layout.dayVerticalSpacing) {
             DayLetterView(date: date, isToday: isToday)
 
-            DayCircle(
+            DayPill(
                 date: date,
                 isToday: isToday,
                 isPeriodDay: isPeriodDay,
                 hasSpotting: hasSpotting,
                 isCentered: isCentered,
+                itemWidth: itemWidth,
+                itemHeight: itemHeight,
+                focusedHeight: focusedHeight,
                 onTap: onTap
             )
         }
-        .frame(width: CycleDateScrollView.Layout.itemWidth)
+        .frame(width: itemWidth)
         .id(date)
     }
 }
