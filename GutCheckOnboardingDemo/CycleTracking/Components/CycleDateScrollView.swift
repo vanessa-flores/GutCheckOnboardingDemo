@@ -7,12 +7,27 @@ struct CycleDateScrollView: View {
     // MARK: - Layout Constants
 
     fileprivate enum Layout {
+        // Day sizing
         static let dayCircleSize: CGFloat = 44
         static let todayCircleSize: CGFloat = 20
         static let daySpacing: CGFloat = 4
         static let visibleDays: CGFloat = 8
-        static let triangleSize: CGFloat = 12
         static let centeredDayScale: CGFloat = 1.2
+
+        // Day letter section
+        static let dayLetterMinWidth: CGFloat = 26
+        static let dayLetterSpacing: CGFloat = AppTheme.Spacing.sm
+
+        // Spotting indicator
+        static let spottingDotSize: CGFloat = 6
+        static let spottingDotOffset: CGFloat = 24
+
+        // Separator
+        static let separatorHeight: CGFloat = 1
+        static let triangleOffset: CGFloat = 1
+
+        // Triangle
+        static let triangleSize: CGFloat = 12
 
         // Computed: maximum day size when scaled
         static var maxDaySize: CGFloat {
