@@ -12,6 +12,7 @@ struct CycleDateScrollView: View {
         static let daySpacing: CGFloat = AppTheme.Spacing.sm
         static let visibleDays: CGFloat = 7
         static let triangleSize: CGFloat = 12
+        static let centeredDayScale: CGFloat = 1.2
     }
 
     // MARK: - Private State
@@ -72,6 +73,7 @@ struct CycleDateScrollView: View {
                                 isToday: isToday(date),
                                 isPeriodDay: isPeriodDay(date),
                                 hasSpotting: false,
+                                isCentered: isCenteredDate(date),
                                 onTap: { onDayTapped(date) }
                             )
                             .id(date)  // Important for scrollPosition
@@ -154,6 +156,11 @@ struct CycleDateScrollView: View {
         return date <= Date()
     }
 
+    private func isCenteredDate(_ date: Date) -> Bool {
+        guard let centered = centeredDate else { return false }
+        return Calendar.current.isDate(date, inSameDayAs: centered)
+    }
+
     private func generateWeekDays() {
         let calendar = Calendar.current
 
@@ -174,6 +181,7 @@ private struct DayCircle: View {
     let isToday: Bool
     let isPeriodDay: Bool
     let hasSpotting: Bool
+    let isCentered: Bool
     let onTap: () -> Void
 
     var body: some View {
@@ -185,14 +193,6 @@ private struct DayCircle: View {
                     .frame(width: CycleDateScrollView.Layout.dayCircleSize - 4,
                            height: CycleDateScrollView.Layout.dayCircleSize - 4)
 
-                // Today indicator (outline)
-                if isToday {
-                    Circle()
-                        .strokeBorder(AppTheme.Colors.primaryAction, lineWidth: 2)
-                        .frame(width: CycleDateScrollView.Layout.dayCircleSize,
-                               height: CycleDateScrollView.Layout.dayCircleSize)
-                }
-
                 // Spotting dot (below circle)
                 if hasSpotting && !isPeriodDay {
                     Circle()
@@ -203,6 +203,8 @@ private struct DayCircle: View {
             }
             .frame(width: CycleDateScrollView.Layout.dayCircleSize,
                    height: CycleDateScrollView.Layout.dayCircleSize)
+            .scaleEffect(isCentered ? CycleDateScrollView.Layout.centeredDayScale : 1.0)
+            .animation(.easeInOut(duration: 0.2), value: isCentered)
         }
     }
 
