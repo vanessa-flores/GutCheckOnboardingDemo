@@ -65,7 +65,7 @@ struct CycleDateScrollView: View {
                                             : AppTheme.Colors.textSecondary
                                     )
                                     .fontWeight(isToday(date) ? .bold : .regular)
-                                    .frame(minWidth: 26)  // Minimum width for alignment, not fixed
+                                    .frame(minWidth: 26)
                             }
 
                             DayCircle(
@@ -90,7 +90,6 @@ struct CycleDateScrollView: View {
         .padding(.bottom, AppTheme.Spacing.sm)
         .onAppear {
             generateWeekDays()
-            // Center on today initially
             centeredDate = today.startOfDay
         }
     }
@@ -118,11 +117,13 @@ struct CycleDateScrollView: View {
         }
     }
 
-    /// Calculate edge padding to show ~3.5 days on each side
+    /// Calculate edge padding accounting for scaled centered day
     private var edgePadding: CGFloat {
-        // Total width = (number of days × day width) + (spacing gaps between days)
-        // For 7 days, there are 6 spacing gaps
-        let totalContentWidth = (Layout.visibleDays * Layout.dayCircleSize) +
+        // Account for maximum possible size (when centered and scaled)
+        let maxDaySize = Layout.dayCircleSize * Layout.centeredDayScale
+
+        // Total width = (number of days × max day width) + (spacing gaps between days)
+        let totalContentWidth = (Layout.visibleDays * maxDaySize) +
                                ((Layout.visibleDays - 1) * Layout.daySpacing)
 
         let screenWidth = UIScreen.main.bounds.width
@@ -201,11 +202,12 @@ private struct DayCircle: View {
                         .offset(y: 24)
                 }
             }
-            .frame(width: CycleDateScrollView.Layout.dayCircleSize,
-                   height: CycleDateScrollView.Layout.dayCircleSize)
             .scaleEffect(isCentered ? CycleDateScrollView.Layout.centeredDayScale : 1.0)
             .animation(.easeInOut(duration: 0.2), value: isCentered)
+            .frame(width: CycleDateScrollView.Layout.dayCircleSize * CycleDateScrollView.Layout.centeredDayScale,
+                   height: CycleDateScrollView.Layout.dayCircleSize * CycleDateScrollView.Layout.centeredDayScale)
         }
+        .buttonStyle(.plain)
     }
 
     private var circleColor: Color {
