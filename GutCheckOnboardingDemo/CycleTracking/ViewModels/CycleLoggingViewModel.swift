@@ -108,11 +108,10 @@ class CycleLoggingViewModel {
 
     func togglePeriodLogged() {
         if isPeriodLogged {
-            selectedFlowLevel = nil
-            isPeriodLogged = false
-            isPeriodExpanded = false
+            unlogPeriod()
         } else {
             isPeriodLogged = true
+            isPeriodExpanded = true
         }
 
         savePeriodData()
@@ -140,6 +139,12 @@ class CycleLoggingViewModel {
 
         repository.save(dailyLog: log)
         dailyLog = log
+    }
+    
+    private func unlogPeriod() {
+        selectedFlowLevel = nil
+        isPeriodLogged = false
+        isPeriodExpanded = false
     }
 
     // MARK: - Symptoms Actions
