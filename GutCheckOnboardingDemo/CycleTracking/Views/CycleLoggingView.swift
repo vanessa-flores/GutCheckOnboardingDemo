@@ -40,82 +40,62 @@ private struct PeriodRow: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Button(action: handleRowTap) {
-                HStack {
-                    Text("Period")
-                        .font(AppTheme.Typography.bodyMedium)
-                        .foregroundColor(AppTheme.Colors.textPrimary)
+            HStack {
+                Text("Period")
+                    .font(AppTheme.Typography.bodyMedium)
+                    .foregroundColor(AppTheme.Colors.textPrimary)
 
-                    Spacer()
+                Spacer()
 
+                Button(action: handleCircleTap) {
                     periodStatus
                 }
-                .padding(AppTheme.Spacing.lg)
-                .contentShape(Rectangle())
+                .buttonStyle(PlainButtonStyle())
             }
-            .buttonStyle(PlainButtonStyle())
+            .padding(AppTheme.Spacing.lg)
             .disabled(viewModel.isFutureDate)
             .opacity(viewModel.isFutureDate ? 0.4 : 1.0)
 
-            if viewModel.isPeriodExpanded {
-                flowLevelPicker
-                    .transition(.opacity.combined(with: .move(edge: .top)))
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(FlowLevel.allCases, id: \.self) { level in
+                        FlowLevelPill(
+                            level: level,
+                            isSelected: viewModel.selectedFlowLevel == level,
+                            isDisabled: viewModel.isFutureDate,
+                            onTap: {
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                    viewModel.selectFlowLevel(level)
+                                }
+                            }
+                        )
+                    }
+                }
+                .padding(.horizontal, AppTheme.Spacing.lg)
             }
+            .padding(.bottom, AppTheme.Spacing.lg)
+            .disabled(viewModel.isFutureDate)
+            .opacity(viewModel.isFutureDate ? 0.4 : 1.0)
         }
         .background(AppTheme.Colors.surface)
     }
 
     @ViewBuilder
     private var periodStatus: some View {
-        if !viewModel.isPeriodLogged {
-            Button(action: handleCircleTap) {
+        if viewModel.isPeriodLogged {
+            ZStack {
                 Circle()
-                    .strokeBorder(AppTheme.Colors.textSecondary.opacity(0.3), lineWidth: 2)
+                    .fill(AppTheme.Colors.primaryAction)
                     .frame(width: 24, height: 24)
+
+                Image(systemName: "checkmark")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(.white)
             }
-            .buttonStyle(PlainButtonStyle())
-        } else if let flow = viewModel.selectedFlowLevel {
-            Text(flow.rawValue)
-                .font(AppTheme.Typography.bodySmall)
-                .foregroundColor(AppTheme.Colors.primaryAction)
         } else {
-            Button(action: handleCircleTap) {
-                ZStack {
-                    Circle()
-                        .fill(AppTheme.Colors.primaryAction)
-                        .frame(width: 24, height: 24)
-
-                    Image(systemName: "checkmark")
-                        .font(.system(size: 14, weight: .bold))
-                        .foregroundColor(.white)
-                }
-            }
-            .buttonStyle(PlainButtonStyle())
-        }
-    }
-
-    private var flowLevelPicker: some View {
-        HStack(spacing: 8) {
-            ForEach(FlowLevel.allCases, id: \.self) { level in
-                FlowLevelPill(
-                    level: level,
-                    isSelected: viewModel.selectedFlowLevel == level,
-                    onTap: {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                            viewModel.selectFlowLevel(level)
-                        }
-                    }
-                )
-            }
-        }
-        .padding(.horizontal, AppTheme.Spacing.lg)
-        .padding(.top, AppTheme.Spacing.sm)
-        .padding(.bottom, AppTheme.Spacing.lg)
-    }
-
-    private func handleRowTap() {
-        withAnimation(.easeInOut(duration: AppTheme.Animation.standard)) {
-            viewModel.togglePeriodExpanded()
+            Circle()
+                .strokeBorder(AppTheme.Colors.textSecondary.opacity(0.3), lineWidth: 2)
+                .frame(width: 24, height: 24)
         }
     }
 
@@ -135,6 +115,7 @@ private struct FlowLevelPill: View {
 
     let level: FlowLevel
     let isSelected: Bool
+    let isDisabled: Bool
     let onTap: () -> Void
 
     @State private var isPressed: Bool = false
@@ -143,27 +124,34 @@ private struct FlowLevelPill: View {
         Button(action: handleTap) {
             Text(level.rawValue)
                 .font(AppTheme.Typography.bodySmall)
-                .foregroundColor(isSelected ? AppTheme.Colors.primaryAction : AppTheme.Colors.textSecondary)
+                .foregroundColor(
+                    isDisabled
+                        ? AppTheme.Colors.textSecondary.opacity(0.3)
+                        : (isSelected ? AppTheme.Colors.primaryAction : AppTheme.Colors.textSecondary)
+                )
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
                 .padding(.horizontal, AppTheme.Spacing.md)
                 .background(
-                    isSelected
+                    (isSelected && !isDisabled)
                         ? AppTheme.Colors.primaryAction.opacity(0.1)
                         : Color.clear
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: AppTheme.CornerRadius.xlarge)
                         .stroke(
-                            isSelected
-                                ? AppTheme.Colors.primaryAction
-                                : AppTheme.Colors.textSecondary.opacity(0.3),
-                            lineWidth: isSelected ? 1.5 : 1
+                            isDisabled
+                                ? AppTheme.Colors.textSecondary.opacity(0.2)
+                                : (isSelected
+                                    ? AppTheme.Colors.primaryAction
+                                    : AppTheme.Colors.textSecondary.opacity(0.3)),
+                            lineWidth: isSelected && !isDisabled ? 1.5 : 1
                         )
                 )
                 .cornerRadius(AppTheme.CornerRadius.xlarge)
         }
         .buttonStyle(PlainButtonStyle())
+        .disabled(isDisabled)
         .scaleEffect(isPressed ? 0.95 : 1.0)
     }
 
