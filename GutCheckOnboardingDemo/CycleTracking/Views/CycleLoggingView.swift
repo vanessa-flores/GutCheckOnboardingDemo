@@ -1,0 +1,186 @@
+import SwiftUI
+
+struct CycleLoggingView: View {
+
+    @Bindable var viewModel: CycleLoggingViewModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("Log")
+                .font(AppTheme.Typography.title3)
+                .foregroundColor(AppTheme.Colors.textPrimary)
+                .padding(.horizontal, AppTheme.Spacing.xl)
+                .padding(.bottom, AppTheme.Spacing.md)
+
+            VStack(spacing: 0) {
+                PeriodRow(viewModel: viewModel)
+            }
+            .background(AppTheme.Colors.surface)
+            .cornerRadius(AppTheme.CornerRadius.medium)
+            .padding(.horizontal, AppTheme.Spacing.xl)
+        }
+    }
+}
+
+// MARK: - Period Row
+
+private struct PeriodRow: View {
+
+    @Bindable var viewModel: CycleLoggingViewModel
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Button(action: handleRowTap) {
+                HStack {
+                    Text("Period")
+                        .font(AppTheme.Typography.bodyMedium)
+                        .foregroundColor(AppTheme.Colors.textPrimary)
+
+                    Spacer()
+
+                    periodStatus
+                }
+                .padding(AppTheme.Spacing.lg)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(PlainButtonStyle())
+            .disabled(viewModel.isFutureDate)
+            .opacity(viewModel.isFutureDate ? 0.4 : 1.0)
+
+            if viewModel.isPeriodExpanded {
+                flowLevelPicker
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+        }
+        .background(AppTheme.Colors.surface)
+    }
+
+    @ViewBuilder
+    private var periodStatus: some View {
+        if !viewModel.isPeriodLogged {
+            Button(action: handleCircleTap) {
+                Circle()
+                    .strokeBorder(AppTheme.Colors.textSecondary.opacity(0.3), lineWidth: 2)
+                    .frame(width: 24, height: 24)
+            }
+            .buttonStyle(PlainButtonStyle())
+        } else if let flow = viewModel.selectedFlowLevel {
+            Text(flow.rawValue)
+                .font(AppTheme.Typography.bodySmall)
+                .foregroundColor(AppTheme.Colors.primaryAction)
+        } else {
+            Button(action: handleCircleTap) {
+                ZStack {
+                    Circle()
+                        .fill(AppTheme.Colors.primaryAction)
+                        .frame(width: 24, height: 24)
+
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundColor(.white)
+                }
+            }
+            .buttonStyle(PlainButtonStyle())
+        }
+    }
+
+    private var flowLevelPicker: some View {
+        HStack(spacing: 8) {
+            ForEach(FlowLevel.allCases, id: \.self) { level in
+                FlowLevelPill(
+                    level: level,
+                    isSelected: viewModel.selectedFlowLevel == level,
+                    onTap: {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                            viewModel.selectFlowLevel(level)
+                        }
+                    }
+                )
+            }
+        }
+        .padding(.horizontal, AppTheme.Spacing.lg)
+        .padding(.top, AppTheme.Spacing.sm)
+        .padding(.bottom, AppTheme.Spacing.lg)
+    }
+
+    private func handleRowTap() {
+        withAnimation(.easeInOut(duration: AppTheme.Animation.standard)) {
+            viewModel.togglePeriodExpanded()
+        }
+    }
+
+    private func handleCircleTap() {
+        let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+        impactFeedback.impactOccurred()
+
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+            viewModel.togglePeriodLogged()
+        }
+    }
+}
+
+// MARK: - Flow Level Pill
+
+private struct FlowLevelPill: View {
+
+    let level: FlowLevel
+    let isSelected: Bool
+    let onTap: () -> Void
+
+    @State private var isPressed: Bool = false
+
+    var body: some View {
+        Button(action: handleTap) {
+            Text(level.rawValue)
+                .font(AppTheme.Typography.bodySmall)
+                .foregroundColor(isSelected ? AppTheme.Colors.primaryAction : AppTheme.Colors.textSecondary)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .padding(.horizontal, AppTheme.Spacing.md)
+                .background(
+                    isSelected
+                        ? AppTheme.Colors.primaryAction.opacity(0.1)
+                        : Color.clear
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: AppTheme.CornerRadius.xlarge)
+                        .stroke(
+                            isSelected
+                                ? AppTheme.Colors.primaryAction
+                                : AppTheme.Colors.textSecondary.opacity(0.3),
+                            lineWidth: isSelected ? 1.5 : 1
+                        )
+                )
+                .cornerRadius(AppTheme.CornerRadius.xlarge)
+        }
+        .buttonStyle(PlainButtonStyle())
+        .scaleEffect(isPressed ? 0.95 : 1.0)
+    }
+
+    private func handleTap() {
+        isPressed = true
+
+        let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+        impactFeedback.impactOccurred()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            isPressed = false
+        }
+
+        onTap()
+    }
+}
+
+// MARK: - Preview
+
+#Preview {
+    let repo = InMemorySymptomRepository.shared
+    let viewModel = CycleLoggingViewModel(
+        userId: UUID(),
+        selectedDate: Date(),
+        repository: repo
+    )
+
+    CycleLoggingView(viewModel: viewModel)
+        .background(AppTheme.Colors.background)
+}
