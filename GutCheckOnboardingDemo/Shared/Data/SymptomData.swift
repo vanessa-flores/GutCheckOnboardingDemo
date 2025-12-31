@@ -46,6 +46,7 @@ enum SymptomData {
         Symptom(name: "Dark/different colored blood", category: .cycleHormonal, displayOrder: 3),
         Symptom(name: "Extreme PMS symptoms", category: .cycleHormonal, displayOrder: 4),
         Symptom(name: "Breast soreness", category: .cycleHormonal, displayOrder: 5),
+        Symptom(name: "Cramps", category: .cycleHormonal, displayOrder: 6)
     ]
     
     // MARK: - Energy, Mood & Mental Clarity
