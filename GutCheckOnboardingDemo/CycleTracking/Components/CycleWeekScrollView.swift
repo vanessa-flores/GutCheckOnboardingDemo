@@ -27,16 +27,14 @@ struct CycleWeekScrollView: View {
         static let itemWidth: CGFloat = 48
         static let itemHeightToWidthRatio: CGFloat = 1.2
 
-        // Computed
         static var itemHeight: CGFloat {
             itemWidth * itemHeightToWidthRatio
         }
 
         static var cornerRadius: CGFloat {
-            itemWidth / 2  // Half width for pill shape
+            itemWidth / 2
         }
 
-        // Focused scaling
         static let focusedHeightScale: CGFloat = 1.3
 
         static var focusedItemHeight: CGFloat {
@@ -48,13 +46,10 @@ struct CycleWeekScrollView: View {
         static let todayCircleSize: CGFloat = 20
         static let dayVerticalSpacing: CGFloat = 6
 
-        // Edge padding
         static let minimumEdgePadding: CGFloat = 8
 
-        // Computed: edge padding to allow first/last items to center
         static func calculateEdgePadding(screenWidth: CGFloat) -> CGFloat {
             // Padding should allow first and last items to scroll to screen center
-            // Formula: half screen width minus half item width
             let calculatedPadding = (screenWidth / 2) - (itemWidth / 2)
             return max(calculatedPadding, minimumEdgePadding)
         }
