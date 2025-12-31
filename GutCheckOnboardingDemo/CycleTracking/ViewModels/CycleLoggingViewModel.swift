@@ -26,10 +26,7 @@ class CycleLoggingViewModel {
     var selectedFlowLevel: FlowLevel?
 
     // Symptoms state
-    var areSymptomsLogged: Bool = false
     var selectedSymptomIds: Set<UUID> = []
-    var areSymptomsExpanded: Bool = false
-    var expandedSeveritySymptomId: UUID?
 
     // Spotting state
     var isSpottingLogged: Bool = false
@@ -98,7 +95,6 @@ class CycleLoggingViewModel {
         let periodSymptomIds = Set(periodSymptoms.map { $0.id })
         selectedSymptomIds = Set(log.symptomLogs.map { $0.symptomId })
             .intersection(periodSymptomIds)
-        areSymptomsLogged = !selectedSymptomIds.isEmpty
 
         isSpottingLogged = log.hadSpotting
     }
@@ -138,35 +134,25 @@ class CycleLoggingViewModel {
 
     // MARK: - Symptoms Actions
 
-    func toggleSymptomsLogged() {
-        if !areSymptomsLogged {
-            areSymptomsLogged = true
-            areSymptomsExpanded = true
-        }
-    }
-
     func toggleSymptomSelection(_ symptomId: UUID) {
         if selectedSymptomIds.contains(symptomId) {
-            if expandedSeveritySymptomId == symptomId {
-                expandedSeveritySymptomId = nil
-            } else {
-                expandedSeveritySymptomId = symptomId
-            }
+            // Deselect symptom
+            selectedSymptomIds.remove(symptomId)
+
+            // Remove from daily log
+            guard var log = dailyLog else { return }
+            log.symptomLogs.removeAll { $0.symptomId == symptomId }
+            repository.save(dailyLog: log)
+            dailyLog = log
         } else {
+            // Select symptom
             selectedSymptomIds.insert(symptomId)
-            areSymptomsLogged = true
             saveSymptomData(for: symptomId, severity: nil)
         }
     }
 
     func updateSymptomSeverity(_ symptomId: UUID, severity: Severity) {
         saveSymptomData(for: symptomId, severity: severity)
-    }
-
-    func toggleSymptomsExpanded() {
-        if areSymptomsLogged {
-            areSymptomsExpanded.toggle()
-        }
     }
 
     private func saveSymptomData(for symptomId: UUID, severity: Severity?) {

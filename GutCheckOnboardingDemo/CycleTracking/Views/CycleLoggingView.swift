@@ -177,151 +177,95 @@ private struct SymptomsRow: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Button(action: handleRowTap) {
-                HStack {
-                    Text("Symptoms")
-                        .font(AppTheme.Typography.bodyMedium)
-                        .foregroundColor(AppTheme.Colors.textPrimary)
-
-                    Spacer()
-
-                    symptomsStatus
-                }
+            Text("Symptoms")
+                .font(AppTheme.Typography.bodyMedium)
+                .foregroundColor(AppTheme.Colors.textPrimary)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(AppTheme.Spacing.lg)
-                .contentShape(Rectangle())
+                .disabled(viewModel.isFutureDate)
+                .opacity(viewModel.isFutureDate ? 0.4 : 1.0)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(viewModel.periodSymptoms) { symptom in
+                        SymptomPill(
+                            symptom: symptom,
+                            isSelected: viewModel.selectedSymptomIds.contains(symptom.id),
+                            isDisabled: viewModel.isFutureDate,
+                            onTap: {
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                    viewModel.toggleSymptomSelection(symptom.id)
+                                }
+                            }
+                        )
+                    }
+                }
+                .padding(.horizontal, AppTheme.Spacing.lg)
             }
-            .buttonStyle(PlainButtonStyle())
+            .padding(.bottom, AppTheme.Spacing.lg)
             .disabled(viewModel.isFutureDate)
             .opacity(viewModel.isFutureDate ? 0.4 : 1.0)
-
-            if viewModel.areSymptomsExpanded {
-                symptomsList
-                    .transition(.opacity.combined(with: .move(edge: .top)))
-            }
         }
         .background(AppTheme.Colors.surface)
     }
-
-    @ViewBuilder
-    private var symptomsStatus: some View {
-        if !viewModel.areSymptomsLogged || viewModel.selectedSymptomIds.isEmpty {
-            Button(action: handleCircleTap) {
-                Circle()
-                    .strokeBorder(AppTheme.Colors.textSecondary.opacity(0.3), lineWidth: 2)
-                    .frame(width: 24, height: 24)
-            }
-            .buttonStyle(PlainButtonStyle())
-        } else {
-            Text(viewModel.symptomSummaryText)
-                .font(AppTheme.Typography.bodySmall)
-                .foregroundColor(AppTheme.Colors.primaryAction)
-        }
-    }
-
-    private var symptomsList: some View {
-        VStack(spacing: 0) {
-            ForEach(viewModel.periodSymptoms) { symptom in
-                SymptomItemView(
-                    symptom: symptom,
-                    isSelected: viewModel.selectedSymptomIds.contains(symptom.id),
-                    isExpanded: viewModel.expandedSeveritySymptomId == symptom.id,
-                    onTap: {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                            viewModel.toggleSymptomSelection(symptom.id)
-                        }
-                    },
-                    onSeveritySelect: { severity in
-                        viewModel.updateSymptomSeverity(symptom.id, severity: severity)
-                    }
-                )
-
-                if symptom.id != viewModel.periodSymptoms.last?.id {
-                    Divider()
-                        .background(AppTheme.Colors.background)
-                        .padding(.horizontal, AppTheme.Spacing.lg)
-                }
-            }
-        }
-        .padding(.horizontal, AppTheme.Spacing.lg)
-        .padding(.top, AppTheme.Spacing.sm)
-        .padding(.bottom, AppTheme.Spacing.lg)
-    }
-
-    private func handleRowTap() {
-        withAnimation(.easeInOut(duration: AppTheme.Animation.standard)) {
-            viewModel.toggleSymptomsExpanded()
-        }
-    }
-
-    private func handleCircleTap() {
-        let impactFeedback = UIImpactFeedbackGenerator(style: .light)
-        impactFeedback.impactOccurred()
-
-        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-            viewModel.toggleSymptomsLogged()
-        }
-    }
 }
 
-// MARK: - Symptom Item View
+// MARK: - Symptom Pill
 
-private struct SymptomItemView: View {
+private struct SymptomPill: View {
 
     let symptom: Symptom
     let isSelected: Bool
-    let isExpanded: Bool
+    let isDisabled: Bool
     let onTap: () -> Void
-    let onSeveritySelect: (Severity) -> Void
+
+    @State private var isPressed: Bool = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Button(action: {
-                let impactFeedback = UIImpactFeedbackGenerator(style: .light)
-                impactFeedback.impactOccurred()
-                onTap()
-            }) {
-                HStack {
-                    Text(symptom.name)
-                        .font(AppTheme.Typography.bodyMedium)
-                        .foregroundColor(AppTheme.Colors.textPrimary)
-
-                    Spacer()
-
-                    ZStack {
-                        Circle()
-                            .strokeBorder(
-                                isSelected ? Color.clear : AppTheme.Colors.textSecondary.opacity(0.3),
-                                lineWidth: 2
-                            )
-                            .background(
-                                Circle()
-                                    .fill(isSelected ? AppTheme.Colors.primaryAction : Color.clear)
-                            )
-                            .frame(width: 24, height: 24)
-
-                        if isSelected {
-                            Image(systemName: "checkmark")
-                                .font(.system(size: 14, weight: .bold))
-                                .foregroundColor(.white)
-                        }
-                    }
-                }
-                .padding(.vertical, AppTheme.Spacing.sm)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(PlainButtonStyle())
-
-            if isExpanded {
-                SeverityPicker(
-                    currentSeverity: nil,  // TODO: Track selected severity per symptom in future iteration
-                    onSelect: { severity in
-                        onSeveritySelect(severity)
-                    }
+        Button(action: handleTap) {
+            Text(symptom.name)
+                .font(AppTheme.Typography.bodySmall)
+                .foregroundColor(
+                    isDisabled
+                        ? AppTheme.Colors.textSecondary.opacity(0.3)
+                        : (isSelected ? AppTheme.Colors.primaryAction : AppTheme.Colors.textSecondary)
                 )
-                .padding(.top, AppTheme.Spacing.sm)
-                .transition(.opacity.combined(with: .move(edge: .top)))
-            }
+                .padding(.vertical, 12)
+                .padding(.horizontal, AppTheme.Spacing.md)
+                .background(
+                    isSelected && !isDisabled
+                        ? AppTheme.Colors.primaryAction.opacity(0.1)
+                        : Color.clear
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: AppTheme.CornerRadius.xlarge)
+                        .stroke(
+                            isDisabled
+                                ? AppTheme.Colors.textSecondary.opacity(0.2)
+                                : (isSelected
+                                    ? AppTheme.Colors.primaryAction
+                                    : AppTheme.Colors.textSecondary.opacity(0.3)),
+                            lineWidth: isSelected && !isDisabled ? 1.5 : 1
+                        )
+                )
+                .cornerRadius(AppTheme.CornerRadius.xlarge)
         }
+        .buttonStyle(PlainButtonStyle())
+        .scaleEffect(isPressed ? 0.95 : 1.0)
+        .disabled(isDisabled)
+    }
+
+    private func handleTap() {
+        isPressed = true
+
+        let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+        impactFeedback.impactOccurred()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            isPressed = false
+        }
+
+        onTap()
     }
 }
 
