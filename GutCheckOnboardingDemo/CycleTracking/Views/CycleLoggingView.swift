@@ -19,6 +19,11 @@ struct CycleLoggingView: View {
                     .background(AppTheme.Colors.background)
 
                 SymptomsRow(viewModel: viewModel)
+
+                Divider()
+                    .background(AppTheme.Colors.background)
+
+                SpottingRow(viewModel: viewModel)
             }
             .background(AppTheme.Colors.surface)
             .cornerRadius(AppTheme.CornerRadius.medium)
@@ -328,6 +333,61 @@ private struct SymptomItemView: View {
                 .padding(.top, AppTheme.Spacing.sm)
                 .transition(.opacity.combined(with: .move(edge: .top)))
             }
+        }
+    }
+}
+
+// MARK: - Spotting Row
+
+private struct SpottingRow: View {
+
+    @Bindable var viewModel: CycleLoggingViewModel
+
+    var body: some View {
+        Button(action: handleTap) {
+            HStack {
+                Text("Spotting")
+                    .font(AppTheme.Typography.bodyMedium)
+                    .foregroundColor(AppTheme.Colors.textPrimary)
+
+                Spacer()
+
+                spottingStatus
+            }
+            .padding(AppTheme.Spacing.lg)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(PlainButtonStyle())
+        .disabled(viewModel.isFutureDate)
+        .opacity(viewModel.isFutureDate ? 0.4 : 1.0)
+        .background(AppTheme.Colors.surface)
+    }
+
+    @ViewBuilder
+    private var spottingStatus: some View {
+        if !viewModel.isSpottingLogged {
+            Circle()
+                .strokeBorder(AppTheme.Colors.textSecondary.opacity(0.3), lineWidth: 2)
+                .frame(width: 24, height: 24)
+        } else {
+            ZStack {
+                Circle()
+                    .fill(AppTheme.Colors.primaryAction)
+                    .frame(width: 24, height: 24)
+
+                Image(systemName: "checkmark")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(.white)
+            }
+        }
+    }
+
+    private func handleTap() {
+        let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+        impactFeedback.impactOccurred()
+
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+            viewModel.toggleSpotting()
         }
     }
 }
