@@ -2,7 +2,6 @@ import Foundation
 
 // MARK: - Severity
 
-/// Severity levels for symptom tracking
 enum Severity: String, Codable, CaseIterable, Identifiable {
     case mild = "Mild"
     case moderate = "Moderate"
@@ -21,7 +20,6 @@ enum Severity: String, Codable, CaseIterable, Identifiable {
 
 // MARK: - Flow Level
 
-/// Menstrual flow heaviness levels
 enum FlowLevel: String, Codable, CaseIterable, Identifiable {
     case light = "Light"
     case medium = "Medium"

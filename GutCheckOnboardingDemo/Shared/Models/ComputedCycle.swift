@@ -5,14 +5,14 @@ struct ComputedCycle: Identifiable {
     let id: UUID
     let startDate: Date
     let endDate: Date
-    let days: [DailyLog]  // All logged period days in this cycle
+    let periodDays: [DailyLog]
 
     var duration: Int {
         Calendar.current.dateComponents([.day], from: startDate, to: endDate).day! + 1
     }
 
     var flowDays: [DailyLog] {
-        days.filter { $0.flowLevel != nil && $0.flowLevel != .none }
+        periodDays.filter { $0.flowLevel != nil && $0.flowLevel != FlowLevel.none }
     }
 
     var flowDaysCount: Int {
@@ -23,7 +23,7 @@ struct ComputedCycle: Identifiable {
         self.id = id
         self.startDate = startDate
         self.endDate = endDate
-        self.days = days
+        self.periodDays = days
     }
 }
 
