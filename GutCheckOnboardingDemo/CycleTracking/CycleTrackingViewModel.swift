@@ -4,80 +4,49 @@ import Observation
 @Observable
 class CycleTrackingViewModel {
 
+    // MARK: - Dependencies
+
+    private let userId: UUID
+    private let repository: SymptomRepositoryProtocol & DailyLogRepositoryProtocol
+
     // MARK: - State
 
-    var currentCycle: CycleLog?
-    var isLoading: Bool = false
-
-    // MARK: - Private Properties
-
-    private let repository: InMemorySymptomRepository
-    private let userId: UUID
-
-    // MARK: - Computed Properties
-
-    /// Whether user is currently on their period
-    var isOnPeriod: Bool {
-        currentCycle?.isOngoing ?? false
+    var selectedDate: Date = Date().startOfDay {
+        didSet {
+            logSectionViewModel.selectedDate = selectedDate
+            loadData()
+        }
     }
 
-    /// Number of days since period started (if ongoing)
-    var daysSincePeriodStart: Int? {
-        guard let cycle = currentCycle, cycle.isOngoing else { return nil }
-        return Calendar.current.dateComponents([.day], from: cycle.startDate, to: Date()).day
-    }
+    var currentCycle: ComputedCycle?
+    var cycleHistory: [ComputedCycle] = []
+
+    // MARK: - Child ViewModels
+
+    let logSectionViewModel: CycleLoggingViewModel
 
     // MARK: - Initialization
 
-    init(
-        repository: InMemorySymptomRepository = .shared,
-        userId: UUID
-    ) {
-        self.repository = repository
+    init(userId: UUID, repository: SymptomRepositoryProtocol & DailyLogRepositoryProtocol = InMemorySymptomRepository.shared) {
         self.userId = userId
+        self.repository = repository
+        self.logSectionViewModel = CycleLoggingViewModel(
+            userId: userId,
+            selectedDate: Date().startOfDay,
+            repository: repository
+        )
+
+        loadData()
     }
 
     // MARK: - Data Loading
 
-    /// Loads current cycle data from repository
     func loadData() {
-        isLoading = true
+        let allLogs = repository.dailyLogs(for: userId)
 
-        // Check if there's an ongoing cycle
-        currentCycle = repository.ongoingCycle(for: userId)
+        let computedCycles = CycleComputationUtilities.groupIntoCycles(allLogs)
+        cycleHistory = computedCycles
 
-        isLoading = false
+        currentCycle = CycleComputationUtilities.getCurrentCycle(from: allLogs)
     }
-
-    // MARK: - Cycle Actions
-
-    /// Starts a new period on the given date
-    /// - Parameter date: The date the period started
-    func startPeriod(on date: Date) {
-        // Check if already on period
-        guard currentCycle == nil else {
-            print("Already on period, cannot start new one")
-            return
-        }
-
-        // Create new cycle log
-        let newCycle = CycleLog(
-            userId: userId,
-            startDate: date.startOfDay,
-            endDate: nil,  // ongoing
-            flowHeaviness: nil,  // not set yet
-            hasSpotting: false,
-            crampsSeverity: nil,
-            notes: nil
-        )
-
-        // Save to repository
-        repository.save(cycleLog: newCycle)
-
-        // Update local state
-        currentCycle = newCycle
-    }
-
-    // TODO: Add methods for updating flow, cramps, spotting, notes
-    // TODO: Add method for ending period
 }

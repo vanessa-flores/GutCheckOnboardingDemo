@@ -16,24 +16,14 @@ struct CycleTrackingView: View {
 
                     // MARK: - Week View Section
                     CycleWeekScrollView(
-                        currentCycle: viewModel.currentCycle,
+                        currentCycle: nil,  // TODO: Update to use ComputedCycle for period indicators
                         onDayTapped: { date in
-                            viewModel.startPeriod(on: date)
+                            viewModel.selectedDate = date
                         }
                     )
 
-                    // MARK: - Log Section (Placeholder)
-                    VStack(alignment: .leading, spacing: AppTheme.Spacing.md) {
-                        Text("Log")
-                            .font(AppTheme.Typography.title3)
-                            .foregroundColor(AppTheme.Colors.textPrimary)
-
-                        Text("Flow, Cramps, Spotting, Notes coming soon")
-                            .font(AppTheme.Typography.body)
-                            .foregroundColor(AppTheme.Colors.textSecondary)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, AppTheme.Spacing.xl)
+                    // MARK: - Log Section
+                    CycleLoggingView(viewModel: viewModel.logSectionViewModel)
 
                     Spacer(minLength: AppTheme.Spacing.xxxl)
 
