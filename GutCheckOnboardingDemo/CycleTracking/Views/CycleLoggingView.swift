@@ -127,32 +127,40 @@ private struct FlowLevelPill: View {
                 .foregroundColor(
                     isDisabled
                         ? AppTheme.Colors.textSecondary.opacity(0.3)
-                        : (isSelected ? AppTheme.Colors.primaryAction : AppTheme.Colors.textSecondary)
+                        : (isSelected ? .white : AppTheme.Colors.textPrimary)
                 )
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
                 .padding(.horizontal, AppTheme.Spacing.md)
                 .background(
-                    (isSelected && !isDisabled)
-                        ? AppTheme.Colors.primaryAction.opacity(0.1)
-                        : Color.clear
+                    isDisabled
+                        ? Color.clear
+                        : (isSelected
+                            ? AppTheme.Colors.primaryAction
+                            : AppTheme.Colors.surface)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: AppTheme.CornerRadius.xlarge)
-                        .stroke(
+                        .strokeBorder(
                             isDisabled
                                 ? AppTheme.Colors.textSecondary.opacity(0.2)
                                 : (isSelected
-                                    ? AppTheme.Colors.primaryAction
+                                    ? Color.clear
                                     : AppTheme.Colors.textSecondary.opacity(0.3)),
-                            lineWidth: isSelected && !isDisabled ? 1.5 : 1
+                            lineWidth: 1.5
                         )
                 )
                 .cornerRadius(AppTheme.CornerRadius.xlarge)
+                .shadow(
+                    color: isDisabled ? Color.clear : Color.black.opacity(0.05),
+                    radius: 2,
+                    x: 0,
+                    y: 2
+                )
         }
         .buttonStyle(PlainButtonStyle())
-        .disabled(isDisabled)
         .scaleEffect(isPressed ? 0.95 : 1.0)
+        .disabled(isDisabled)
     }
 
     private func handleTap() {
@@ -228,27 +236,35 @@ private struct SymptomPill: View {
                 .foregroundColor(
                     isDisabled
                         ? AppTheme.Colors.textSecondary.opacity(0.3)
-                        : (isSelected ? AppTheme.Colors.primaryAction : AppTheme.Colors.textSecondary)
+                        : (isSelected ? .white : AppTheme.Colors.textPrimary)
                 )
                 .padding(.vertical, 12)
                 .padding(.horizontal, AppTheme.Spacing.md)
                 .background(
-                    isSelected && !isDisabled
-                        ? AppTheme.Colors.primaryAction.opacity(0.1)
-                        : Color.clear
+                    isDisabled
+                        ? Color.clear
+                        : (isSelected
+                            ? AppTheme.Colors.primaryAction
+                            : AppTheme.Colors.surface)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: AppTheme.CornerRadius.xlarge)
-                        .stroke(
+                        .strokeBorder(
                             isDisabled
                                 ? AppTheme.Colors.textSecondary.opacity(0.2)
                                 : (isSelected
-                                    ? AppTheme.Colors.primaryAction
+                                    ? Color.clear
                                     : AppTheme.Colors.textSecondary.opacity(0.3)),
-                            lineWidth: isSelected && !isDisabled ? 1.5 : 1
+                            lineWidth: 1.5
                         )
                 )
                 .cornerRadius(AppTheme.CornerRadius.xlarge)
+                .shadow(
+                    color: isDisabled ? Color.clear : Color.black.opacity(0.05),
+                    radius: 2,
+                    x: 0,
+                    y: 2
+                )
         }
         .buttonStyle(PlainButtonStyle())
         .scaleEffect(isPressed ? 0.95 : 1.0)
