@@ -276,32 +276,27 @@ private struct SpottingRow: View {
     @Bindable var viewModel: CycleLoggingViewModel
 
     var body: some View {
-        Button(action: handleTap) {
-            HStack {
-                Text("Spotting")
-                    .font(AppTheme.Typography.bodyMedium)
-                    .foregroundColor(AppTheme.Colors.textPrimary)
+        HStack {
+            Text("Spotting")
+                .font(AppTheme.Typography.bodyMedium)
+                .foregroundColor(AppTheme.Colors.textPrimary)
 
-                Spacer()
+            Spacer()
 
+            Button(action: handleTap) {
                 spottingStatus
             }
-            .padding(AppTheme.Spacing.lg)
-            .contentShape(Rectangle())
+            .buttonStyle(PlainButtonStyle())
         }
-        .buttonStyle(PlainButtonStyle())
+        .padding(AppTheme.Spacing.lg)
+        .background(AppTheme.Colors.surface)
         .disabled(viewModel.isFutureDate)
         .opacity(viewModel.isFutureDate ? 0.4 : 1.0)
-        .background(AppTheme.Colors.surface)
     }
 
     @ViewBuilder
     private var spottingStatus: some View {
-        if !viewModel.isSpottingLogged {
-            Circle()
-                .strokeBorder(AppTheme.Colors.textSecondary.opacity(0.3), lineWidth: 2)
-                .frame(width: 24, height: 24)
-        } else {
+        if viewModel.isSpottingLogged {
             ZStack {
                 Circle()
                     .fill(AppTheme.Colors.primaryAction)
@@ -311,6 +306,10 @@ private struct SpottingRow: View {
                     .font(.system(size: 14, weight: .bold))
                     .foregroundColor(.white)
             }
+        } else {
+            Circle()
+                .strokeBorder(AppTheme.Colors.textSecondary.opacity(0.3), lineWidth: 2)
+                .frame(width: 24, height: 24)
         }
     }
 
