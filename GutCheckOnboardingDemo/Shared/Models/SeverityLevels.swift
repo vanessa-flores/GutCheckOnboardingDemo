@@ -26,14 +26,16 @@ enum FlowLevel: String, Codable, CaseIterable, Identifiable {
     case light = "Light"
     case medium = "Medium"
     case heavy = "Heavy"
+    case none = "No Flow"  // User is tracking period but no bleeding this day
 
     var id: String { rawValue }
-    
+
     var numericValue: Int {
         switch self {
         case .light: return 1
         case .medium: return 2
         case .heavy: return 3
+        case .none: return 0
         }
     }
 }

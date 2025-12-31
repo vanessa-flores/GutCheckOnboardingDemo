@@ -9,8 +9,13 @@ struct DailyLog: Codable, Identifiable, Equatable {
     let id: UUID
     let userId: UUID
     let date: Date                    // Normalized to start of day
+
+    // Period-specific daily data
+    var flowLevel: FlowLevel?         // nil = not logged, .none = "no flow but tracking"
+    var hadSpotting: Bool             // Default false
+
+    // General symptom tracking
     var symptomLogs: [SymptomLog]
-    var cycleLog: CycleLog?           // If period tracked that day
     var reflectionNotes: String?      // End-of-day reflection
     var completedAt: Date?            // When user marked day as "complete"
 
@@ -20,16 +25,18 @@ struct DailyLog: Codable, Identifiable, Equatable {
         id: UUID = UUID(),
         userId: UUID,
         date: Date,
+        flowLevel: FlowLevel? = nil,
+        hadSpotting: Bool = false,
         symptomLogs: [SymptomLog] = [],
-        cycleLog: CycleLog? = nil,
         reflectionNotes: String? = nil,
         completedAt: Date? = nil
     ) {
         self.id = id
         self.userId = userId
         self.date = date.startOfDay
+        self.flowLevel = flowLevel
+        self.hadSpotting = hadSpotting
         self.symptomLogs = symptomLogs
-        self.cycleLog = cycleLog
         self.reflectionNotes = reflectionNotes
         self.completedAt = completedAt
     }
@@ -43,9 +50,9 @@ extension DailyLog {
         completedAt != nil
     }
 
-    /// Whether this log has any data (symptoms, cycle, or notes)
+    /// Whether this log has any data (symptoms, flow, spotting, or notes)
     var hasData: Bool {
-        !symptomLogs.isEmpty || cycleLog != nil || reflectionNotes != nil
+        !symptomLogs.isEmpty || flowLevel != nil || hadSpotting || reflectionNotes != nil
     }
 
     /// Total number of symptoms logged today
@@ -55,7 +62,7 @@ extension DailyLog {
 
     /// Whether the user logged their period this day
     var hasPeriodLogged: Bool {
-        cycleLog != nil
+        flowLevel != nil
     }
 }
 
@@ -73,13 +80,6 @@ extension DailyLog {
     func removingSymptomLog(withId id: UUID) -> DailyLog {
         var copy = self
         copy.symptomLogs.removeAll { $0.id == id }
-        return copy
-    }
-
-    /// Returns a copy with updated cycle log
-    func withCycleLog(_ cycleLog: CycleLog?) -> DailyLog {
-        var copy = self
-        copy.cycleLog = cycleLog
         return copy
     }
 
