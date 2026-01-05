@@ -38,24 +38,23 @@ struct ComputedCycle: Identifiable {
 /// Utilities for computing cycles from daily logs
 struct CycleComputationUtilities {
 
-    /// Groups daily logs into cycles based on consecutive flow tracking
+    /// Groups daily logs into menstrual cycles based on period start dates
     ///
-    /// **Rule:** Cycle = consecutive days with flowLevel != nil (including .none)
-    /// Broken by 3+ days of nil (no logging)
+    /// **Algorithm:**
+    /// - A cycle starts on the first day of period (flowLevel != nil)
+    /// - A new cycle starts when there's a 14+ day gap between period days
+    /// - The last cycle is ongoing (endDate = nil) until a new period starts
     ///
     /// **Example:**
     /// ```
-    /// Dec 1: .heavy
-    /// Dec 2: .medium
-    /// Dec 3: .none      ← Still part of cycle
-    /// Dec 4: .none      ← Still part of cycle
-    /// Dec 5: nil        ← Gap day 1
-    /// Dec 6: nil        ← Gap day 2
-    /// Dec 7: nil        ← Gap day 3 → Cycle ends on Dec 4
-    /// Dec 8: .medium    ← New cycle starts
+    /// Jan 1: .heavy        → Cycle 1 starts
+    /// Jan 2: .medium       → Part of Cycle 1
+    /// Jan 3-27: nil        → No logging (still Cycle 1)
+    /// Jan 28: .medium      → Cycle 2 starts (14+ days later)
+    ///                      → Cycle 1 ends on Jan 27
     /// ```
     static func groupIntoCycles(_ dailyLogs: [DailyLog]) -> [ComputedCycle] {
-        // Get all days where period was logged (including "no flow")
+        // Filter to days with period tracking (flowLevel != nil)
         let periodDays = dailyLogs
             .filter { $0.flowLevel != nil }
             .sorted { $0.date < $1.date }
@@ -63,37 +62,46 @@ struct CycleComputationUtilities {
         guard !periodDays.isEmpty else { return [] }
 
         var cycles: [ComputedCycle] = []
-        var currentCycleStart = periodDays[0].date
-        var currentCycleDays: [DailyLog] = [periodDays[0]]
+        var currentCycleStartDate = periodDays[0].date
+        var currentCyclePeriodDays: [DailyLog] = [periodDays[0]]
 
+        // Iterate through period days to identify cycle boundaries
         for i in 1..<periodDays.count {
             let previousDate = periodDays[i - 1].date
             let currentDate = periodDays[i].date
+
             let daysBetween = Calendar.current.dateComponents([.day],
                 from: previousDate, to: currentDate).day ?? 0
 
-            if daysBetween > 3 {
-                // Gap of 3+ days (no logging) = new cycle
+            if daysBetween >= 14 {
+                // 14+ day gap = new cycle starts
+                // Close previous cycle
+                let cycleEndDate = Calendar.current.date(
+                    byAdding: .day,
+                    value: -1,
+                    to: currentDate
+                )!
+
                 cycles.append(ComputedCycle(
-                    startDate: currentCycleStart,
-                    endDate: previousDate,
-                    days: currentCycleDays
+                    startDate: currentCycleStartDate,
+                    endDate: cycleEndDate,
+                    days: currentCyclePeriodDays
                 ))
 
                 // Start new cycle
-                currentCycleStart = currentDate
-                currentCycleDays = [periodDays[i]]
+                currentCycleStartDate = currentDate
+                currentCyclePeriodDays = [periodDays[i]]
             } else {
-                // Continue current cycle (includes 1-2 day gaps)
-                currentCycleDays.append(periodDays[i])
+                // Same cycle continues
+                currentCyclePeriodDays.append(periodDays[i])
             }
         }
 
-        // Add final cycle (ongoing or completed)
+        // Add final cycle (ongoing - no endDate)
         cycles.append(ComputedCycle(
-            startDate: currentCycleStart,
-            endDate: periodDays.last!.date,
-            days: currentCycleDays
+            startDate: currentCycleStartDate,
+            endDate: nil,  // Ongoing cycle
+            days: currentCyclePeriodDays
         ))
 
         return cycles
@@ -101,15 +109,29 @@ struct CycleComputationUtilities {
 
     /// Gets the current active cycle (if any)
     ///
-    /// **Active cycle:** Most recent period day is within 3 days of today
+    /// **Active cycle:** Most recent cycle if ongoing or last period day within 3 days of today
     static func getCurrentCycle(from dailyLogs: [DailyLog]) -> ComputedCycle? {
         let cycles = groupIntoCycles(dailyLogs)
         guard let mostRecentCycle = cycles.last else { return nil }
 
-        let today = Date().startOfDay
-        let daysSinceLastLog = Calendar.current.dateComponents([.day],
-            from: mostRecentCycle.endDate, to: today).day ?? 0
+        // If cycle is ongoing (endDate == nil), it's the current cycle
+        if mostRecentCycle.isOngoing {
+            // Check if last period day is recent (within 3 days)
+            guard let lastPeriodDay = mostRecentCycle.periodDays.last else { return nil }
+            let today = Date().startOfDay
+            let daysSinceLastLog = Calendar.current.dateComponents([.day],
+                from: lastPeriodDay.date, to: today).day ?? 0
+            return daysSinceLastLog <= 3 ? mostRecentCycle : nil
+        }
 
-        return daysSinceLastLog <= 3 ? mostRecentCycle : nil
+        // For completed cycles, check if endDate is within 3 days
+        if let endDate = mostRecentCycle.endDate {
+            let today = Date().startOfDay
+            let daysSinceEnd = Calendar.current.dateComponents([.day],
+                from: endDate, to: today).day ?? 0
+            return daysSinceEnd <= 3 ? mostRecentCycle : nil
+        }
+
+        return nil
     }
 }
