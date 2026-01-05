@@ -107,31 +107,11 @@ struct CycleComputationUtilities {
         return cycles
     }
 
-    /// Gets the current active cycle (if any)
-    ///
-    /// **Active cycle:** Most recent cycle if ongoing or last period day within 3 days of today
+    /// **Current cycle:** The most recent cycle that hasn't ended yet (endDate == nil)
     static func getCurrentCycle(from dailyLogs: [DailyLog]) -> ComputedCycle? {
         let cycles = groupIntoCycles(dailyLogs)
-        guard let mostRecentCycle = cycles.last else { return nil }
 
-        // If cycle is ongoing (endDate == nil), it's the current cycle
-        if mostRecentCycle.isOngoing {
-            // Check if last period day is recent (within 3 days)
-            guard let lastPeriodDay = mostRecentCycle.periodDays.last else { return nil }
-            let today = Date().startOfDay
-            let daysSinceLastLog = Calendar.current.dateComponents([.day],
-                from: lastPeriodDay.date, to: today).day ?? 0
-            return daysSinceLastLog <= 3 ? mostRecentCycle : nil
-        }
-
-        // For completed cycles, check if endDate is within 3 days
-        if let endDate = mostRecentCycle.endDate {
-            let today = Date().startOfDay
-            let daysSinceEnd = Calendar.current.dateComponents([.day],
-                from: endDate, to: today).day ?? 0
-            return daysSinceEnd <= 3 ? mostRecentCycle : nil
-        }
-
-        return nil
+        // The last cycle is ongoing if its endDate is nil
+        return cycles.last?.isOngoing == true ? cycles.last : nil
     }
 }
