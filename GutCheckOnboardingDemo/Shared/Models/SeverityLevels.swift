@@ -21,6 +21,7 @@ enum Severity: String, Codable, CaseIterable, Identifiable {
 // MARK: - Flow Level
 
 enum FlowLevel: String, Codable, CaseIterable, Identifiable {
+    case unspecified = "On Period"
     case light = "Light"
     case medium = "Medium"
     case heavy = "Heavy"
@@ -34,6 +35,16 @@ enum FlowLevel: String, Codable, CaseIterable, Identifiable {
         case .medium: return 2
         case .heavy: return 3
         case .none: return 0
+        case .unspecified: return 0
+        }
+    }
+
+    var isActualFlow: Bool {
+        switch self {
+        case .light, .medium, .heavy:
+            return true
+        case .unspecified, .none:
+            return false
         }
     }
 }
