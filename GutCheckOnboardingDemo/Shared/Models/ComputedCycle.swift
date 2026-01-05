@@ -4,22 +4,30 @@ import Foundation
 struct ComputedCycle: Identifiable {
     let id: UUID
     let startDate: Date
-    let endDate: Date
+    let endDate: Date?
     let periodDays: [DailyLog]
 
+    var isOngoing: Bool {
+        endDate == nil
+    }
+
     var duration: Int {
-        Calendar.current.dateComponents([.day], from: startDate, to: endDate).day! + 1
+        let end = endDate ?? Date().startOfDay
+        return Calendar.current.dateComponents([.day], from: startDate, to: end).day ?? 0
     }
 
     var flowDays: [DailyLog] {
-        periodDays.filter { $0.flowLevel != nil && $0.flowLevel != FlowLevel.none }
+        periodDays.filter {
+            guard let level = $0.flowLevel else { return false }
+            return level.isActualFlow
+        }
     }
 
     var flowDaysCount: Int {
         flowDays.count
     }
 
-    init(id: UUID = UUID(), startDate: Date, endDate: Date, days: [DailyLog]) {
+    init(id: UUID = UUID(), startDate: Date, endDate: Date?, days: [DailyLog]) {
         self.id = id
         self.startDate = startDate
         self.endDate = endDate
