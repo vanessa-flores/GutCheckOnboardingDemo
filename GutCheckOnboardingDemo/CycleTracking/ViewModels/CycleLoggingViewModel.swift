@@ -106,6 +106,7 @@ class CycleLoggingViewModel {
             selectedFlowLevel = nil
             isPeriodLogged = false
         } else {
+            selectedFlowLevel = .unspecified
             isPeriodLogged = true
         }
 
