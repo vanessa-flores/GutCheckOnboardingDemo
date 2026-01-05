@@ -58,7 +58,7 @@ private struct PeriodRow: View {
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    ForEach(FlowLevel.allCases, id: \.self) { level in
+                    ForEach(FlowLevel.allCases.filter { $0 != .unspecified }, id: \.self) { level in
                         FlowLevelPill(
                             level: level,
                             isSelected: viewModel.selectedFlowLevel == level,
