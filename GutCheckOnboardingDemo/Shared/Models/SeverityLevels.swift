@@ -2,7 +2,6 @@ import Foundation
 
 // MARK: - Severity
 
-/// Severity levels for symptom tracking
 enum Severity: String, Codable, CaseIterable, Identifiable {
     case mild = "Mild"
     case moderate = "Moderate"
@@ -21,19 +20,31 @@ enum Severity: String, Codable, CaseIterable, Identifiable {
 
 // MARK: - Flow Level
 
-/// Menstrual flow heaviness levels
 enum FlowLevel: String, Codable, CaseIterable, Identifiable {
+    case unspecified = "On Period"
     case light = "Light"
     case medium = "Medium"
     case heavy = "Heavy"
+    case none = "No Flow"  // User is tracking period but no bleeding this day
 
     var id: String { rawValue }
-    
+
     var numericValue: Int {
         switch self {
         case .light: return 1
         case .medium: return 2
         case .heavy: return 3
+        case .none: return 0
+        case .unspecified: return 0
+        }
+    }
+
+    var isActualFlow: Bool {
+        switch self {
+        case .light, .medium, .heavy:
+            return true
+        case .unspecified, .none:
+            return false
         }
     }
 }

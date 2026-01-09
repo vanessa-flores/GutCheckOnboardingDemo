@@ -52,6 +52,12 @@ extension CycleLog {
         return Calendar.current.dateComponents([.day], from: startDate, to: end).day.map { $0 + 1 }
     }
 
+    /// Number of days in this cycle (or days so far if ongoing)
+    var daysElapsed: Int {
+        let end = endDate ?? Date()
+        return Calendar.current.dateComponents([.day], from: startDate, to: end).day ?? 0
+    }
+
     /// Whether this cycle includes a specific date
     func includes(date: Date) -> Bool {
         let normalizedDate = date.startOfDay

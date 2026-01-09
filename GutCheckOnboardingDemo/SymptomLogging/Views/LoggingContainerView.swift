@@ -24,7 +24,7 @@ struct LoggingContainerView: View {
                     case .allSymptoms:
                         SymptomLoggingView(userId: userId)
                     case .cycle:
-                        CyclePlaceholderView()
+                        CycleTrackingView(userId: userId)
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
