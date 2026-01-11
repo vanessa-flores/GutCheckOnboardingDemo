@@ -43,8 +43,7 @@ struct CycleTrackingView: View {
                             print("Period tapped")
                         },
                         onSpottingToggled: { newValue in
-                            // TODO: Update spotting in next phase
-                            print("Spotting toggled to: \(newValue)")
+                            viewModel.toggleSpotting(newValue)
                         },
                         onSymptomsTapped: {
                             // TODO: Open symptoms modal in next phase

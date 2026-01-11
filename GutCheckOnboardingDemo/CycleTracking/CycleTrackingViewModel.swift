@@ -60,6 +60,20 @@ class CycleTrackingViewModel {
         loadWeekData()
     }
 
+    /// Toggle spotting for the selected day
+    func toggleSpotting(_ hasSpotting: Bool) {
+        // Update the log data
+        logData = LogData(
+            selectedDate: logData.selectedDate,
+            periodValue: logData.periodValue,
+            hasSpotting: hasSpotting,
+            symptomsPreview: logData.symptomsPreview
+        )
+
+        // TODO: Later phase - persist to repository
+        // For now, just update local state
+    }
+
     /// Load week data and generate day columns
     func loadWeekData() {
         let today = Date().startOfDay
