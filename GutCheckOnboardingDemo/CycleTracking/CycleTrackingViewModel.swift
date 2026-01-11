@@ -70,6 +70,12 @@ class CycleTrackingViewModel {
             symptomsPreview: logData.symptomsPreview
         )
 
+        // Update week view if there's a flow level set
+        if let flowValue = logData.periodValue,
+           let flowLevel = FlowLevel(rawValue: flowValue) {
+            updateWeekViewForSelectedDay(flowLevel: flowLevel, hasSpotting: hasSpotting)
+        }
+
         // TODO: Later phase - persist to repository
         // For now, just update local state
     }
@@ -93,6 +99,9 @@ class CycleTrackingViewModel {
                 symptomsPreview: logData.symptomsPreview
             )
         }
+
+        // Update the week view to reflect the change
+        updateWeekViewForSelectedDay(flowLevel: flowLevel, hasSpotting: logData.hasSpotting)
 
         // TODO: Later phase - persist to repository
         // For now, just update local state
@@ -163,6 +172,30 @@ class CycleTrackingViewModel {
     }
 
     // MARK: - Private Helpers
+
+    /// Update the week view for the currently selected day
+    private func updateWeekViewForSelectedDay(flowLevel: FlowLevel?, hasSpotting: Bool) {
+        // Find which day index is currently selected
+        guard let selectedIndex = weekDays.firstIndex(where: { $0.isSelected }) else {
+            return
+        }
+
+        // Create updated flow data
+        let flowData: FlowBarData? = if let flowLevel = flowLevel {
+            FlowBarData(flowLevel: flowLevel, hasSpotting: hasSpotting)
+        } else {
+            nil
+        }
+
+        // Update that specific day in the array
+        weekDays[selectedIndex] = DayColumnData(
+            dayLabel: weekDays[selectedIndex].dayLabel,
+            dateNumber: weekDays[selectedIndex].dateNumber,
+            flowData: flowData,
+            isToday: weekDays[selectedIndex].isToday,
+            isSelected: true
+        )
+    }
 
     /// Format date as "Wed, Jan 8"
     private static func formatDate(_ date: Date) -> String {

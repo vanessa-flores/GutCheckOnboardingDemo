@@ -30,10 +30,7 @@ struct CycleTrackingView: View {
                         }
                     )
 
-                    // Divider Line
-                    Rectangle()
-                        .fill(AppTheme.Colors.background)
-                        .frame(height: 1)
+                    Divider()
                         .padding(.horizontal, AppTheme.Spacing.xl)
 
                     // Log Section
