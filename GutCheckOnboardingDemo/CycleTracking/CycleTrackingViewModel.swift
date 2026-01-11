@@ -74,6 +74,30 @@ class CycleTrackingViewModel {
         // For now, just update local state
     }
 
+    /// Update period data for the selected day
+    func updatePeriodData(isTracking: Bool, flowLevel: FlowLevel?) {
+        if isTracking {
+            // User is tracking period with a flow level
+            logData = LogData(
+                selectedDate: logData.selectedDate,
+                periodValue: flowLevel?.rawValue,
+                hasSpotting: logData.hasSpotting,
+                symptomsPreview: logData.symptomsPreview
+            )
+        } else {
+            // User turned off tracking - clear period data
+            logData = LogData(
+                selectedDate: logData.selectedDate,
+                periodValue: nil,
+                hasSpotting: false, // Also clear spotting when not tracking
+                symptomsPreview: logData.symptomsPreview
+            )
+        }
+
+        // TODO: Later phase - persist to repository
+        // For now, just update local state
+    }
+
     /// Load week data and generate day columns
     func loadWeekData() {
         let today = Date().startOfDay

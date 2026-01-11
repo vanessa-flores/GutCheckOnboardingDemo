@@ -3,6 +3,7 @@ import SwiftUI
 struct CycleTrackingView: View {
     let userId: UUID
     @State private var viewModel: CycleTrackingViewModel
+    @State private var showingPeriodModal = false
 
     init(userId: UUID) {
         self.userId = userId
@@ -39,8 +40,7 @@ struct CycleTrackingView: View {
                     CycleLogSection(
                         data: viewModel.logData,
                         onPeriodTapped: {
-                            // TODO: Open period modal in next phase
-                            print("Period tapped")
+                            showingPeriodModal = true
                         },
                         onSpottingToggled: { newValue in
                             viewModel.toggleSpotting(newValue)
@@ -73,6 +73,19 @@ struct CycleTrackingView: View {
                             .foregroundColor(AppTheme.Colors.primaryAction)
                     }
                 }
+            }
+            .sheet(isPresented: $showingPeriodModal) {
+                PeriodLogModal(
+                    date: viewModel.logData.selectedDate,
+                    initialFlow: {
+                        guard let periodValue = viewModel.logData.periodValue else { return nil }
+                        return FlowLevel(rawValue: periodValue)
+                    }(),
+                    initialTracking: viewModel.logData.periodValue != nil,
+                    onSave: { isTracking, flowLevel in
+                        viewModel.updatePeriodData(isTracking: isTracking, flowLevel: flowLevel)
+                    }
+                )
             }
         }
     }
