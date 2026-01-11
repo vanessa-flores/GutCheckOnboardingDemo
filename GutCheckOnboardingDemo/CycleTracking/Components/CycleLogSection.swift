@@ -57,10 +57,7 @@ struct CycleLogSection: View {
                     onPeriodTapped()
                 }
 
-                // Divider
-                Rectangle()
-                    .fill(AppTheme.Colors.background)
-                    .frame(height: 1)
+                Divider()
 
                 // Spotting row
                 LogRow(
@@ -73,10 +70,7 @@ struct CycleLogSection: View {
                     ))
                 }
 
-                // Divider
-                Rectangle()
-                    .fill(AppTheme.Colors.background)
-                    .frame(height: 1)
+                Divider()
 
                 // Symptoms row
                 LogRow(
@@ -104,8 +98,6 @@ struct CycleLogSection: View {
         }
         .padding(AppTheme.Spacing.xl)
         .background(Color.white)
-        .cornerRadius(AppTheme.CornerRadius.large)
-        .shadow(radius: 4, y: 2)
     }
 }
 

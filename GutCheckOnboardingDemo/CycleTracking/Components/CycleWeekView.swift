@@ -27,8 +27,6 @@ struct CycleWeekView: View {
         }
         .padding(AppTheme.Spacing.xl)
         .background(Color.white)
-        .cornerRadius(AppTheme.CornerRadius.large)
-        .shadow(radius: 4, y: 2)
     }
 }
 

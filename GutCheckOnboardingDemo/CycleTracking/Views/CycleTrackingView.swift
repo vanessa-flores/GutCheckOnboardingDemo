@@ -12,43 +12,48 @@ struct CycleTrackingView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: AppTheme.Spacing.xl) {
-
-                    // MARK: - Week View Section
-                    CycleWeekScrollView(
-                        currentCycle: nil,  // TODO: Update to use ComputedCycle for period indicators
-                        onDayTapped: { date in
-                            viewModel.selectedDate = date
+                // Single card container combining week view + log section
+                VStack(spacing: 0) {
+                    // Week View Section
+                    CycleWeekView(
+                        weekRange: "Jan 6 - Jan 12",
+                        days: mockDays,
+                        onPreviousWeek: {
+                            print("Previous week tapped")
+                        },
+                        onNextWeek: {
+                            print("Next week tapped")
+                        },
+                        onDayTapped: { index in
+                            print("Day \(index) tapped")
                         }
                     )
 
-                    // MARK: - Log Section
-                    CycleLoggingView(viewModel: viewModel.logSectionViewModel)
+                    Divider()
+                        .padding(.horizontal, AppTheme.Spacing.xl)
 
-                    Spacer(minLength: AppTheme.Spacing.xxxl)
-
-                    // MARK: - Cycle History Section (Placeholder)
-                    VStack(alignment: .leading, spacing: AppTheme.Spacing.md) {
-                        HStack {
-                            Text("Recent Cycles")
-                                .font(AppTheme.Typography.title3)
-                                .foregroundColor(AppTheme.Colors.textPrimary)
-
-                            Spacer()
-
-                            Text("View All")
-                                .font(AppTheme.Typography.bodySmall)
-                                .foregroundColor(AppTheme.Colors.primaryAction)
+                    // Log Section
+                    CycleLogSection(
+                        data: mockLogData,
+                        onPeriodTapped: {
+                            print("Period tapped")
+                        },
+                        onSpottingToggled: { newValue in
+                            print("Spotting toggled to: \(newValue)")
+                        },
+                        onSymptomsTapped: {
+                            print("Symptoms tapped")
                         }
-
-                        Text("Cycle history coming in Phase 2")
-                            .font(AppTheme.Typography.body)
-                            .foregroundColor(AppTheme.Colors.textSecondary)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, AppTheme.Spacing.xl)
+                    )
                 }
-                .padding(.top, AppTheme.Spacing.md)
+                .background(Color.white)
+                .cornerRadius(AppTheme.CornerRadius.large)
+                .shadow(radius: 4, y: 2)
+                .padding(.horizontal, AppTheme.Spacing.xl)
+                .padding(.vertical, AppTheme.Spacing.md)
+
+                // Future: Cycle Insights card will go here
+                // Future: Cycle History card will go here
             }
             .background(AppTheme.Colors.background)
             .navigationTitle("Cycle")
@@ -68,6 +73,29 @@ struct CycleTrackingView: View {
         .onAppear {
             viewModel.loadData()
         }
+    }
+
+    // MARK: - Mock Data
+
+    private var mockDays: [DayColumnData] {
+        [
+            DayColumnData(dayLabel: "M", dateNumber: 6, flowData: FlowBarData(flowLevel: .heavy, hasSpotting: false), isToday: false, isSelected: false),
+            DayColumnData(dayLabel: "T", dateNumber: 7, flowData: FlowBarData(flowLevel: .medium, hasSpotting: true), isToday: false, isSelected: false),
+            DayColumnData(dayLabel: "W", dateNumber: 8, flowData: nil, isToday: true, isSelected: true),
+            DayColumnData(dayLabel: "Th", dateNumber: 9, flowData: nil, isToday: false, isSelected: false),
+            DayColumnData(dayLabel: "F", dateNumber: 10, flowData: nil, isToday: false, isSelected: false),
+            DayColumnData(dayLabel: "Sa", dateNumber: 11, flowData: nil, isToday: false, isSelected: false),
+            DayColumnData(dayLabel: "Su", dateNumber: 12, flowData: nil, isToday: false, isSelected: false),
+        ]
+    }
+
+    private var mockLogData: LogData {
+        LogData(
+            selectedDate: "Wed, Jan 8",
+            periodValue: nil,
+            hasSpotting: false,
+            symptomsPreview: nil
+        )
     }
 }
 
