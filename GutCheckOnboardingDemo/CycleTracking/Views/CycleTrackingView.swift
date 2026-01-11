@@ -16,32 +16,38 @@ struct CycleTrackingView: View {
                 VStack(spacing: 0) {
                     // Week View Section
                     CycleWeekView(
-                        weekRange: "Jan 6 - Jan 12",
-                        days: mockDays,
+                        weekRange: viewModel.weekRange,
+                        days: viewModel.weekDays,
                         onPreviousWeek: {
-                            print("Previous week tapped")
+                            viewModel.navigateToPreviousWeek()
                         },
                         onNextWeek: {
-                            print("Next week tapped")
+                            viewModel.navigateToNextWeek()
                         },
                         onDayTapped: { index in
-                            print("Day \(index) tapped")
+                            viewModel.selectDay(index)
                         }
                     )
 
-                    Divider()
+                    // Divider Line
+                    Rectangle()
+                        .fill(AppTheme.Colors.background)
+                        .frame(height: 1)
                         .padding(.horizontal, AppTheme.Spacing.xl)
 
                     // Log Section
                     CycleLogSection(
-                        data: mockLogData,
+                        data: viewModel.logData,
                         onPeriodTapped: {
+                            // TODO: Open period modal in next phase
                             print("Period tapped")
                         },
                         onSpottingToggled: { newValue in
+                            // TODO: Update spotting in next phase
                             print("Spotting toggled to: \(newValue)")
                         },
                         onSymptomsTapped: {
+                            // TODO: Open symptoms modal in next phase
                             print("Symptoms tapped")
                         }
                     )
@@ -70,32 +76,6 @@ struct CycleTrackingView: View {
                 }
             }
         }
-        .onAppear {
-            viewModel.loadData()
-        }
-    }
-
-    // MARK: - Mock Data
-
-    private var mockDays: [DayColumnData] {
-        [
-            DayColumnData(dayLabel: "M", dateNumber: 6, flowData: FlowBarData(flowLevel: .heavy, hasSpotting: false), isToday: false, isSelected: false),
-            DayColumnData(dayLabel: "T", dateNumber: 7, flowData: FlowBarData(flowLevel: .medium, hasSpotting: true), isToday: false, isSelected: false),
-            DayColumnData(dayLabel: "W", dateNumber: 8, flowData: nil, isToday: true, isSelected: true),
-            DayColumnData(dayLabel: "Th", dateNumber: 9, flowData: nil, isToday: false, isSelected: false),
-            DayColumnData(dayLabel: "F", dateNumber: 10, flowData: nil, isToday: false, isSelected: false),
-            DayColumnData(dayLabel: "Sa", dateNumber: 11, flowData: nil, isToday: false, isSelected: false),
-            DayColumnData(dayLabel: "Su", dateNumber: 12, flowData: nil, isToday: false, isSelected: false),
-        ]
-    }
-
-    private var mockLogData: LogData {
-        LogData(
-            selectedDate: "Wed, Jan 8",
-            periodValue: nil,
-            hasSpotting: false,
-            symptomsPreview: nil
-        )
     }
 }
 
