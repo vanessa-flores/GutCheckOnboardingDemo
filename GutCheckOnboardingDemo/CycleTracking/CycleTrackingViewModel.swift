@@ -1,52 +1,153 @@
+import Foundation
 import SwiftUI
 import Observation
 
 @Observable
 class CycleTrackingViewModel {
 
+    // MARK: - Published State
+
+    var currentWeekStart: Date
+    var selectedDate: Date
+    var weekDays: [DayColumnData] = []
+    var logData: LogData
+
     // MARK: - Dependencies
 
     private let userId: UUID
-    private let repository: SymptomRepositoryProtocol & DailyLogRepositoryProtocol
-
-    // MARK: - State
-
-    var selectedDate: Date = Date().startOfDay {
-        didSet {
-            logSectionViewModel.selectedDate = selectedDate
-            loadData()
-        }
-    }
-
-    var currentCycle: ComputedCycle?
-    var cycleHistory: [ComputedCycle] = []
-
-    // MARK: - Child ViewModels
-
-    let logSectionViewModel: CycleLoggingViewModel
+    // TODO: Connect to repository - add repository dependency in future phase
 
     // MARK: - Initialization
 
-    init(userId: UUID, repository: SymptomRepositoryProtocol & DailyLogRepositoryProtocol = InMemorySymptomRepository.shared) {
+    init(userId: UUID) {
         self.userId = userId
-        self.repository = repository
-        self.logSectionViewModel = CycleLoggingViewModel(
-            userId: userId,
-            selectedDate: Date().startOfDay,
-            repository: repository
+
+        // Initialize to current week
+        let today = Date()
+        self.currentWeekStart = today.startOfWeek
+        self.selectedDate = today.startOfDay
+
+        // Initialize with empty log data
+        self.logData = LogData(
+            selectedDate: Self.formatDate(today),
+            periodValue: nil,
+            hasSpotting: false,
+            symptomsPreview: nil
         )
 
-        loadData()
+        // Load initial data
+        loadWeekData()
     }
 
-    // MARK: - Data Loading
+    // MARK: - Public Methods
 
-    func loadData() {
-        let allLogs = repository.dailyLogs(for: userId)
+    /// Select a day by index (0 = Monday, 6 = Sunday)
+    func selectDay(_ index: Int) {
+        selectedDate = currentWeekStart.addingDays(index)
+        loadWeekData()
+        updateLogData()
+    }
 
-        let computedCycles = CycleComputationUtilities.groupIntoCycles(allLogs)
-        cycleHistory = computedCycles
+    /// Navigate to the previous week
+    func navigateToPreviousWeek() {
+        currentWeekStart = currentWeekStart.addingWeeks(-1)
+        loadWeekData()
+    }
 
-        currentCycle = CycleComputationUtilities.getCurrentCycle(from: allLogs)
+    /// Navigate to the next week
+    func navigateToNextWeek() {
+        currentWeekStart = currentWeekStart.addingWeeks(1)
+        loadWeekData()
+    }
+
+    /// Load week data and generate day columns
+    func loadWeekData() {
+        let today = Date().startOfDay
+        var days: [DayColumnData] = []
+
+        for index in 0..<7 {
+            let date = currentWeekStart.addingDays(index)
+
+            // Generate day label (M, T, W, Th, F, Sa, Su)
+            let dayLabel = Self.dayLabel(for: index)
+
+            // Get date number (1-31)
+            let calendar = Calendar.current
+            let dateNumber = calendar.component(.day, from: date)
+
+            // TODO: Connect to repository - fetch real flow data
+            // For now, use mock data
+            let flowData = Self.mockFlowData(for: index)
+
+            // Check if this is today
+            let isToday = date.isSameDay(as: today)
+
+            // Check if this is selected
+            let isSelected = date.isSameDay(as: selectedDate)
+
+            days.append(DayColumnData(
+                dayLabel: dayLabel,
+                dateNumber: dateNumber,
+                flowData: flowData,
+                isToday: isToday,
+                isSelected: isSelected
+            ))
+        }
+
+        weekDays = days
+    }
+
+    /// Update log data for the selected date
+    func updateLogData() {
+        // TODO: Connect to repository - fetch real log data for selected date
+        // For now, use empty state
+        logData = LogData(
+            selectedDate: Self.formatDate(selectedDate),
+            periodValue: nil,
+            hasSpotting: false,
+            symptomsPreview: nil
+        )
+    }
+
+    // MARK: - Computed Properties
+
+    /// Returns formatted week range like "Jan 6 - Jan 12"
+    var weekRange: String {
+        let weekEnd = currentWeekStart.addingDays(6)
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM d"
+
+        let startString = formatter.string(from: currentWeekStart)
+        let endString = formatter.string(from: weekEnd)
+
+        return "\(startString) - \(endString)"
+    }
+
+    // MARK: - Private Helpers
+
+    /// Format date as "Wed, Jan 8"
+    private static func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEE, MMM d"
+        return formatter.string(from: date)
+    }
+
+    /// Get day label for index (0 = M, 1 = T, etc.)
+    private static func dayLabel(for index: Int) -> String {
+        let labels = ["M", "T", "W", "Th", "F", "Sa", "Su"]
+        return labels[index]
+    }
+
+    /// Mock flow data for testing (will be replaced with repository data)
+    private static func mockFlowData(for index: Int) -> FlowBarData? {
+        switch index {
+        case 0: // Monday
+            return FlowBarData(flowLevel: .heavy, hasSpotting: false)
+        case 1: // Tuesday
+            return FlowBarData(flowLevel: .medium, hasSpotting: true)
+        default:
+            return nil
+        }
     }
 }
