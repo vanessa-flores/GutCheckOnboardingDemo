@@ -15,12 +15,14 @@ class CycleTrackingViewModel {
     // MARK: - Dependencies
 
     private let userId: UUID
+    private let symptomRepository: SymptomRepositoryProtocol
     // TODO: Connect to repository - add repository dependency in future phase
 
     // MARK: - Initialization
 
-    init(userId: UUID) {
+    init(userId: UUID, symptomRepository: SymptomRepositoryProtocol = InMemorySymptomRepository.shared) {
         self.userId = userId
+        self.symptomRepository = symptomRepository
 
         // Initialize to current week
         let today = Date()
@@ -32,7 +34,8 @@ class CycleTrackingViewModel {
             selectedDate: Self.formatDate(today),
             periodValue: nil,
             hasSpotting: false,
-            symptomsPreview: nil
+            symptomsPreview: nil,
+            selectedSymptomIds: Set()
         )
 
         // Load initial data
@@ -67,7 +70,8 @@ class CycleTrackingViewModel {
             selectedDate: logData.selectedDate,
             periodValue: logData.periodValue,
             hasSpotting: hasSpotting,
-            symptomsPreview: logData.symptomsPreview
+            symptomsPreview: logData.symptomsPreview,
+            selectedSymptomIds: logData.selectedSymptomIds
         )
 
         // Update week view if there's a flow level set
@@ -88,7 +92,8 @@ class CycleTrackingViewModel {
                 selectedDate: logData.selectedDate,
                 periodValue: flowLevel?.rawValue,
                 hasSpotting: logData.hasSpotting,
-                symptomsPreview: logData.symptomsPreview
+                symptomsPreview: logData.symptomsPreview,
+                selectedSymptomIds: logData.selectedSymptomIds
             )
         } else {
             // User turned off tracking - clear period data
@@ -96,12 +101,49 @@ class CycleTrackingViewModel {
                 selectedDate: logData.selectedDate,
                 periodValue: nil,
                 hasSpotting: false, // Also clear spotting when not tracking
-                symptomsPreview: logData.symptomsPreview
+                symptomsPreview: logData.symptomsPreview,
+                selectedSymptomIds: logData.selectedSymptomIds
             )
         }
 
         // Update the week view to reflect the change
         updateWeekViewForSelectedDay(flowLevel: flowLevel, hasSpotting: logData.hasSpotting)
+
+        // TODO: Later phase - persist to repository
+        // For now, just update local state
+    }
+
+    /// Update symptoms data for the selected day
+    func updateSymptomsData(selectedIds: Set<UUID>) {
+        // Generate preview text
+        let preview: String? = {
+            if selectedIds.isEmpty {
+                return nil
+            }
+
+            let symptomNames = selectedIds.compactMap { id in
+                symptomRepository.symptom(withId: id)?.name
+            }.sorted()
+
+            if symptomNames.count == 1 {
+                return symptomNames[0]
+            } else if symptomNames.count == 2 {
+                return "\(symptomNames[0]), \(symptomNames[1])"
+            } else if symptomNames.count > 2 {
+                return "\(symptomNames[0]), \(symptomNames[1]) +\(symptomNames.count - 2)"
+            }
+
+            return nil
+        }()
+
+        // Update log data
+        logData = LogData(
+            selectedDate: logData.selectedDate,
+            periodValue: logData.periodValue,
+            hasSpotting: logData.hasSpotting,
+            symptomsPreview: preview,
+            selectedSymptomIds: selectedIds
+        )
 
         // TODO: Later phase - persist to repository
         // For now, just update local state
@@ -152,7 +194,8 @@ class CycleTrackingViewModel {
             selectedDate: Self.formatDate(selectedDate),
             periodValue: nil,
             hasSpotting: false,
-            symptomsPreview: nil
+            symptomsPreview: nil,
+            selectedSymptomIds: Set()
         )
     }
 

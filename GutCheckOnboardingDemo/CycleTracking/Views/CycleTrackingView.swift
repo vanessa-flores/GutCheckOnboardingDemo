@@ -4,6 +4,7 @@ struct CycleTrackingView: View {
     let userId: UUID
     @State private var viewModel: CycleTrackingViewModel
     @State private var showingPeriodModal = false
+    @State private var showingSymptomsModal = false
 
     init(userId: UUID) {
         self.userId = userId
@@ -43,8 +44,7 @@ struct CycleTrackingView: View {
                             viewModel.toggleSpotting(newValue)
                         },
                         onSymptomsTapped: {
-                            // TODO: Open symptoms modal in next phase
-                            print("Symptoms tapped")
+                            showingSymptomsModal = true
                         }
                     )
                 }
@@ -81,6 +81,16 @@ struct CycleTrackingView: View {
                     initialTracking: viewModel.logData.periodValue != nil,
                     onSave: { isTracking, flowLevel in
                         viewModel.updatePeriodData(isTracking: isTracking, flowLevel: flowLevel)
+                    }
+                )
+            }
+            .sheet(isPresented: $showingSymptomsModal) {
+                SymptomsLogModal(
+                    date: viewModel.logData.selectedDate,
+                    initialSelectedIds: viewModel.logData.selectedSymptomIds,
+                    repository: InMemorySymptomRepository.shared,
+                    onSave: { selectedIds in
+                        viewModel.updateSymptomsData(selectedIds: selectedIds)
                     }
                 )
             }

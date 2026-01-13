@@ -5,6 +5,7 @@ struct LogData {
     let periodValue: String? // "Medium Flow" or nil (shows "+")
     let hasSpotting: Bool
     let symptomsPreview: String? // "Bloating, +2 more" or nil (shows "+")
+    let selectedSymptomIds: Set<UUID> // Selected symptom IDs for modal
 }
 
 struct CycleLogSection: View {
@@ -161,7 +162,8 @@ struct CustomToggle: View {
                 selectedDate: "Wed, Jan 8",
                 periodValue: nil,
                 hasSpotting: false,
-                symptomsPreview: nil
+                symptomsPreview: nil,
+                selectedSymptomIds: Set()
             ),
             onPeriodTapped: {
                 print("Period tapped")
@@ -180,7 +182,8 @@ struct CustomToggle: View {
                 selectedDate: "Tue, Jan 7",
                 periodValue: "Medium Flow",
                 hasSpotting: true,
-                symptomsPreview: "Bloating, +2 more"
+                symptomsPreview: "Bloating, +2 more",
+                selectedSymptomIds: Set()
             ),
             onPeriodTapped: {
                 print("Period tapped")
