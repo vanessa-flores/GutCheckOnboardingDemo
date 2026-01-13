@@ -58,7 +58,7 @@ enum SymptomData {
         Symptom(name: "Mood swings", category: .energyMoodMental, displayOrder: 3, isEventBased: true),
         Symptom(name: "Fatigue", category: .energyMoodMental, displayOrder: 4),
         Symptom(name: "Irritability", category: .energyMoodMental, displayOrder: 5),
-        Symptom(name: "Social withdrawl", category: .energyMoodMental, displayOrder: 6),
+        Symptom(name: "Social withdrawal", category: .energyMoodMental, displayOrder: 6),
     ]
     
     // MARK: - Sleep & Temperature
