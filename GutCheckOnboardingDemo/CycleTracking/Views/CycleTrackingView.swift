@@ -54,7 +54,16 @@ struct CycleTrackingView: View {
                 .padding(.horizontal, AppTheme.Spacing.xl)
                 .padding(.vertical, AppTheme.Spacing.md)
 
-                // Future: Cycle Insights card will go here
+                // Cycle Insights Card
+                CycleInsightsCard(
+                    insights: viewModel.cycleInsights,
+                    onTap: {
+                        print("Insights tapped")
+                    }
+                )
+                .padding(.horizontal, AppTheme.Spacing.xl)
+                .padding(.bottom, AppTheme.Spacing.md)
+
                 // Future: Cycle History card will go here
             }
             .background(AppTheme.Colors.background)
@@ -99,5 +108,5 @@ struct CycleTrackingView: View {
 }
 
 #Preview {
-    CycleTrackingView(userId: UUID())
+    CycleTrackingView(userId: SampleCycleData.sampleUserId)
 }
