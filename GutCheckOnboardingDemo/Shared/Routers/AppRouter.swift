@@ -59,10 +59,14 @@ class AppRouter {
     }
     
     // MARK: - Initialization
-    
+
     init() {
-        self.currentUserId = UUID()
-        
+        // Use sample user ID for testing and development
+        self.currentUserId = SampleCycleData.sampleUserId
+
+        // Load sample data if needed
+        SampleCycleData.loadIfNeeded(into: InMemorySymptomRepository.shared)
+
         // Check if user has completed onboarding (e.g., from UserDefaults)
         // For now, always start with onboarding
         self.currentFlow = .mainApp
