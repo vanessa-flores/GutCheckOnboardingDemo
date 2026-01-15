@@ -11,18 +11,19 @@ class CycleTrackingViewModel {
     var selectedDate: Date
     var weekDays: [DayColumnData] = []
     var logData: LogData
+    var cycleInsights: CycleInsights?
 
     // MARK: - Dependencies
 
     private let userId: UUID
-    private let symptomRepository: SymptomRepositoryProtocol
+    private let repository: DailyLogRepositoryProtocol & SymptomRepositoryProtocol
     // TODO: Connect to repository - add repository dependency in future phase
 
     // MARK: - Initialization
 
-    init(userId: UUID, symptomRepository: SymptomRepositoryProtocol = InMemorySymptomRepository.shared) {
+    init(userId: UUID, repository: (DailyLogRepositoryProtocol & SymptomRepositoryProtocol) = InMemorySymptomRepository.shared) {
         self.userId = userId
-        self.symptomRepository = symptomRepository
+        self.repository = repository
 
         // Initialize to current week
         let today = Date()
@@ -122,7 +123,7 @@ class CycleTrackingViewModel {
             }
 
             let symptomNames = selectedIds.compactMap { id in
-                symptomRepository.symptom(withId: id)?.name
+                repository.symptom(withId: id)?.name
             }.sorted()
 
             if symptomNames.count == 1 {
@@ -184,6 +185,8 @@ class CycleTrackingViewModel {
         }
 
         weekDays = days
+
+        computeInsights()
     }
 
     /// Update log data for the selected date
@@ -215,6 +218,13 @@ class CycleTrackingViewModel {
     }
 
     // MARK: - Private Helpers
+
+    private func computeInsights() {
+        cycleInsights = CycleInsightsUtilities.computeInsights(
+            for: userId,
+            using: repository
+        )
+    }
 
     /// Update the week view for the currently selected day
     private func updateWeekViewForSelectedDay(flowLevel: FlowLevel?, hasSpotting: Bool) {

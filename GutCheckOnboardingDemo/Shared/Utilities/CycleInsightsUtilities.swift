@@ -12,10 +12,10 @@ struct CycleInsightsUtilities {
     ///   - userId: The user's ID
     ///   - repository: Combined repository providing daily logs and symptom data
     /// - Returns: CycleInsights if sufficient data exists, nil otherwise
-    static func computeInsights<R>(
+    static func computeInsights(
         for userId: UUID,
-        using repository: R
-    ) -> CycleInsights? where R: DailyLogRepositoryProtocol & SymptomRepositoryProtocol {
+        using repository: any DailyLogRepositoryProtocol & SymptomRepositoryProtocol
+    ) -> CycleInsights? {
         // 1. Get all daily logs for the user
         let dailyLogs = repository.dailyLogs(for: userId)
         guard !dailyLogs.isEmpty else { return nil }
@@ -69,11 +69,11 @@ struct CycleInsightsUtilities {
     }
 
     /// Analyzes symptoms that occur 1-5 days before period start across multiple cycles
-    private static func analyzePeriodWarnings<R>(
+    private static func analyzePeriodWarnings(
         cycles: [ComputedCycle],
         dailyLogs: [DailyLog],
-        repository: R
-    ) -> [PeriodWarningSign] where R: SymptomRepositoryProtocol {
+        repository: any SymptomRepositoryProtocol
+    ) -> [PeriodWarningSign] {
         guard cycles.count >= 1 else { return [] }
 
         var symptomTracking: [UUID: SymptomOccurrence] = [:]
