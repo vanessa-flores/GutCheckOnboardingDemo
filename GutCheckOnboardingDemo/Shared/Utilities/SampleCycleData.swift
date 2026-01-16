@@ -42,7 +42,7 @@ struct SampleCycleData {
         // Each cycle starts on period day 1
         // Cycle lengths are measured from period start to next period start
         //
-        // Cycle 5 (ongoing): Started 47 days ago, currently on day 47, no period yet
+        // Cycle 5 (ongoing): Started 47 days ago, currently on day 47
         // Cycle 4: Started 88 days ago (47 + 41), 41-day cycle, 4 flow days
         // Cycle 3: Started 140 days ago (88 + 52), 52-day cycle, 3 flow days
         // Cycle 2: Started 179 days ago (140 + 39), 39-day cycle, 4 flow days
@@ -96,8 +96,13 @@ struct SampleCycleData {
             CycleConfig(
                 startDaysAgo: 47,
                 cycleLength: 0,  // Ongoing - no end yet
-                flowDays: 0,     // No period logged yet
-                symptoms: [:]    // No symptoms for ongoing cycle
+                flowDays: 4,     // Period started 47 days ago (marks cycle beginning)
+                symptoms: [
+                    .bloating: [2, 3],
+                    .breastSoreness: [1, 2],
+                    .moodSwings: [3, 4],
+                    .fatigue: [2, 3, 4]
+                ]
             )
         ]
 
