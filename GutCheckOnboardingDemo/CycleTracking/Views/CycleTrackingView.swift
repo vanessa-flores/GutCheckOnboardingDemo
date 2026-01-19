@@ -72,7 +72,7 @@ struct CycleTrackingView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        // TODO: Add manual period entry
+                        // DEMO NOTE: Manual period entry will be implemented in future iteration
                         print("Add period button tapped")
                     }) {
                         Image(systemName: "calendar.badge.plus")

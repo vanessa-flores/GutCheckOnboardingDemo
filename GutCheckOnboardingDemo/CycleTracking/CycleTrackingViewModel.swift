@@ -17,7 +17,7 @@ class CycleTrackingViewModel {
 
     private let userId: UUID
     private let repository: DailyLogRepositoryProtocol & SymptomRepositoryProtocol
-    // TODO: Connect to repository - add repository dependency in future phase
+    // DEMO NOTE: Repository is injected via init. Production version will use Supabase repository
 
     // MARK: - Initialization
 
@@ -81,8 +81,7 @@ class CycleTrackingViewModel {
             updateWeekViewForSelectedDay(flowLevel: flowLevel, hasSpotting: hasSpotting)
         }
 
-        // TODO: Later phase - persist to repository
-        // For now, just update local state
+        // DEMO NOTE: Production version will persist changes immediately to backend
     }
 
     /// Update period data for the selected day
@@ -110,8 +109,7 @@ class CycleTrackingViewModel {
         // Update the week view to reflect the change
         updateWeekViewForSelectedDay(flowLevel: flowLevel, hasSpotting: logData.hasSpotting)
 
-        // TODO: Later phase - persist to repository
-        // For now, just update local state
+        // DEMO NOTE: Production version will persist changes immediately to backend
     }
 
     /// Update symptoms data for the selected day
@@ -146,8 +144,7 @@ class CycleTrackingViewModel {
             selectedSymptomIds: selectedIds
         )
 
-        // TODO: Later phase - persist to repository
-        // For now, just update local state
+        // DEMO NOTE: Production version will persist changes immediately to backend
     }
 
     /// Load week data and generate day columns
@@ -165,8 +162,7 @@ class CycleTrackingViewModel {
             let calendar = Calendar.current
             let dateNumber = calendar.component(.day, from: date)
 
-            // TODO: Connect to repository - fetch real flow data
-            // For now, use mock data
+            // DEMO NOTE: Mock data for UI testing. Production version fetches from repository
             let flowData = Self.mockFlowData(for: index)
 
             // Check if this is today
@@ -191,8 +187,7 @@ class CycleTrackingViewModel {
 
     /// Update log data for the selected date
     func updateLogData() {
-        // TODO: Connect to repository - fetch real log data for selected date
-        // For now, use empty state
+        // DEMO NOTE: Mock empty state. Production version fetches from repository
         logData = LogData(
             selectedDate: Self.formatDate(selectedDate),
             periodValue: nil,
