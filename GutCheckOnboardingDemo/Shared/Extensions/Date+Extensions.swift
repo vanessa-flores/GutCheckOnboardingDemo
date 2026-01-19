@@ -20,7 +20,8 @@ extension Date {
     /// Returns the start of the week (Monday) for this date.
     /// Used for week-based views and cycle tracking.
     var startOfWeek: Date {
-        let calendar = Calendar.current
+        var calendar = Calendar.current
+        calendar.firstWeekday = 2  // Monday (1 = Sunday, 2 = Monday, per ISO 8601)
         let components = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)
         return calendar.date(from: components) ?? self
     }
