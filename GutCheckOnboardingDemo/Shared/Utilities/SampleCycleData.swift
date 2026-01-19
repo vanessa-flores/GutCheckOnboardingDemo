@@ -48,6 +48,10 @@ struct SampleCycleData {
         // Cycle 2: Started 179 days ago (140 + 39), 39-day cycle, 4 flow days
         // Cycle 1: Started 216 days ago (179 + 37), 37-day cycle, 5 flow days
 
+        // Define cycles with realistic perimenopause patterns:
+        // - Varying cycle lengths (37-52 days)
+        // - Consistent symptom patterns before each period
+        // - Last cycle is ongoing (no end date)
         let cycleConfigs: [CycleConfig] = [
             CycleConfig(
                 startDaysAgo: 216,

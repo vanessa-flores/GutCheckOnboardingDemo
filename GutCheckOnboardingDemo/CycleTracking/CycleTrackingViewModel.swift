@@ -45,26 +45,28 @@ class CycleTrackingViewModel {
 
     // MARK: - Public Methods
 
-    /// Select a day by index (0 = Monday, 6 = Sunday)
+    /// Selects a specific day in the current week and updates the log data
+    /// - Parameter index: Day index (0 = Monday, 6 = Sunday)
     func selectDay(_ index: Int) {
         selectedDate = currentWeekStart.addingDays(index)
         loadWeekData()
         updateLogData()
     }
 
-    /// Navigate to the previous week
+    /// Moves the week view backward by 7 days and reloads data
     func navigateToPreviousWeek() {
         currentWeekStart = currentWeekStart.addingWeeks(-1)
         loadWeekData()
     }
 
-    /// Navigate to the next week
+    /// Moves the week view forward by 7 days and reloads data
     func navigateToNextWeek() {
         currentWeekStart = currentWeekStart.addingWeeks(1)
         loadWeekData()
     }
 
-    /// Toggle spotting for the selected day
+    /// Updates spotting status for the currently selected day
+    /// - Parameter hasSpotting: Whether spotting occurred
     func toggleSpotting(_ hasSpotting: Bool) {
         // Update the log data
         logData = LogData(
