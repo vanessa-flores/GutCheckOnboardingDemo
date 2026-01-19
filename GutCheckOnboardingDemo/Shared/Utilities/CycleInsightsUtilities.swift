@@ -77,6 +77,18 @@ struct CycleInsightsUtilities {
     }
 
     /// Analyzes symptoms that occur 1-5 days before period start across multiple cycles
+    ///
+    /// - Parameters:
+    ///   - cycles: Array of completed cycles to analyze
+    ///   - dailyLogs: All daily logs containing symptom data
+    ///   - repository: Repository for looking up symptom details
+    /// - Returns: Array of up to 5 most frequent period warning signs, sorted by occurrence
+    ///
+    /// Algorithm:
+    /// 1. For each cycle, examines 1-5 days before period start
+    /// 2. Tracks symptom occurrences and timing
+    /// 3. Calculates frequency across cycles (e.g., "In 4 of 5 cycles")
+    /// 4. Returns top 5 symptoms by total occurrence count
     private static func analyzePeriodWarnings(
         cycles: [ComputedCycle],
         dailyLogs: [DailyLog],
@@ -151,6 +163,9 @@ struct CycleInsightsUtilities {
     /// Calculates the "days before" range string from an array of day values
     /// - Parameter daysBeforeValues: Array of days before period (e.g., [2, 3, 2, 4])
     /// - Returns: Formatted string like "2-4 days before" or "3 days before"
+    /// - Example:
+    ///   - Input: [2, 3, 2, 4] returns "2-4 days before"
+    ///   - Input: [3, 3, 3] returns "3 days before"
     private static func calculateDaysBeforeRange(_ daysBeforeValues: [Int]) -> String {
         guard !daysBeforeValues.isEmpty else { return "Before period" }
 
