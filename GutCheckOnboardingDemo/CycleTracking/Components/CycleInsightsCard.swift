@@ -71,19 +71,10 @@ struct CycleInsightsCard: View {
                                         .font(AppTheme.Typography.bodyMedium)
                                         .foregroundColor(AppTheme.Colors.primaryAction)
 
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        // Symptom name + timing
-                                        Text("\(sign.symptomName) \(sign.daysBeforeRange)")
-                                            .font(AppTheme.Typography.bodyMedium)
-                                            .foregroundColor(AppTheme.Colors.textPrimary)
-
-                                        // Frequency (if present)
-                                        if let frequency = sign.frequencyString {
-                                            Text(frequency)
-                                                .font(AppTheme.Typography.caption)
-                                                .foregroundColor(AppTheme.Colors.textSecondary)
-                                        }
-                                    }
+                                    // Symptom name + timing (single line)
+                                    Text("\(sign.symptomName) \(sign.daysBeforeRange)")
+                                        .font(AppTheme.Typography.bodyMedium)
+                                        .foregroundColor(AppTheme.Colors.textPrimary)
                                 }
                             }
                         }
