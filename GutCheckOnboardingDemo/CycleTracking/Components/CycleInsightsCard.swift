@@ -5,13 +5,9 @@ struct CycleInsightsCard: View {
     let insights: CycleInsights?
     let onTap: () -> Void
 
+    @ViewBuilder
     var body: some View {
-        // Don't show card if no data
-        guard let insights = insights else {
-            return AnyView(EmptyView())
-        }
-
-        return AnyView(
+        if let insights = insights {
             Button(action: onTap) {
                 VStack(alignment: .leading, spacing: AppTheme.Spacing.md) {
                     // MARK: - Current Cycle Section
@@ -106,7 +102,7 @@ struct CycleInsightsCard: View {
             }
             .buttonStyle(.plain)
             .accessibilityLabel("View detailed cycle insights")
-        )
+        }
     }
 }
 
