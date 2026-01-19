@@ -6,6 +6,7 @@ struct LogData {
     let hasSpotting: Bool
     let symptomsPreview: String? // "Bloating, +2 more" or nil (shows "+")
     let selectedSymptomIds: Set<UUID> // Selected symptom IDs for modal
+    let isFuture: Bool
 }
 
 struct CycleLogSection: View {
@@ -38,7 +39,8 @@ struct CycleLogSection: View {
                 // Period row
                 LogRow(
                     label: "Period",
-                    isPressed: periodPressed
+                    isPressed: periodPressed,
+                    isDimmed: data.isFuture
                 ) {
                     if let periodValue = data.periodValue {
                         Text(periodValue)
@@ -63,12 +65,16 @@ struct CycleLogSection: View {
                 // Spotting row
                 LogRow(
                     label: "Spotting",
-                    isPressed: false
+                    isPressed: false,
+                    isDimmed: data.isFuture
                 ) {
-                    CustomToggle(isOn: Binding(
-                        get: { data.hasSpotting },
-                        set: { onSpottingToggled($0) }
-                    ))
+                    CustomToggle(
+                        isOn: Binding(
+                            get: { data.hasSpotting },
+                            set: { onSpottingToggled($0) }
+                        ),
+                        isDisabled: data.isFuture
+                    )
                 }
 
                 Divider()
@@ -76,7 +82,8 @@ struct CycleLogSection: View {
                 // Symptoms row
                 LogRow(
                     label: "Symptoms",
-                    isPressed: symptomsPressed
+                    isPressed: symptomsPressed,
+                    isDimmed: data.isFuture
                 ) {
                     if let symptomsPreview = data.symptomsPreview {
                         Text(symptomsPreview)
@@ -107,19 +114,21 @@ struct CycleLogSection: View {
 struct LogRow<Content: View>: View {
     let label: String
     let isPressed: Bool
+    let isDimmed: Bool
     let content: () -> Content
 
     var body: some View {
         HStack {
             Text(label)
                 .font(AppTheme.Typography.bodyMedium)
-                .foregroundColor(AppTheme.Colors.textPrimary)
+                .foregroundColor(isDimmed ? AppTheme.Colors.textPrimary.opacity(0.4) : AppTheme.Colors.textPrimary)
 
             Spacer()
 
             content()
         }
         .padding(.vertical, AppTheme.Spacing.md)
+        .opacity(isDimmed ? 0.5 : 1.0)
         .scaleEffect(isPressed ? 0.98 : 1.0)
         .animation(.spring(duration: AppTheme.Animation.quick), value: isPressed)
     }
@@ -129,9 +138,11 @@ struct LogRow<Content: View>: View {
 
 struct CustomToggle: View {
     @Binding var isOn: Bool
+    var isDisabled: Bool = false
 
     var body: some View {
         Button(action: {
+            guard !isDisabled else { return }
             withAnimation(.easeInOut(duration: AppTheme.Animation.quick)) {
                 isOn.toggle()
             }
@@ -163,7 +174,8 @@ struct CustomToggle: View {
                 periodValue: nil,
                 hasSpotting: false,
                 symptomsPreview: nil,
-                selectedSymptomIds: Set()
+                selectedSymptomIds: Set(),
+                isFuture: false
             ),
             onPeriodTapped: {
                 print("Period tapped")
@@ -183,7 +195,8 @@ struct CustomToggle: View {
                 periodValue: "Medium Flow",
                 hasSpotting: true,
                 symptomsPreview: "Bloating, +2 more",
-                selectedSymptomIds: Set()
+                selectedSymptomIds: Set(),
+                isFuture: false
             ),
             onPeriodTapped: {
                 print("Period tapped")

@@ -13,6 +13,11 @@ class CycleTrackingViewModel {
     var logData: LogData
     var cycleInsights: CycleInsights?
 
+    /// Whether the currently selected date is in the future
+    var isSelectedDateInFuture: Bool {
+        selectedDate > Date().startOfDay
+    }
+
     // MARK: - Dependencies
 
     private let userId: UUID
@@ -36,7 +41,8 @@ class CycleTrackingViewModel {
             periodValue: nil,
             hasSpotting: false,
             symptomsPreview: nil,
-            selectedSymptomIds: Set()
+            selectedSymptomIds: Set(),
+            isFuture: false
         )
 
         // Load initial data
@@ -74,7 +80,8 @@ class CycleTrackingViewModel {
             periodValue: logData.periodValue,
             hasSpotting: hasSpotting,
             symptomsPreview: logData.symptomsPreview,
-            selectedSymptomIds: logData.selectedSymptomIds
+            selectedSymptomIds: logData.selectedSymptomIds,
+            isFuture: isSelectedDateInFuture
         )
 
         // Update week view if there's a flow level set
@@ -88,6 +95,9 @@ class CycleTrackingViewModel {
 
     /// Update period data for the selected day
     func updatePeriodData(isTracking: Bool, flowLevel: FlowLevel?) {
+        // Don't allow logging period data for future dates
+        guard !isSelectedDateInFuture else { return }
+
         if isTracking {
             // User is tracking period with a flow level
             logData = LogData(
@@ -95,7 +105,8 @@ class CycleTrackingViewModel {
                 periodValue: flowLevel?.rawValue,
                 hasSpotting: logData.hasSpotting,
                 symptomsPreview: logData.symptomsPreview,
-                selectedSymptomIds: logData.selectedSymptomIds
+                selectedSymptomIds: logData.selectedSymptomIds,
+                isFuture: isSelectedDateInFuture
             )
         } else {
             // User turned off tracking - clear period data
@@ -104,7 +115,8 @@ class CycleTrackingViewModel {
                 periodValue: nil,
                 hasSpotting: false, // Also clear spotting when not tracking
                 symptomsPreview: logData.symptomsPreview,
-                selectedSymptomIds: logData.selectedSymptomIds
+                selectedSymptomIds: logData.selectedSymptomIds,
+                isFuture: isSelectedDateInFuture
             )
         }
 
@@ -143,7 +155,8 @@ class CycleTrackingViewModel {
             periodValue: logData.periodValue,
             hasSpotting: logData.hasSpotting,
             symptomsPreview: preview,
-            selectedSymptomIds: selectedIds
+            selectedSymptomIds: selectedIds,
+            isFuture: isSelectedDateInFuture
         )
 
         // DEMO NOTE: Production version will persist changes immediately to backend
@@ -173,12 +186,16 @@ class CycleTrackingViewModel {
             // Check if this is selected
             let isSelected = date.isSameDay(as: selectedDate)
 
+            // Check if this date is in the future
+            let isFuture = date > today
+
             days.append(DayColumnData(
                 dayLabel: dayLabel,
                 dateNumber: dateNumber,
                 flowData: flowData,
                 isToday: isToday,
-                isSelected: isSelected
+                isSelected: isSelected,
+                isFuture: isFuture
             ))
         }
 
@@ -195,7 +212,8 @@ class CycleTrackingViewModel {
             periodValue: nil,
             hasSpotting: false,
             symptomsPreview: nil,
-            selectedSymptomIds: Set()
+            selectedSymptomIds: Set(),
+            isFuture: isSelectedDateInFuture
         )
     }
 
@@ -243,7 +261,8 @@ class CycleTrackingViewModel {
             dateNumber: weekDays[selectedIndex].dateNumber,
             flowData: flowData,
             isToday: weekDays[selectedIndex].isToday,
-            isSelected: true
+            isSelected: true,
+            isFuture: isSelectedDateInFuture
         )
     }
 

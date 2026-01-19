@@ -38,13 +38,17 @@ struct CycleTrackingView: View {
                     CycleLogSection(
                         data: viewModel.logData,
                         onPeriodTapped: {
-                            showingPeriodModal = true
+                            if !viewModel.isSelectedDateInFuture {
+                                showingPeriodModal = true
+                            }
                         },
                         onSpottingToggled: { newValue in
                             viewModel.toggleSpotting(newValue)
                         },
                         onSymptomsTapped: {
-                            showingSymptomsModal = true
+                            if !viewModel.isSelectedDateInFuture {
+                                showingSymptomsModal = true
+                            }
                         }
                     )
                 }
@@ -81,17 +85,19 @@ struct CycleTrackingView: View {
                 }
             }
             .sheet(isPresented: $showingPeriodModal) {
-                PeriodLogModal(
-                    date: viewModel.logData.selectedDate,
-                    initialFlow: {
-                        guard let periodValue = viewModel.logData.periodValue else { return nil }
-                        return FlowLevel(rawValue: periodValue)
-                    }(),
-                    initialTracking: viewModel.logData.periodValue != nil,
-                    onSave: { isTracking, flowLevel in
-                        viewModel.updatePeriodData(isTracking: isTracking, flowLevel: flowLevel)
-                    }
-                )
+                if !viewModel.isSelectedDateInFuture {
+                    PeriodLogModal(
+                        date: viewModel.logData.selectedDate,
+                        initialFlow: {
+                            guard let periodValue = viewModel.logData.periodValue else { return nil }
+                            return FlowLevel(rawValue: periodValue)
+                        }(),
+                        initialTracking: viewModel.logData.periodValue != nil,
+                        onSave: { isTracking, flowLevel in
+                            viewModel.updatePeriodData(isTracking: isTracking, flowLevel: flowLevel)
+                        }
+                    )
+                }
             }
             .sheet(isPresented: $showingSymptomsModal) {
                 SymptomsLogModal(

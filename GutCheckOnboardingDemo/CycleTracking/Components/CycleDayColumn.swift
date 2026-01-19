@@ -6,6 +6,7 @@ struct DayColumnData {
     let flowData: FlowBarData?
     let isToday: Bool
     let isSelected: Bool
+    let isFuture: Bool
 }
 
 struct CycleDayColumn: View {
@@ -19,7 +20,7 @@ struct CycleDayColumn: View {
             // Day label (Mon, Tue, etc.)
             Text(data.dayLabel)
                 .font(AppTheme.Typography.caption.weight(.medium))
-                .foregroundColor(AppTheme.Colors.textSecondary)
+                .foregroundColor(data.isFuture ? AppTheme.Colors.textSecondary.opacity(0.4) : AppTheme.Colors.textSecondary)
 
             // Spacing between day label and date number
             Spacer()
@@ -37,7 +38,11 @@ struct CycleDayColumn: View {
                 // Date number
                 Text("\(data.dateNumber)")
                     .font(AppTheme.Typography.body.weight(.semibold))
-                    .foregroundColor(data.isToday ? .white : AppTheme.Colors.textPrimary)
+                    .foregroundColor(
+                        data.isToday ? .white :
+                        data.isFuture ? AppTheme.Colors.textPrimary.opacity(0.4) :
+                        AppTheme.Colors.textPrimary
+                    )
             }
 
             // Spacing between date number and flow bar
@@ -65,6 +70,7 @@ struct CycleDayColumn: View {
         .scaleEffect(isPressed ? 0.95 : 1.0)
         .animation(.spring(duration: AppTheme.Animation.quick), value: isPressed)
         .onTapGesture {
+            guard !data.isFuture else { return }
             isPressed = true
             DispatchQueue.main.asyncAfter(deadline: .now() + AppTheme.Animation.quick) {
                 isPressed = false
@@ -77,25 +83,25 @@ struct CycleDayColumn: View {
 #Preview {
     let mockColumns = [
         // Monday: light flow, not today, not selected
-        DayColumnData(dayLabel: "Mon", dateNumber: 6, flowData: FlowBarData(flowLevel: .light, hasSpotting: false), isToday: false, isSelected: false),
+        DayColumnData(dayLabel: "Mon", dateNumber: 6, flowData: FlowBarData(flowLevel: .light, hasSpotting: false), isToday: false, isSelected: false, isFuture: false),
 
         // Tuesday: heavy flow, not today, not selected
-        DayColumnData(dayLabel: "Tue", dateNumber: 7, flowData: FlowBarData(flowLevel: .heavy, hasSpotting: false), isToday: false, isSelected: false),
+        DayColumnData(dayLabel: "Tue", dateNumber: 7, flowData: FlowBarData(flowLevel: .heavy, hasSpotting: false), isToday: false, isSelected: false, isFuture: false),
 
         // Wednesday: heavy flow, not today, not selected
-        DayColumnData(dayLabel: "Wed", dateNumber: 8, flowData: FlowBarData(flowLevel: .heavy, hasSpotting: false), isToday: false, isSelected: false),
+        DayColumnData(dayLabel: "Wed", dateNumber: 8, flowData: FlowBarData(flowLevel: .heavy, hasSpotting: false), isToday: false, isSelected: false, isFuture: false),
 
         // Thursday: medium flow, not today, not selected
-        DayColumnData(dayLabel: "Thu", dateNumber: 9, flowData: FlowBarData(flowLevel: .medium, hasSpotting: false), isToday: false, isSelected: false),
-        
+        DayColumnData(dayLabel: "Thu", dateNumber: 9, flowData: FlowBarData(flowLevel: .medium, hasSpotting: false), isToday: false, isSelected: false, isFuture: false),
+
         // Friday: medium flow, not today, not selected
-        DayColumnData(dayLabel: "Fri", dateNumber: 10, flowData: FlowBarData(flowLevel: .medium, hasSpotting: false), isToday: false, isSelected: false),
-        
+        DayColumnData(dayLabel: "Fri", dateNumber: 10, flowData: FlowBarData(flowLevel: .medium, hasSpotting: false), isToday: false, isSelected: false, isFuture: false),
+
         // Saturday: light flow, not today, IS selected
-        DayColumnData(dayLabel: "Sat", dateNumber: 11, flowData: FlowBarData(flowLevel: .light, hasSpotting: false), isToday: false, isSelected: true),
-        
+        DayColumnData(dayLabel: "Sat", dateNumber: 11, flowData: FlowBarData(flowLevel: .light, hasSpotting: false), isToday: false, isSelected: true, isFuture: false),
+
         // Sunday: no data, IS today, not selected
-        DayColumnData(dayLabel: "Sun", dateNumber: 12, flowData: nil, isToday: true, isSelected: false),
+        DayColumnData(dayLabel: "Sun", dateNumber: 12, flowData: nil, isToday: true, isSelected: false, isFuture: false),
     ]
 
     return HStack(spacing: 4) {

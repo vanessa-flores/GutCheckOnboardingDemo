@@ -32,16 +32,16 @@ struct CycleWeekView: View {
 
 #Preview {
     let mockDays: [DayColumnData] = [
-        DayColumnData(dayLabel: "Mon", dateNumber: 6, flowData: FlowBarData(flowLevel: .heavy, hasSpotting: false), isToday: false, isSelected: false),
-        DayColumnData(dayLabel: "Tue", dateNumber: 7, flowData: FlowBarData(flowLevel: .medium, hasSpotting: true), isToday: false, isSelected: false),
-        DayColumnData(dayLabel: "Wed", dateNumber: 8, flowData: nil, isToday: true, isSelected: true),
-        DayColumnData(dayLabel: "Thu", dateNumber: 9, flowData: nil, isToday: false, isSelected: false),
-        DayColumnData(dayLabel: "Fri", dateNumber: 10, flowData: nil, isToday: false, isSelected: false),
-        DayColumnData(dayLabel: "Sat", dateNumber: 11, flowData: nil, isToday: false, isSelected: false),
-        DayColumnData(dayLabel: "Sun", dateNumber: 12, flowData: nil, isToday: false, isSelected: false),
+        DayColumnData(dayLabel: "Mon", dateNumber: 6, flowData: FlowBarData(flowLevel: .heavy, hasSpotting: false), isToday: false, isSelected: false, isFuture: false),
+        DayColumnData(dayLabel: "Tue", dateNumber: 7, flowData: FlowBarData(flowLevel: .medium, hasSpotting: true), isToday: false, isSelected: false, isFuture: false),
+        DayColumnData(dayLabel: "Wed", dateNumber: 8, flowData: nil, isToday: true, isSelected: true, isFuture: false),
+        DayColumnData(dayLabel: "Thu", dateNumber: 9, flowData: nil, isToday: false, isSelected: false, isFuture: true),
+        DayColumnData(dayLabel: "Fri", dateNumber: 10, flowData: nil, isToday: false, isSelected: false, isFuture: true),
+        DayColumnData(dayLabel: "Sat", dateNumber: 11, flowData: nil, isToday: false, isSelected: false, isFuture: true),
+        DayColumnData(dayLabel: "Sun", dateNumber: 12, flowData: nil, isToday: false, isSelected: false, isFuture: true),
     ]
 
-    return CycleWeekView(
+    CycleWeekView(
         weekRange: "Jan 6 - Jan 12",
         days: mockDays,
         onPreviousWeek: {
