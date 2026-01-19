@@ -70,7 +70,6 @@ struct CycleDayColumn: View {
         .scaleEffect(isPressed ? 0.95 : 1.0)
         .animation(.spring(duration: AppTheme.Animation.quick), value: isPressed)
         .onTapGesture {
-            guard !data.isFuture else { return }
             isPressed = true
             DispatchQueue.main.asyncAfter(deadline: .now() + AppTheme.Animation.quick) {
                 isPressed = false

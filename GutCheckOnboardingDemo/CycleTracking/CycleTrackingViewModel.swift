@@ -60,15 +60,21 @@ class CycleTrackingViewModel {
     }
 
     /// Moves the week view backward by 7 days and reloads data
+    /// Automatically selects Monday (first day) of the new week
     func navigateToPreviousWeek() {
         currentWeekStart = currentWeekStart.addingWeeks(-1)
+        selectedDate = currentWeekStart  // Auto-select Monday
         loadWeekData()
+        updateLogData()
     }
 
     /// Moves the week view forward by 7 days and reloads data
+    /// Automatically selects Monday (first day) of the new week
     func navigateToNextWeek() {
         currentWeekStart = currentWeekStart.addingWeeks(1)
+        selectedDate = currentWeekStart  // Auto-select Monday
         loadWeekData()
+        updateLogData()
     }
 
     /// Updates spotting status for the currently selected day
