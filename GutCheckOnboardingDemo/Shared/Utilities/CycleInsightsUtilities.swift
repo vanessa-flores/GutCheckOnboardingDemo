@@ -131,19 +131,9 @@ struct CycleInsightsUtilities {
             // Calculate timing range
             let daysBeforeRange = calculateDaysBeforeRange(occurrence.daysBeforeValues)
 
-            // Calculate frequency string (only if 2+ cycles)
-            let frequencyString: String?
-            if cycles.count >= 2 {
-                let cycleCount = occurrence.cyclesWithOccurrence.count
-                frequencyString = "In \(cycleCount) of \(cycles.count) cycles"
-            } else {
-                frequencyString = nil
-            }
-
             let warningSign = PeriodWarningSign(
                 symptomName: symptom.name,
-                daysBeforeRange: daysBeforeRange,
-                frequencyString: frequencyString
+                daysBeforeRange: daysBeforeRange
             )
 
             return (warningSign, occurrence.totalCount)

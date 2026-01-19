@@ -118,18 +118,15 @@ struct CycleInsightsCard: View {
                 periodWarningSignsOptional: [
                     PeriodWarningSign(
                         symptomName: "Bloating",
-                        daysBeforeRange: "2-3 days before",
-                        frequencyString: "In 4 of 5 cycles"
+                        daysBeforeRange: "2-3 days before"
                     ),
                     PeriodWarningSign(
                         symptomName: "Breast tenderness",
-                        daysBeforeRange: "3-4 days before",
-                        frequencyString: "In 3 of 5 cycles"
+                        daysBeforeRange: "3-4 days before"
                     ),
                     PeriodWarningSign(
                         symptomName: "Fatigue",
-                        daysBeforeRange: "1-2 days before",
-                        frequencyString: "In 5 of 5 cycles"
+                        daysBeforeRange: "1-2 days before"
                     )
                 ]
             ),

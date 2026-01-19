@@ -62,21 +62,14 @@ struct PeriodWarningSign: Identifiable, Codable {
     let id: UUID
     let symptomName: String
     let daysBeforeRange: String
-    let frequencyString: String?
-
-    var hasFrequencyData: Bool {
-        frequencyString != nil
-    }
 
     init(
         id: UUID = UUID(),
         symptomName: String,
-        daysBeforeRange: String,
-        frequencyString: String? = nil
+        daysBeforeRange: String
     ) {
         self.id = id
         self.symptomName = symptomName
         self.daysBeforeRange = daysBeforeRange
-        self.frequencyString = frequencyString
     }
 }
