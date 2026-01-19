@@ -1,6 +1,14 @@
 import SwiftUI
 
-/// Presentational component displaying cycle insights
+// MARK: - Cycle Insights Card
+
+/// Presentational component displaying cycle insights and period warning signs
+///
+/// Shows current cycle status, recent patterns, and symptoms that consistently
+/// appear before period onset. Designed to provide pattern recognition without
+/// predictions, following GutCheck's perimenopause-first approach.
+///
+/// - Note: Returns EmptyView when insights is nil (no data to display)
 struct CycleInsightsCard: View {
     let insights: CycleInsights?
     let onTap: () -> Void

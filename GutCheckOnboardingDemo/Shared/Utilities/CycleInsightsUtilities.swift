@@ -3,6 +3,14 @@ import Foundation
 // MARK: - Cycle Insights Utilities
 
 /// Utilities for computing cycle insights from daily logs and symptoms
+///
+/// Analyzes menstrual cycle patterns to identify:
+/// - Current cycle status and history
+/// - Period warning signs (symptoms appearing 1-5 days before period)
+/// - Pattern consistency and variability
+///
+/// Uses CycleComputationUtilities for cycle grouping and analyzes symptom timing
+/// across multiple cycles to surface actionable insights for perimenopause users.
 struct CycleInsightsUtilities {
 
     // MARK: - Main Computation
