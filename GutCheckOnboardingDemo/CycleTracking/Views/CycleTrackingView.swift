@@ -92,7 +92,6 @@ struct CycleTrackingView: View {
                             guard let periodValue = viewModel.logData.periodValue else { return nil }
                             return FlowLevel(rawValue: periodValue)
                         }(),
-                        initialTracking: viewModel.logData.periodValue != nil,
                         onSave: { isTracking, flowLevel in
                             viewModel.updatePeriodData(isTracking: isTracking, flowLevel: flowLevel)
                         }
