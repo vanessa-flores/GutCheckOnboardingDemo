@@ -96,7 +96,14 @@ class CycleTrackingViewModel {
             updateWeekViewForSelectedDay(flowLevel: flowLevel, hasSpotting: hasSpotting)
         }
 
-        // DEMO NOTE: Production version will persist changes immediately to backend
+        // PERSIST TO REPOSITORY
+        var dailyLog = repository.dailyLog(for: userId, on: selectedDate) ?? DailyLog(
+            userId: userId,
+            date: selectedDate
+        )
+
+        dailyLog.hadSpotting = hasSpotting
+        repository.save(dailyLog: dailyLog)
     }
 
     /// Update period data for the selected day
@@ -129,7 +136,18 @@ class CycleTrackingViewModel {
         // Update the week view to reflect the change
         updateWeekViewForSelectedDay(flowLevel: flowLevel, hasSpotting: logData.hasSpotting)
 
-        // DEMO NOTE: Production version will persist changes immediately to backend
+        // PERSIST TO REPOSITORY
+        var dailyLog = repository.dailyLog(for: userId, on: selectedDate) ?? DailyLog(
+            userId: userId,
+            date: selectedDate
+        )
+
+        // Update flow level and spotting
+        dailyLog.flowLevel = isTracking ? flowLevel : nil
+        dailyLog.hadSpotting = isTracking ? logData.hasSpotting : false
+
+        // Save to repository
+        repository.save(dailyLog: dailyLog)
     }
 
     /// Update symptoms data for the selected day
@@ -165,7 +183,27 @@ class CycleTrackingViewModel {
             isFuture: isSelectedDateInFuture
         )
 
-        // DEMO NOTE: Production version will persist changes immediately to backend
+        // PERSIST TO REPOSITORY
+        var dailyLog = repository.dailyLog(for: userId, on: selectedDate) ?? DailyLog(
+            userId: userId,
+            date: selectedDate
+        )
+
+        // Remove all existing symptom logs for this date
+        dailyLog.symptomLogs.removeAll()
+
+        // Add new symptom logs
+        for symptomId in selectedIds {
+            let symptomLog = SymptomLog(
+                userId: userId,
+                symptomId: symptomId,
+                date: selectedDate,
+                severity: nil
+            )
+            dailyLog = dailyLog.addingSymptomLog(symptomLog)
+        }
+
+        repository.save(dailyLog: dailyLog)
     }
 
     /// Load week data and generate day columns
@@ -183,8 +221,12 @@ class CycleTrackingViewModel {
             let calendar = Calendar.current
             let dateNumber = calendar.component(.day, from: date)
 
-            // DEMO NOTE: Mock data for UI testing. Production version fetches from repository
-            let flowData = Self.mockFlowData(for: index)
+            // Fetch flow data from repository
+            let dailyLog = repository.dailyLog(for: userId, on: date)
+            let flowData: FlowBarData? = {
+                guard let flowLevel = dailyLog?.flowLevel else { return nil }
+                return FlowBarData(flowLevel: flowLevel, hasSpotting: dailyLog?.hadSpotting ?? false)
+            }()
 
             // Check if this is today
             let isToday = date.isSameDay(as: today)
@@ -212,15 +254,45 @@ class CycleTrackingViewModel {
 
     /// Update log data for the selected date
     func updateLogData() {
-        // DEMO NOTE: Mock empty state. Production version fetches from repository
+        // Fetch daily log from repository for selected date
+        let dailyLog = repository.dailyLog(for: userId, on: selectedDate)
+
+        // Extract period data
+        let periodValue = dailyLog?.flowLevel?.rawValue
+        let hasSpotting = dailyLog?.hadSpotting ?? false
+
+        // Extract symptoms data
+        let symptomLogs = dailyLog?.symptomLogs ?? []
+        let symptomsPreview = generateSymptomsPreview(from: symptomLogs)
+        let selectedIds = Set(symptomLogs.map { $0.symptomId })
+
         logData = LogData(
             selectedDate: Self.formatDate(selectedDate),
-            periodValue: nil,
-            hasSpotting: false,
-            symptomsPreview: nil,
-            selectedSymptomIds: Set(),
+            periodValue: periodValue,
+            hasSpotting: hasSpotting,
+            symptomsPreview: symptomsPreview,
+            selectedSymptomIds: selectedIds,
             isFuture: isSelectedDateInFuture
         )
+    }
+
+    /// Generates symptoms preview text from symptom logs
+    private func generateSymptomsPreview(from logs: [SymptomLog]) -> String? {
+        guard !logs.isEmpty else { return nil }
+
+        let symptomNames = logs.compactMap { log in
+            repository.symptom(withId: log.symptomId)?.name
+        }.sorted()
+
+        if symptomNames.count == 1 {
+            return symptomNames[0]
+        } else if symptomNames.count == 2 {
+            return "\(symptomNames[0]), \(symptomNames[1])"
+        } else if symptomNames.count > 2 {
+            return "\(symptomNames[0]), \(symptomNames[1]) +\(symptomNames.count - 2)"
+        }
+
+        return nil
     }
 
     // MARK: - Computed Properties
@@ -285,15 +357,4 @@ class CycleTrackingViewModel {
         return labels[index]
     }
 
-    /// Mock flow data for testing (will be replaced with repository data)
-    private static func mockFlowData(for index: Int) -> FlowBarData? {
-        switch index {
-        case 0: // Monday
-            return FlowBarData(flowLevel: .heavy, hasSpotting: false)
-        case 1: // Tuesday
-            return FlowBarData(flowLevel: .medium, hasSpotting: true)
-        default:
-            return nil
-        }
-    }
 }

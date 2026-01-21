@@ -200,23 +200,39 @@ struct PeriodLogModal: View {
     /// Handles "Yes" or "No" selection in flow presence section
     /// - "Yes" selected: Sets hadFlow to true, keeps any existing flow level
     /// - "No" selected: Sets hadFlow to false, clears any flow level
+    /// - Tapping same option again: Deselects it
     private func handleFlowPresenceSelection(_ hasFlow: Bool) {
-        if hasFlow {
-            // User tapped "Yes"
-            hadFlow = true
-            // Don't change selectedFlowLevel - let them choose
+        if hadFlow == hasFlow {
+            // Tapping same option again - deselect
+            hadFlow = nil
+            selectedFlowLevel = nil  // Also clear flow level
         } else {
-            // User tapped "No" (period but no flow)
-            hadFlow = false
-            selectedFlowLevel = nil  // Clear any flow level selection
+            // Selecting different option
+            if hasFlow {
+                // User tapped "Yes"
+                hadFlow = true
+                // Don't change selectedFlowLevel - let them choose
+            } else {
+                // User tapped "No" (period but no flow)
+                hadFlow = false
+                selectedFlowLevel = nil  // Clear any flow level selection
+            }
         }
     }
 
     /// Handles flow level selection (Light/Medium/Heavy)
     /// Automatically sets "Yes" in flow presence section
+    /// Tapping same level again: Deselects it
     private func handleFlowLevelSelection(_ level: FlowLevel) {
-        selectedFlowLevel = level
-        hadFlow = true  // Automatically select "Yes"
+        if selectedFlowLevel == level {
+            // Tapping same level again - deselect
+            selectedFlowLevel = nil
+            // Keep hadFlow as-is (don't auto-deselect "Yes")
+        } else {
+            // Selecting different level
+            selectedFlowLevel = level
+            hadFlow = true  // Automatically select "Yes"
+        }
     }
 }
 
