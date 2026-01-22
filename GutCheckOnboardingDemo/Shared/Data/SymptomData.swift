@@ -24,16 +24,16 @@ enum SymptomData {
     }()
     
     // MARK: - Digestive & Gut Health
-    
+
     static let digestiveSymptoms: [Symptom] = [
-        Symptom(name: "Acid Reflux/GERD", category: .digestiveGutHealth, displayOrder: 0),
-        Symptom(name: "Bloating", category: .digestiveGutHealth, displayOrder: 1),
+        Symptom(name: "Acid Reflux/GERD", category: .digestiveGutHealth, displayOrder: 0, isEventBased: true),
+        Symptom(name: "Bloating", category: .digestiveGutHealth, displayOrder: 1, isEventBased: true),
         Symptom(name: "Constipation", category: .digestiveGutHealth, displayOrder: 2),
         Symptom(name: "Diarrhea", category: .digestiveGutHealth, displayOrder: 3),
         Symptom(name: "Digestive problems/IBS", category: .digestiveGutHealth, displayOrder: 4),
         Symptom(name: "Gas", category: .digestiveGutHealth, displayOrder: 5),
         Symptom(name: "Slow digestion", category: .digestiveGutHealth, displayOrder: 6),
-        Symptom(name: "Nausea", category: .digestiveGutHealth, displayOrder: 7),
+        Symptom(name: "Nausea", category: .digestiveGutHealth, displayOrder: 7, isEventBased: true),
         Symptom(name: "Food intolerances", category: .digestiveGutHealth, displayOrder: 8),
     ]
     
@@ -46,41 +46,42 @@ enum SymptomData {
         Symptom(name: "Dark/different colored blood", category: .cycleHormonal, displayOrder: 3),
         Symptom(name: "Extreme PMS symptoms", category: .cycleHormonal, displayOrder: 4),
         Symptom(name: "Breast soreness", category: .cycleHormonal, displayOrder: 5),
+        Symptom(name: "Cramps", category: .cycleHormonal, displayOrder: 6)
     ]
     
     // MARK: - Energy, Mood & Mental Clarity
-    
+
     static let energySymptoms: [Symptom] = [
-        Symptom(name: "Anxiety", category: .energyMoodMental, displayOrder: 0),
+        Symptom(name: "Anxiety", category: .energyMoodMental, displayOrder: 0, isEventBased: true),
         Symptom(name: "Brain fog", category: .energyMoodMental, displayOrder: 1),
         Symptom(name: "Depression", category: .energyMoodMental, displayOrder: 2),
-        Symptom(name: "Mood swings", category: .energyMoodMental, displayOrder: 3),
+        Symptom(name: "Mood swings", category: .energyMoodMental, displayOrder: 3, isEventBased: true),
         Symptom(name: "Fatigue", category: .energyMoodMental, displayOrder: 4),
         Symptom(name: "Irritability", category: .energyMoodMental, displayOrder: 5),
-        Symptom(name: "Social withdrawl", category: .energyMoodMental, displayOrder: 6),
+        Symptom(name: "Social withdrawal", category: .energyMoodMental, displayOrder: 6),
     ]
     
     // MARK: - Sleep & Temperature
-    
+
     static let sleepSymptoms: [Symptom] = [
-        Symptom(name: "Hot flashes", category: .sleepTemperature, displayOrder: 0),
-        Symptom(name: "Night sweats", category: .sleepTemperature, displayOrder: 1),
+        Symptom(name: "Hot flashes", category: .sleepTemperature, displayOrder: 0, isEventBased: true),
+        Symptom(name: "Night sweats", category: .sleepTemperature, displayOrder: 1, isEventBased: true),
         Symptom(name: "Cold flashes", category: .sleepTemperature, displayOrder: 2),
         Symptom(name: "Difficulty sleeping", category: .sleepTemperature, displayOrder: 3),
     ]
     
     // MARK: - Physical & Pain
-    
+
     static let painSymptoms: [Symptom] = [
         Symptom(name: "Body aches", category: .physicalPain, displayOrder: 0),
-        Symptom(name: "Headaches", category: .physicalPain, displayOrder: 1),
-        Symptom(name: "Migraines", category: .physicalPain, displayOrder: 2),
+        Symptom(name: "Headaches", category: .physicalPain, displayOrder: 1, isEventBased: true),
+        Symptom(name: "Migraines", category: .physicalPain, displayOrder: 2, isEventBased: true),
         Symptom(name: "Joint/muscle pain", category: .physicalPain, displayOrder: 3),
         Symptom(name: "Frozen shoulder", category: .physicalPain, displayOrder: 4),
         Symptom(name: "Muscle mass loss", category: .physicalPain, displayOrder: 5),
-        Symptom(name: "Heart racing", category: .physicalPain, displayOrder: 6),
-        Symptom(name: "Heart palpitations", category: .physicalPain, displayOrder: 7),
-        Symptom(name: "Dizziness/vertigo", category: .physicalPain, displayOrder: 8),
+        Symptom(name: "Heart racing", category: .physicalPain, displayOrder: 6, isEventBased: true),
+        Symptom(name: "Heart palpitations", category: .physicalPain, displayOrder: 7, isEventBased: true),
+        Symptom(name: "Dizziness/vertigo", category: .physicalPain, displayOrder: 8, isEventBased: true),
         Symptom(name: "Balance issues", category: .physicalPain, displayOrder: 9),
         Symptom(name: "Feeling clumsy/uncoordinated", category: .physicalPain, displayOrder: 10),
     ]

@@ -94,10 +94,10 @@ struct WrappingHStack: Layout {
     WrappingHStack(horizontalSpacing: 8, verticalSpacing: 12) {
         ForEach(["Bloating", "Anxiety", "Hot flashes", "Brain fog", "Fatigue", "Headaches", "Mood swings", "Sleep issues"], id: \.self) { text in
             Text(text)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 8)
+                .padding(.horizontal, AppTheme.Spacing.md)
+                .padding(.vertical, AppTheme.Spacing.xs)
                 .background(Color.gray.opacity(0.2))
-                .cornerRadius(16)
+                .cornerRadius(AppTheme.CornerRadius.large)
         }
     }
     .padding()

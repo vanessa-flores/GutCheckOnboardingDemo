@@ -13,6 +13,8 @@ class AppRouter {
     var hasSeenWelcome: Bool = false
     var hasCompletedGettingStarted: Bool = false
     
+    let currentUserId: UUID
+    
     // MARK: - Child Routers
     
     var onboardingRouter = OnboardingRouter()
@@ -32,7 +34,13 @@ class AppRouter {
         // In production, this is where you'd save Getting Started answers to backend
         // For demo, just update the flag
     }
-    
+
+    // MARK: - Navigation Helpers
+
+    func selectMainAppTab(_ tab: MainTab) {
+        mainAppRouter.selectTab(tab)
+    }
+
     func signIn() {
         isAuthenticated = true
         hasCompletedOnboarding = true
@@ -51,11 +59,17 @@ class AppRouter {
     }
     
     // MARK: - Initialization
-    
+
     init() {
+        // Use sample user ID for testing and development
+        self.currentUserId = SampleCycleData.sampleUserId
+
+        // Load sample data if needed
+        SampleCycleData.loadIfNeeded(into: InMemorySymptomRepository.shared)
+
         // Check if user has completed onboarding (e.g., from UserDefaults)
         // For now, always start with onboarding
-        self.currentFlow = .onboarding
+        self.currentFlow = .mainApp
     }
 }
 

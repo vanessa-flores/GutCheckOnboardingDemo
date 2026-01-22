@@ -36,7 +36,8 @@ struct SelectableCard: View {
 
                     if isSelected {
                         Image(systemName: "checkmark")
-                            .font(.system(size: 14, weight: .bold))
+                            .font(AppTheme.Typography.caption)
+                            .fontWeight(.bold)
                             .foregroundColor(.white)
                     }
                 }
@@ -77,6 +78,6 @@ struct SelectableCard: View {
             onTap: {}
         )
     }
-    .padding(24)
+    .padding(AppTheme.Spacing.xl)
     .background(AppTheme.Colors.background)
 }
