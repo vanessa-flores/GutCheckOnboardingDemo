@@ -3,7 +3,7 @@ import Foundation
 enum Mood: String, Codable, CaseIterable, Identifiable {
     case great
     case good
-    case okay
+    case meh
     case rough
     case awful
     
@@ -11,11 +11,11 @@ enum Mood: String, Codable, CaseIterable, Identifiable {
     
     var displayName: String {
         switch self {
-        case .great: return "Great"
-        case .good: return "Good"
-        case .okay: return "Okay"
-        case .rough: return "Rough"
-        case .awful: return "Awful"
+        case .great: return "great"
+        case .good: return "good"
+        case .meh: return "meh"
+        case .rough: return "bad"
+        case .awful: return "awful"
         }
     }
     
@@ -23,9 +23,9 @@ enum Mood: String, Codable, CaseIterable, Identifiable {
         switch self {
         case .great: return "😄"
         case .good: return "🙂"
-        case .okay: return "😐"
-        case .rough: return "😟"
-        case .awful: return "😞"
+        case .meh: return "😐"
+        case .rough: return "☹️"
+        case .awful: return "😭"
         }
     }
 }
