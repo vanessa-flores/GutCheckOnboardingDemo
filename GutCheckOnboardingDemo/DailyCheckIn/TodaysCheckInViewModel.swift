@@ -1,0 +1,139 @@
+import SwiftUI
+import Observation
+
+// MARK: - CheckInTab
+
+enum CheckInTab: String, CaseIterable, Identifiable {
+    case mood = "Mood"
+    case symptoms = "Symptoms"
+    case behaviors = "Behaviors"
+    
+    var id: String { rawValue }
+}
+
+// MARK: - TodaysCheckInViewModel
+
+@Observable
+class TodaysCheckInViewModel {
+    
+    let userId: UUID
+    private let repository: CheckInRepository
+    
+    var selectedTab: CheckInTab = .mood
+    
+    var selectedMood: Mood?
+    var quickNote: String = ""
+    
+    var selectedSymptomIds: Set<UUID> = []
+    var expandedCategories: Set<SymptomCategory> = [
+        .digestiveGutHealth,
+        .cycleHormonal,
+        .energyMoodMental,
+        .sleepTemperature
+    ]
+    
+    private var originalDailyLog: DailyLog?
+    private var dailyLog: DailyLog
+    
+    var hasUnsavedChanges: Bool {
+        guard let original = originalDailyLog else { return hasAnyData }
+        
+        let moodChanged = selectedMood != original.mood
+        let noteChanged = (quickNote.isEmpty ? nil : quickNote) != original.reflectionNotes
+        
+        let originalSymptomIds = Set(original.symptomLogs.map { $0.symptomId })
+        let symptomsChanged = selectedSymptomIds != originalSymptomIds
+        
+        return moodChanged || noteChanged || symptomsChanged
+    }
+    
+    var hasAnyData: Bool {
+        selectedMood != nil || !quickNote.isEmpty || !selectedSymptomIds.isEmpty
+    }
+    
+    var symptomsByCategory: [(category: SymptomCategory, symptoms: [Symptom])] {
+        repository.symptomsGroupedByCategory()
+    }
+    
+    init(userId: UUID, repository: CheckInRepository) {
+        self.userId = userId
+        self.repository = repository
+        
+        let existingLog = repository.getTodaysLog(for: userId)
+        self.originalDailyLog = existingLog
+        self.dailyLog = existingLog ?? DailyLog.today(for: userId)
+        
+        if let existing = existingLog {
+            self.selectedMood = existing.mood
+            self.quickNote = existing.reflectionNotes ?? ""
+            self.selectedSymptomIds = Set(existing.symptomLogs.map { $0.symptomId })
+        }
+    }
+    
+    func selectTab(_ tab: CheckInTab) {
+        selectedTab = tab
+    }
+    
+    func selectMood(_ mood: Mood) {
+        if selectedMood == mood {
+            selectedMood = nil
+        } else {
+            selectedMood = mood
+        }
+    }
+    
+    func toggleSymptom(_ symptomId: UUID) {
+        if selectedSymptomIds.contains(symptomId) {
+            selectedSymptomIds.remove(symptomId)
+        } else {
+            selectedSymptomIds.insert(symptomId)
+        }
+    }
+    
+    func toggleCategory(_ category: SymptomCategory) {
+        if expandedCategories.contains(category) {
+            expandedCategories.remove(category)
+        } else {
+            expandedCategories.insert(category)
+        }
+    }
+    
+    func isCategoryExpanded(_ category: SymptomCategory) -> Bool {
+        expandedCategories.contains(category)
+    }
+    
+    func isSymptomSelected(_ symptomId: UUID) -> Bool {
+        selectedSymptomIds.contains(symptomId)
+    }
+    
+    func save() {
+        var updatedLog = dailyLog
+        
+        updatedLog.mood = selectedMood
+        updatedLog.reflectionNotes = quickNote.isEmpty ? nil : quickNote
+        
+        let existingSymptomIds = Set(updatedLog.symptomLogs.map { $0.symptomId })
+        let symptomsToRemove = existingSymptomIds.subtracting(selectedSymptomIds)
+        let symptomsToAdd = selectedSymptomIds.subtracting(existingSymptomIds)
+        
+        updatedLog.symptomLogs.removeAll { symptomsToRemove.contains($0.symptomId) }
+        
+        for symptomId in symptomsToAdd {
+            let newLog = SymptomLog(
+                id: UUID(),
+                userId: userId,
+                symptomId: symptomId,
+                date: Date().startOfDay,
+                timestamp: Date(),
+                severity: nil,
+                notes: nil
+            )
+            updatedLog.symptomLogs.append(newLog)
+        }
+        
+        repository.save(dailyLog: updatedLog)
+        
+        self.dailyLog = updatedLog
+        self.originalDailyLog = updatedLog
+    }
+}
