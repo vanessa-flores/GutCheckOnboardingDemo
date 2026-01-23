@@ -8,6 +8,9 @@ struct DailyLog: Codable, Identifiable, Equatable {
     let id: UUID
     let userId: UUID
     let date: Date
+    
+    // Mental health specific tracking
+    var mood: Mood?
 
     // Period-specific daily data
     var flowLevel: FlowLevel?
