@@ -24,6 +24,7 @@ class MainAppRouter {
 enum MainTab: String, CaseIterable, Identifiable {
     case dashboard
     case log
+    case profile
     
     var id: String { rawValue }
     
@@ -31,13 +32,15 @@ enum MainTab: String, CaseIterable, Identifiable {
         switch self {
         case .dashboard: return "Dashboard"
         case .log: return "Log"
+        case .profile: return "Profile"
         }
     }
     
     var icon: String {
         switch self {
-        case .dashboard: return "house.fill"
-        case .log: return "list.clipboard"
+        case .dashboard: return "list.bullet.below.rectangle"
+        case .log: return "pencil.and.list.clipboard"
+        case .profile: return "person.crop.circle"
         }
     }
 }
