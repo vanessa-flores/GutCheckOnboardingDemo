@@ -1,10 +1,19 @@
 import SwiftUI
 
+// MARK: - ActiveModal
+
+private enum ActiveModal: String, Identifiable {
+    case todaysCheckIn
+    // Future: periodLog, symptomLog
+    
+    var id: String { rawValue }
+}
+
 // MARK: - Logging Hub View
 
 struct LoggingHubView: View {
     let userId: UUID
-    @State var appRouter: AppRouter
+    @State private var activeModal: ActiveModal?
     
     var body: some View {
         NavigationStack {
@@ -46,8 +55,7 @@ struct LoggingHubView: View {
                             title: "Today's check-in",
                             subtitle: "Review your whole day"
                         ) {
-                            // TODO: Navigate to Today's check-in
-                            print("Today's check-in tapped")
+                            activeModal = .todaysCheckIn
                         }
                     }
                     .padding(.horizontal, AppTheme.Spacing.md)
@@ -57,6 +65,15 @@ struct LoggingHubView: View {
             .background(AppTheme.Colors.background)
             .navigationTitle("Log")
             .navigationBarTitleDisplayMode(.large)
+        }
+        .sheet(item: $activeModal) { modal in
+            switch modal {
+            case .todaysCheckIn:
+                TodaysCheckInModal(
+                    userId: userId,
+                    repository: InMemorySymptomRepository.shared
+                )
+            }
         }
     }
 }
@@ -115,8 +132,7 @@ struct LogActionCard: View {
 
 #Preview("Logging Hub") {
     LoggingHubView(
-        userId: UUID(),
-        appRouter: AppRouter()
+        userId: UUID()
     )
 }
 

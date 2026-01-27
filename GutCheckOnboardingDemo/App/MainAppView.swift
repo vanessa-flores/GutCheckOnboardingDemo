@@ -13,7 +13,7 @@ struct MainAppView: View {
                 }
                 .tag(MainTab.dashboard)
             
-            LoggingHubView(userId: appRouter.currentUserId, appRouter: appRouter)
+            LoggingHubView(userId: appRouter.currentUserId)
                 .tabItem {
                     Label(MainTab.log.title, systemImage: MainTab.log.icon)
                 }
