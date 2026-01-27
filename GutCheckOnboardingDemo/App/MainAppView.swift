@@ -9,18 +9,21 @@ struct MainAppView: View {
         TabView(selection: $appRouter.mainAppRouter.selectedTab) {
             DashboardView(appRouter: appRouter)
                 .tabItem {
-                    Label(
-                        appRouter.mainAppRouter.selectedTab.title,
-                        systemImage: appRouter.mainAppRouter.selectedTab.icon
-                    )
+                    Label(MainTab.dashboard.title, systemImage: MainTab.dashboard.icon)
                 }
                 .tag(MainTab.dashboard)
-
-            LoggingContainerView(userId: appRouter.currentUserId, appRouter: appRouter)
+            
+            LoggingHubView(userId: appRouter.currentUserId, appRouter: appRouter)
                 .tabItem {
                     Label(MainTab.log.title, systemImage: MainTab.log.icon)
                 }
                 .tag(MainTab.log)
+            
+            ProfileView(appRouter: appRouter)
+                .tabItem {
+                    Label(MainTab.profile.title, systemImage: MainTab.profile.icon)
+                }
+                .tag(MainTab.profile)
         }
     }
 }
