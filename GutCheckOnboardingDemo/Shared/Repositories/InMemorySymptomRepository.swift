@@ -5,7 +5,7 @@ import Foundation
 /// In-memory implementation of symptom repository protocols.
 /// Perfect for development, testing, and demo purposes.
 /// Replace with a backend-connected implementation when ready.
-final class InMemorySymptomRepository: SymptomRepositoryProtocol, CycleRepositoryProtocol, DailyLogRepositoryProtocol {
+final class InMemorySymptomRepository: SymptomRepositoryProtocol, DailyLogRepositoryProtocol {
 
     // MARK: - Singleton
 
@@ -16,7 +16,6 @@ final class InMemorySymptomRepository: SymptomRepositoryProtocol, CycleRepositor
     private var symptoms: [Symptom] = []
     private var preferences: [UUID: [UserSymptomPreference]] = [:]  // userId -> preferences
     private var symptomLogs: [UUID: [SymptomLog]] = [:]             // userId -> logs
-    private var cycleLogs: [UUID: [CycleLog]] = [:]                  // userId -> cycles
     private var dailyLogs: [UUID: [Date: DailyLog]] = [:]            // userId -> date -> dailyLog
 
     // MARK: - Initialization
@@ -121,40 +120,6 @@ final class InMemorySymptomRepository: SymptomRepositoryProtocol, CycleRepositor
     func remove(logId: UUID) {
         for (userId, userLogs) in symptomLogs {
             symptomLogs[userId] = userLogs.filter { $0.id != logId }
-        }
-    }
-
-    // MARK: - CycleRepositoryProtocol
-
-    func cycleLogs(for userId: UUID) -> [CycleLog] {
-        (cycleLogs[userId] ?? []).sortedByStartDate()
-    }
-
-    func mostRecentCycle(for userId: UUID) -> CycleLog? {
-        cycleLogs(for: userId).mostRecent
-    }
-
-    func ongoingCycle(for userId: UUID) -> CycleLog? {
-        cycleLogs(for: userId).ongoing
-    }
-
-    func save(cycleLog: CycleLog) {
-        var userCycles = cycleLogs[cycleLog.userId] ?? []
-        userCycles.append(cycleLog)
-        cycleLogs[cycleLog.userId] = userCycles
-    }
-
-    func update(cycleLog: CycleLog) {
-        var userCycles = cycleLogs[cycleLog.userId] ?? []
-        if let index = userCycles.firstIndex(where: { $0.id == cycleLog.id }) {
-            userCycles[index] = cycleLog
-            cycleLogs[cycleLog.userId] = userCycles
-        }
-    }
-
-    func remove(cycleLogId: UUID) {
-        for (userId, userCycles) in cycleLogs {
-            cycleLogs[userId] = userCycles.filter { $0.id != cycleLogId }
         }
     }
 

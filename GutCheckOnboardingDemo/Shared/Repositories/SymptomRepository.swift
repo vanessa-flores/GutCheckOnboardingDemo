@@ -57,29 +57,6 @@ protocol SymptomRepositoryProtocol {
     func remove(logId: UUID)
 }
 
-// MARK: - Cycle Log Repository Protocol
-
-/// Protocol defining cycle tracking operations.
-protocol CycleRepositoryProtocol {
-    /// Returns all cycle logs for a user
-    func cycleLogs(for userId: UUID) -> [CycleLog]
-
-    /// Returns the most recent cycle log
-    func mostRecentCycle(for userId: UUID) -> CycleLog?
-
-    /// Returns any ongoing cycle
-    func ongoingCycle(for userId: UUID) -> CycleLog?
-
-    /// Saves a cycle log
-    func save(cycleLog: CycleLog)
-
-    /// Updates an existing cycle log
-    func update(cycleLog: CycleLog)
-
-    /// Removes a cycle log
-    func remove(cycleLogId: UUID)
-}
-
 // MARK: - Daily Log Repository Protocol
 
 /// Protocol defining daily log operations.
