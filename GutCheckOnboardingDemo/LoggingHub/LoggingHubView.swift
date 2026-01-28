@@ -75,6 +75,16 @@ struct LoggingHubView: View {
             .background(AppTheme.Colors.background)
             .navigationTitle("Log")
             .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        // TODO: Navigate to historical period logging and cycle calendar view
+                    }) {
+                        Image(systemName: "calendar.badge.plus")
+                            .foregroundColor(AppTheme.Colors.primaryAction)
+                    }
+                }
+            }
         }
         .sheet(item: $activeModal) { modal in
             switch modal {
