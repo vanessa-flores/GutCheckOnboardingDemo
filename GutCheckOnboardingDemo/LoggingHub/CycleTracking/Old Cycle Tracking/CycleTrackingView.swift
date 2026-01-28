@@ -86,30 +86,6 @@ struct CycleTrackingView: View {
                     }
                 }
             }
-            .sheet(isPresented: $showingPeriodModal) {
-                if !viewModel.isSelectedDateInFuture {
-                    PeriodLogModal(
-                        date: viewModel.logData.selectedDate,
-                        initialFlow: {
-                            guard let periodValue = viewModel.logData.periodValue else { return nil }
-                            return FlowLevel(rawValue: periodValue)
-                        }(),
-                        onSave: { isTracking, flowLevel in
-                            viewModel.updatePeriodData(isTracking: isTracking, flowLevel: flowLevel)
-                        }
-                    )
-                }
-            }
-            .sheet(isPresented: $showingSymptomsModal) {
-                SymptomsLogModal(
-                    date: viewModel.logData.selectedDate,
-                    initialSelectedIds: viewModel.logData.selectedSymptomIds,
-                    repository: InMemorySymptomRepository.shared,
-                    onSave: { selectedIds in
-                        viewModel.updateSymptomsData(selectedIds: selectedIds)
-                    }
-                )
-            }
         }
     }
 }
