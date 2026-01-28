@@ -5,24 +5,31 @@ import SwiftUI
 struct TodaysCheckInModal: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: TodaysCheckInViewModel
-    
-    init(userId: UUID, repository: CheckInRepository) {
-        let vm = TodaysCheckInViewModel(userId: userId, repository: repository)
+
+    init(userId: UUID, date: Date, repository: CheckInRepository) {
+        let vm = TodaysCheckInViewModel(userId: userId, date: date, repository: repository)
         _viewModel = State(initialValue: vm)
     }
-    
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
                 tabPicker
-                
+
+                // Date subtitle
+                Text(viewModel.formattedDate)
+                    .font(AppTheme.Typography.caption)
+                    .foregroundColor(AppTheme.Colors.textSecondary)
+                    .padding(.top, AppTheme.Spacing.xs)
+
                 Divider()
-                
+                    .padding(.top, AppTheme.Spacing.sm)
+
                 tabContent
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             .background(AppTheme.Colors.background)
-            .navigationTitle("Today's Check-in")
+            .navigationTitle("Daily Check-in")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -73,6 +80,7 @@ struct TodaysCheckInModal: View {
 #Preview("Modal - Empty State") {
     TodaysCheckInModal(
         userId: UUID(),
+        date: Date(),
         repository: InMemorySymptomRepository.shared
     )
 }
@@ -80,14 +88,15 @@ struct TodaysCheckInModal: View {
 #Preview("Modal - With Data") {
     let repository = InMemorySymptomRepository.shared
     let userId = UUID()
-    
+
     var log = DailyLog.today(for: userId)
     log.mood = .good
     log.reflectionNotes = "Had a productive morning"
     repository.save(dailyLog: log)
-    
+
     return TodaysCheckInModal(
         userId: userId,
+        date: Date(),
         repository: repository
     )
 }

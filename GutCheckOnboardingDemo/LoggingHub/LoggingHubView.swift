@@ -98,6 +98,7 @@ struct LoggingHubView: View {
             case .todaysCheckIn:
                 TodaysCheckInModal(
                     userId: userId,
+                    date: viewModel.selectedDate,
                     repository: repository
                 )
             case .cycleLog:
@@ -111,6 +112,12 @@ struct LoggingHubView: View {
                         saveCycleData(isTracking: isTracking, flowLevel: flowLevel, symptomIds: symptomIds)
                     }
                 )
+            }
+        }
+        .onChange(of: activeModal) { oldValue, newValue in
+            // Refresh data when modal is dismissed
+            if oldValue != nil && newValue == nil {
+                viewModel.refreshData()
             }
         }
     }

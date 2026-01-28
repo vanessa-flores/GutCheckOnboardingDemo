@@ -108,6 +108,7 @@ struct MoodTabView: View {
     MoodTabView(
         viewModel: TodaysCheckInViewModel(
             userId: UUID(),
+            date: Date(),
             repository: InMemorySymptomRepository.shared
         )
     )
@@ -116,6 +117,7 @@ struct MoodTabView: View {
 #Preview("With Selection") {
     let viewModel = TodaysCheckInViewModel(
         userId: UUID(),
+        date: Date(),
         repository: InMemorySymptomRepository.shared
     )
     viewModel.selectedMood = .great

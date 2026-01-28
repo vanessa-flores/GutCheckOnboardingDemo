@@ -229,8 +229,4 @@ extension InMemorySymptomRepository {
 
 // MARK: - CheckInRepository Extension
 
-extension InMemorySymptomRepository: CheckInRepository {
-    func getTodaysLog(for userId: UUID) -> DailyLog? {
-        return dailyLog(for: userId, on: Date())
-    }
-}
+extension InMemorySymptomRepository: CheckInRepository {}

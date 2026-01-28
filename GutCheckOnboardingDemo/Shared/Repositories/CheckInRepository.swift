@@ -1,7 +1,7 @@
 import Foundation
 
 protocol CheckInRepository {
-    func getTodaysLog(for userId: UUID) -> DailyLog?
+    func dailyLog(for userId: UUID, on: Date) -> DailyLog?
     func save(dailyLog: DailyLog)
     func symptomsGroupedByCategory() -> [(category: SymptomCategory, symptoms: [Symptom])]
 }
