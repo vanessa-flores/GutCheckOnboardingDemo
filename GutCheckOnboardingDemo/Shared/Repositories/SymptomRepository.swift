@@ -30,31 +30,10 @@ protocol SymptomRepositoryProtocol {
     /// Saves a symptom preference
     func save(preference: UserSymptomPreference)
 
-    /// Removes a symptom preference
-    func remove(preferenceId: UUID)
-
-    /// Toggle tracking status for a symptom
-    func toggleTracking(symptomId: UUID, for userId: UUID)
-
     // MARK: - Symptom Logs
-
-    /// Returns all symptom logs for a user
-    func logs(for userId: UUID) -> [SymptomLog]
-
-    /// Returns symptom logs for a specific date
-    func logs(for userId: UUID, on date: Date) -> [SymptomLog]
-
-    /// Returns symptom logs within a date range
-    func logs(for userId: UUID, from startDate: Date, to endDate: Date) -> [SymptomLog]
 
     /// Saves a symptom log
     func save(log: SymptomLog)
-
-    /// Updates an existing symptom log
-    func update(log: SymptomLog)
-
-    /// Removes a symptom log
-    func remove(logId: UUID)
 }
 
 // MARK: - Daily Log Repository Protocol
@@ -67,15 +46,6 @@ protocol DailyLogRepositoryProtocol {
     /// Returns the daily log for a specific date
     func dailyLog(for userId: UUID, on date: Date) -> DailyLog?
 
-    /// Returns daily logs within a date range
-    func dailyLogs(for userId: UUID, from startDate: Date, to endDate: Date) -> [DailyLog]
-
-    /// Creates or returns the daily log for today
-    func getOrCreateTodaysLog(for userId: UUID) -> DailyLog
-
     /// Saves a daily log
     func save(dailyLog: DailyLog)
-
-    /// Updates an existing daily log
-    func update(dailyLog: DailyLog)
 }

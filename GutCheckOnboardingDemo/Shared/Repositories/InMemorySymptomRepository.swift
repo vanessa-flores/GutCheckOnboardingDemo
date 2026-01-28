@@ -68,59 +68,12 @@ final class InMemorySymptomRepository: SymptomRepositoryProtocol, DailyLogReposi
         preferences[preference.userId] = userPrefs
     }
 
-    func remove(preferenceId: UUID) {
-        for (userId, userPrefs) in preferences {
-            preferences[userId] = userPrefs.filter { $0.id != preferenceId }
-        }
-    }
-
-    func toggleTracking(symptomId: UUID, for userId: UUID) {
-        var userPrefs = preferences[userId] ?? []
-
-        if let index = userPrefs.firstIndex(where: { $0.symptomId == symptomId }) {
-            // Toggle existing preference
-            userPrefs[index] = userPrefs[index].toggled()
-        } else {
-            // Create new preference
-            let newPref = UserSymptomPreference.track(symptomId: symptomId, for: userId)
-            userPrefs.append(newPref)
-        }
-
-        preferences[userId] = userPrefs
-    }
-
     // MARK: - SymptomRepositoryProtocol - Logs
-
-    func logs(for userId: UUID) -> [SymptomLog] {
-        symptomLogs[userId] ?? []
-    }
-
-    func logs(for userId: UUID, on date: Date) -> [SymptomLog] {
-        logs(for: userId).forDate(date)
-    }
-
-    func logs(for userId: UUID, from startDate: Date, to endDate: Date) -> [SymptomLog] {
-        logs(for: userId).inDateRange(from: startDate, to: endDate)
-    }
 
     func save(log: SymptomLog) {
         var userLogs = symptomLogs[log.userId] ?? []
         userLogs.append(log)
         symptomLogs[log.userId] = userLogs
-    }
-
-    func update(log: SymptomLog) {
-        var userLogs = symptomLogs[log.userId] ?? []
-        if let index = userLogs.firstIndex(where: { $0.id == log.id }) {
-            userLogs[index] = log
-            symptomLogs[log.userId] = userLogs
-        }
-    }
-
-    func remove(logId: UUID) {
-        for (userId, userLogs) in symptomLogs {
-            symptomLogs[userId] = userLogs.filter { $0.id != logId }
-        }
     }
 
     // MARK: - DailyLogRepositoryProtocol
@@ -133,35 +86,10 @@ final class InMemorySymptomRepository: SymptomRepositoryProtocol, DailyLogReposi
         dailyLogs[userId]?[date.startOfDay]
     }
 
-    func dailyLogs(for userId: UUID, from startDate: Date, to endDate: Date) -> [DailyLog] {
-        let start = startDate.startOfDay
-        let end = endDate.startOfDay
-
-        return dailyLogs(for: userId).filter { log in
-            log.date >= start && log.date <= end
-        }
-    }
-
-    func getOrCreateTodaysLog(for userId: UUID) -> DailyLog {
-        let today = Date().startOfDay
-
-        if let existingLog = dailyLog(for: userId, on: today) {
-            return existingLog
-        }
-
-        let newLog = DailyLog.today(for: userId)
-        save(dailyLog: newLog)
-        return newLog
-    }
-
     func save(dailyLog: DailyLog) {
         var userLogs = dailyLogs[dailyLog.userId] ?? [:]
         userLogs[dailyLog.date] = dailyLog
         dailyLogs[dailyLog.userId] = userLogs
-    }
-
-    func update(dailyLog: DailyLog) {
-        save(dailyLog: dailyLog)
     }
 }
 
