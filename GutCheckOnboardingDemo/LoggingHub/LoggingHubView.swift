@@ -4,8 +4,8 @@ import SwiftUI
 
 private enum ActiveModal: String, Identifiable {
     case todaysCheckIn
-    // Future: periodLog, symptomLog
-    
+    case cycleLog
+
     var id: String { rawValue }
 }
 
@@ -14,7 +14,18 @@ private enum ActiveModal: String, Identifiable {
 struct LoggingHubView: View {
     let userId: UUID
     @State private var activeModal: ActiveModal?
-    
+    private let repository = InMemorySymptomRepository.shared
+
+    private var todaysFlowLevel: FlowLevel? {
+        repository.dailyLog(for: userId, on: Date())?.flowLevel
+    }
+
+    private var todaysSymptomIds: Set<UUID> {
+        let todaysLog = repository.dailyLog(for: userId, on: Date())
+        let ids = todaysLog?.symptomLogs.map { $0.symptomId } ?? []
+        return Set(ids)
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -37,8 +48,7 @@ struct LoggingHubView: View {
                             title: "Log period",
                             subtitle: "Track your flow"
                         ) {
-                            // TODO: Navigate to period logging
-                            print("Log period tapped")
+                            activeModal = .cycleLog
                         }
                         
                         LogActionCard(
@@ -71,10 +81,46 @@ struct LoggingHubView: View {
             case .todaysCheckIn:
                 TodaysCheckInModal(
                     userId: userId,
-                    repository: InMemorySymptomRepository.shared
+                    repository: repository
+                )
+            case .cycleLog:
+                CycleLogModal(
+                    userId: userId,
+                    date: Date(),
+                    initialFlow: todaysFlowLevel,
+                    initialSelectedSymptomIds: todaysSymptomIds,
+                    repository: repository,
+                    onSave: { isTracking, flowLevel, symptomIds in
+                        saveCycleData(isTracking: isTracking, flowLevel: flowLevel, symptomIds: symptomIds)
+                    }
                 )
             }
         }
+    }
+
+    // MARK: - Helper Methods
+
+    private func saveCycleData(isTracking: Bool, flowLevel: FlowLevel?, symptomIds: Set<UUID>) {
+        var dailyLog = repository.getOrCreateTodaysLog(for: userId)
+
+        dailyLog.flowLevel = isTracking ? flowLevel : nil
+
+        // Update symptom data - clear existing and add new
+        let existingSymptomLogs = dailyLog.symptomLogs
+        for log in existingSymptomLogs {
+            dailyLog = dailyLog.removingSymptomLog(withId: log.id)
+        }
+
+        for symptomId in symptomIds {
+            let symptomLog = SymptomLog(
+                userId: userId,
+                symptomId: symptomId,
+                date: Date()
+            )
+            dailyLog = dailyLog.addingSymptomLog(symptomLog)
+        }
+
+        repository.save(dailyLog: dailyLog)
     }
 }
 
