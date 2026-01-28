@@ -192,6 +192,6 @@ extension InMemorySymptomRepository {
     }
 }
 
-// MARK: - CheckInRepository Extension
+// MARK: - CheckInRepositoryProtocol Extension
 
-extension InMemorySymptomRepository: CheckInRepository {}
+extension InMemorySymptomRepository: CheckInRepositoryProtocol {}

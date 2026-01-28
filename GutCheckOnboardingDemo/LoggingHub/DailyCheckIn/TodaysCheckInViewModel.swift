@@ -18,7 +18,7 @@ class TodaysCheckInViewModel {
 
     let userId: UUID
     let date: Date
-    private let repository: CheckInRepository
+    private let repository: CheckInRepositoryProtocol
 
     var selectedTab: CheckInTab = .mood
 
@@ -62,7 +62,7 @@ class TodaysCheckInViewModel {
         return formatter.string(from: date)
     }
 
-    init(userId: UUID, date: Date, repository: CheckInRepository) {
+    init(userId: UUID, date: Date, repository: CheckInRepositoryProtocol) {
         self.userId = userId
         self.date = date
         self.repository = repository
