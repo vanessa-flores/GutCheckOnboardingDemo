@@ -17,7 +17,7 @@ class CycleLogViewModel {
 
     // MARK: - Dependencies
 
-    private let repository: SymptomRepositoryProtocol
+    private let repository: SymptomCatalogProtocol
     private let onSave: (Bool, FlowLevel?, Set<UUID>) -> Void
     
     // MARK: - Properties
@@ -53,7 +53,7 @@ class CycleLogViewModel {
         date: Date,
         initialFlow: FlowLevel?,
         initialSelectedSymptomIds: Set<UUID>,
-        repository: SymptomRepositoryProtocol,
+        repository: SymptomCatalogProtocol,
         onSave: @escaping (Bool, FlowLevel?, Set<UUID>) -> Void
     ) {
         self.userId = userId

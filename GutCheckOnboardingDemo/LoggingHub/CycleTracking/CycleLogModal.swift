@@ -13,7 +13,7 @@ struct CycleLogModal: View {
         date: Date,
         initialFlow: FlowLevel?,
         initialSelectedSymptomIds: Set<UUID>,
-        repository: SymptomRepositoryProtocol,
+        repository: SymptomCatalogProtocol,
         onSave: @escaping (Bool, FlowLevel?, Set<UUID>) -> Void
     ) {
         self._viewModel = State(initialValue: CycleLogViewModel(
