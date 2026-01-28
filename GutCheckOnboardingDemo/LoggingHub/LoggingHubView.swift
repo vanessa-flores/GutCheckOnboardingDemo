@@ -46,15 +46,6 @@ struct LoggingHubView: View {
                         }
 
                         LogActionCard(
-                            icon: "stethoscope",
-                            title: "Log symptom",
-                            subtitle: "Quick symptom capture"
-                        ) {
-                            // TODO: Navigate to symptom logging
-                            print("Log symptom tapped")
-                        }
-
-                        LogActionCard(
                             icon: "person.fill.checkmark",
                             title: viewModel.checkInCardTitle,
                             subtitle: "Review your whole day"
@@ -177,11 +168,11 @@ struct LogActionCard: View {
         ) {
             print("Tapped")
         }
-        
+
         LogActionCard(
-            icon: "stethoscope",
-            title: "Log symptom",
-            subtitle: "Quick symptom capture"
+            icon: "person.fill.checkmark",
+            title: "Today's check-in",
+            subtitle: "Review your whole day"
         ) {
             print("Tapped")
         }
