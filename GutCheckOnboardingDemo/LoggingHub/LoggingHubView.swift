@@ -14,25 +14,32 @@ private enum ActiveModal: String, Identifiable {
 struct LoggingHubView: View {
     let userId: UUID
     @State private var activeModal: ActiveModal?
+    @State private var viewModel: LoggingHubViewModel
     private let repository = InMemorySymptomRepository.shared
 
-    private var todaysFlowLevel: FlowLevel? {
-        repository.dailyLog(for: userId, on: Date())?.flowLevel
-    }
-
-    private var todaysSymptomIds: Set<UUID> {
-        let todaysLog = repository.dailyLog(for: userId, on: Date())
-        let ids = todaysLog?.symptomLogs.map { $0.symptomId } ?? []
-        return Set(ids)
+    init(userId: UUID) {
+        self.userId = userId
+        self._viewModel = State(initialValue: LoggingHubViewModel(userId: userId))
     }
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 0) {
+                    // Week View
+                    CycleWeekView(
+                        weekRange: viewModel.weekRange,
+                        days: viewModel.weekDays,
+                        onPreviousWeek: { viewModel.navigateToPreviousWeek() },
+                        onNextWeek: { viewModel.navigateToNextWeek() },
+                        onDayTapped: { index in viewModel.selectDay(index) }
+                    )
+                    .padding(.horizontal, AppTheme.Spacing.md)
+                    .padding(.top, AppTheme.Spacing.md)
+
                     // Section Header
                     HStack {
-                        Text("Log Today")
+                        Text(viewModel.sectionHeaderText)
                             .font(AppTheme.Typography.title3)
                             .foregroundColor(AppTheme.Colors.textPrimary)
                         Spacer()
@@ -62,7 +69,7 @@ struct LoggingHubView: View {
                         
                         LogActionCard(
                             icon: "person.fill.checkmark",
-                            title: "Today's check-in",
+                            title: viewModel.checkInCardTitle,
                             subtitle: "Review your whole day"
                         ) {
                             activeModal = .todaysCheckIn
@@ -74,7 +81,7 @@ struct LoggingHubView: View {
             }
             .background(AppTheme.Colors.background)
             .navigationTitle("Log")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
@@ -96,9 +103,9 @@ struct LoggingHubView: View {
             case .cycleLog:
                 CycleLogModal(
                     userId: userId,
-                    date: Date(),
-                    initialFlow: todaysFlowLevel,
-                    initialSelectedSymptomIds: todaysSymptomIds,
+                    date: viewModel.selectedDate,
+                    initialFlow: viewModel.selectedDateFlowLevel,
+                    initialSelectedSymptomIds: viewModel.selectedDateSymptomIds,
                     repository: repository,
                     onSave: { isTracking, flowLevel, symptomIds in
                         saveCycleData(isTracking: isTracking, flowLevel: flowLevel, symptomIds: symptomIds)
@@ -111,26 +118,25 @@ struct LoggingHubView: View {
     // MARK: - Helper Methods
 
     private func saveCycleData(isTracking: Bool, flowLevel: FlowLevel?, symptomIds: Set<UUID>) {
-        var dailyLog = repository.getOrCreateTodaysLog(for: userId)
+        var dailyLog = repository.dailyLog(for: userId, on: viewModel.selectedDate)
+            ?? DailyLog(userId: userId, date: viewModel.selectedDate)
 
+        // Update flow
         dailyLog.flowLevel = isTracking ? flowLevel : nil
 
-        // Update symptom data - clear existing and add new
-        let existingSymptomLogs = dailyLog.symptomLogs
-        for log in existingSymptomLogs {
-            dailyLog = dailyLog.removingSymptomLog(withId: log.id)
-        }
-
+        // Update symptoms - clear and rebuild
+        dailyLog.symptomLogs.removeAll()
         for symptomId in symptomIds {
             let symptomLog = SymptomLog(
                 userId: userId,
                 symptomId: symptomId,
-                date: Date()
+                date: viewModel.selectedDate
             )
             dailyLog = dailyLog.addingSymptomLog(symptomLog)
         }
 
         repository.save(dailyLog: dailyLog)
+        viewModel.refreshData()
     }
 }
 
