@@ -1,24 +1,11 @@
 import SwiftUI
 
-// MARK: - ActiveModal
-
-private enum ActiveModal: String, Identifiable {
-    case todaysCheckIn
-    case cycleLog
-
-    var id: String { rawValue }
-}
-
 // MARK: - Logging Hub View
 
 struct LoggingHubView: View {
-    let userId: UUID
-    @State private var activeModal: ActiveModal?
     @State private var viewModel: LoggingHubViewModel
-    private let repository = InMemorySymptomRepository.shared
 
     init(userId: UUID) {
-        self.userId = userId
         self._viewModel = State(initialValue: LoggingHubViewModel(userId: userId))
     }
 
@@ -55,9 +42,9 @@ struct LoggingHubView: View {
                             title: "Log period",
                             subtitle: "Track your flow"
                         ) {
-                            activeModal = .cycleLog
+                            viewModel.showCycleLogModal()
                         }
-                        
+
                         LogActionCard(
                             icon: "stethoscope",
                             title: "Log symptom",
@@ -66,13 +53,13 @@ struct LoggingHubView: View {
                             // TODO: Navigate to symptom logging
                             print("Log symptom tapped")
                         }
-                        
+
                         LogActionCard(
                             icon: "person.fill.checkmark",
                             title: viewModel.checkInCardTitle,
                             subtitle: "Review your whole day"
                         ) {
-                            activeModal = .todaysCheckIn
+                            viewModel.showCheckInModal()
                         }
                     }
                     .padding(.horizontal, AppTheme.Spacing.md)
@@ -93,57 +80,33 @@ struct LoggingHubView: View {
                 }
             }
         }
-        .sheet(item: $activeModal) { modal in
+        .sheet(item: $viewModel.activeModal) { modal in
             switch modal {
             case .todaysCheckIn:
                 TodaysCheckInModal(
-                    userId: userId,
+                    userId: viewModel.userId,
                     date: viewModel.selectedDate,
-                    repository: repository
+                    repository: InMemorySymptomRepository.shared
                 )
             case .cycleLog:
                 CycleLogModal(
-                    userId: userId,
+                    userId: viewModel.userId,
                     date: viewModel.selectedDate,
                     initialFlow: viewModel.selectedDateFlowLevel,
                     initialSelectedSymptomIds: viewModel.selectedDateSymptomIds,
-                    repository: repository,
+                    repository: InMemorySymptomRepository.shared,
                     onSave: { isTracking, flowLevel, symptomIds in
-                        saveCycleData(isTracking: isTracking, flowLevel: flowLevel, symptomIds: symptomIds)
+                        viewModel.saveCycleData(isTracking: isTracking, flowLevel: flowLevel, symptomIds: symptomIds)
                     }
                 )
             }
         }
-        .onChange(of: activeModal) { oldValue, newValue in
+        .onChange(of: viewModel.activeModal) { oldValue, newValue in
             // Refresh data when modal is dismissed
             if oldValue != nil && newValue == nil {
                 viewModel.refreshData()
             }
         }
-    }
-
-    // MARK: - Helper Methods
-
-    private func saveCycleData(isTracking: Bool, flowLevel: FlowLevel?, symptomIds: Set<UUID>) {
-        var dailyLog = repository.dailyLog(for: userId, on: viewModel.selectedDate)
-            ?? DailyLog(userId: userId, date: viewModel.selectedDate)
-
-        // Update flow
-        dailyLog.flowLevel = isTracking ? flowLevel : nil
-
-        // Update symptoms - clear and rebuild
-        dailyLog.symptomLogs.removeAll()
-        for symptomId in symptomIds {
-            let symptomLog = SymptomLog(
-                userId: userId,
-                symptomId: symptomId,
-                date: viewModel.selectedDate
-            )
-            dailyLog = dailyLog.addingSymptomLog(symptomLog)
-        }
-
-        repository.save(dailyLog: dailyLog)
-        viewModel.refreshData()
     }
 }
 

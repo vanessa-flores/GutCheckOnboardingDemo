@@ -2,6 +2,17 @@ import Foundation
 import SwiftUI
 import Observation
 
+// MARK: - Active Modal
+
+enum ActiveModal: String, Identifiable {
+    case todaysCheckIn
+    case cycleLog
+
+    var id: String { rawValue }
+}
+
+// MARK: - LoggingHubViewModel
+
 @Observable
 class LoggingHubViewModel {
 
@@ -16,7 +27,11 @@ class LoggingHubViewModel {
     var selectedDate: Date
     var weekDays: [DayColumnData] = []
 
-    // MARK: - Computed Properties
+    // MARK: - Modal State
+
+    var activeModal: ActiveModal? = nil
+
+    // MARK: - Computed Properties (Week-Related)
 
     var isSelectedDateToday: Bool {
         selectedDate.isSameDay(as: Date())
@@ -65,6 +80,8 @@ class LoggingHubViewModel {
         }
     }
 
+    // MARK: - Computed Properties (Selected Date Data)
+
     /// Flow level for selected date
     var selectedDateFlowLevel: FlowLevel? {
         repository.dailyLog(for: userId, on: selectedDate)?.flowLevel
@@ -87,7 +104,7 @@ class LoggingHubViewModel {
         loadWeekData()
     }
 
-    // MARK: - Public Methods
+    // MARK: - Week Navigation
 
     /// Selects a specific day in the current week
     /// - Parameter index: Day index (0 = Monday, 6 = Sunday)
@@ -122,9 +139,48 @@ class LoggingHubViewModel {
         loadWeekData()
     }
 
-    /// Refreshes all data from the repository
     func refreshData() {
         loadWeekData()
+    }
+
+    // MARK: - Modal Actions
+
+    func showCycleLogModal() {
+        guard !isSelectedDateInFuture else { return }
+        activeModal = .cycleLog
+    }
+
+    func showCheckInModal() {
+        guard !isSelectedDateInFuture else { return }
+        activeModal = .todaysCheckIn
+    }
+
+    func dismissModal() {
+        activeModal = nil
+    }
+
+    // MARK: - Save Actions
+
+    func saveCycleData(isTracking: Bool, flowLevel: FlowLevel?, symptomIds: Set<UUID>) {
+        var dailyLog = repository.dailyLog(for: userId, on: selectedDate)
+            ?? DailyLog(userId: userId, date: selectedDate)
+
+        // Update flow
+        dailyLog.flowLevel = isTracking ? flowLevel : nil
+
+        // Update symptoms - clear and rebuild
+        dailyLog.symptomLogs.removeAll()
+        for symptomId in symptomIds {
+            let symptomLog = SymptomLog(
+                userId: userId,
+                symptomId: symptomId,
+                date: selectedDate
+            )
+            dailyLog = dailyLog.addingSymptomLog(symptomLog)
+        }
+
+        repository.save(dailyLog: dailyLog)
+        refreshData()
     }
 
     // MARK: - Private Methods
