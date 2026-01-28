@@ -168,27 +168,11 @@ final class InMemorySymptomRepository: SymptomRepositoryProtocol, DailyLogReposi
 // MARK: - Convenience Extensions
 
 extension InMemorySymptomRepository {
-    /// Returns symptoms that a user is actively tracking
-    func trackedSymptoms(for userId: UUID) -> [Symptom] {
-        let trackedIds = activePreferences(for: userId).map { $0.symptomId }
-        return trackedIds.compactMap { symptom(withId: $0) }
-    }
-
-    /// Returns whether a specific symptom is being tracked
-    func isTracking(symptomId: UUID, for userId: UUID) -> Bool {
-        preferences(for: userId).isTracking(symptomId: symptomId)
-    }
-
     /// Bulk save preferences (used during onboarding)
     func savePreferences(_ newPreferences: [UserSymptomPreference], for userId: UUID) {
         for preference in newPreferences {
             save(preference: preference)
         }
-    }
-
-    /// Clear all preferences for a user (used during onboarding reset)
-    func clearPreferences(for userId: UUID) {
-        preferences[userId] = []
     }
 }
 
