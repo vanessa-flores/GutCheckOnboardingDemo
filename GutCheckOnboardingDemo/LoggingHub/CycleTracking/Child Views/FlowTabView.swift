@@ -4,80 +4,60 @@ import SwiftUI
 private let contentBackground = Color(hex: "FBFAF9")
 
 struct FlowTabView: View {
-    @Binding var hadFlow: Bool?
-    @Binding var selectedFlowLevel: FlowLevel?
+    let displayData: FlowTabDisplayData
+    let onFlowPresenceSelected: (String) -> Void
+    let onFlowLevelSelected: (String) -> Void
 
     var body: some View {
         List {
-            Section("Did you have flow today?") {
-                SelectableRow(
-                    title: "Yes",
-                    isSelected: hadFlow == true,
-                    action: { handleFlowPresenceSelection(true) }
-                )
-
-                SelectableRow(
-                    title: "No",
-                    isSelected: hadFlow == false,
-                    action: { handleFlowPresenceSelection(false) }
-                )
+            Section {
+                ForEach(displayData.flowPresenceOptions) { option in
+                    SelectableRow(
+                        title: option.title,
+                        isSelected: option.isSelected
+                    ) {
+                        onFlowPresenceSelected(option.id)
+                    }
+                }
+            } header: {
+                Text("Did you have flow today?")
             }
 
-            Section("Flow Level") {
-                ForEach([FlowLevel.light, .medium, .heavy], id: \.self) { level in
+            Section {
+                ForEach(displayData.flowLevelOptions) { option in
                     SelectableRow(
-                        title: level.rawValue,
-                        isSelected: selectedFlowLevel == level,
-                        action: { handleFlowLevelSelection(level) }
-                    )
+                        title: option.title,
+                        isSelected: option.isSelected
+                    ) {
+                        onFlowLevelSelected(option.id)
+                    }
                 }
+            } header: {
+                Text("Flow Level")
             }
         }
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
         .background(contentBackground)
     }
-
-    // MARK: - Helper Methods
-
-    private func handleFlowPresenceSelection(_ hasFlow: Bool) {
-        if hadFlow == hasFlow {
-            hadFlow = nil
-            selectedFlowLevel = nil
-        } else {
-            if hasFlow {
-                hadFlow = true
-            } else {
-                hadFlow = false
-                selectedFlowLevel = nil
-            }
-        }
-    }
-
-    private func handleFlowLevelSelection(_ level: FlowLevel) {
-        if selectedFlowLevel == level {
-            selectedFlowLevel = nil
-        } else {
-            selectedFlowLevel = level
-            hadFlow = true
-        }
-    }
 }
 
 // MARK: - Preview
 
 #Preview {
-    struct PreviewWrapper: View {
-        @State private var hadFlow: Bool? = nil
-        @State private var selectedFlowLevel: FlowLevel? = nil
-
-        var body: some View {
-            FlowTabView(
-                hadFlow: $hadFlow,
-                selectedFlowLevel: $selectedFlowLevel
-            )
-        }
-    }
-
-    return PreviewWrapper()
+    FlowTabView(
+        displayData: FlowTabDisplayData(
+            flowPresenceOptions: [
+                SelectableOption(id: "yes", title: "Yes", isSelected: true),
+                SelectableOption(id: "no", title: "No", isSelected: false)
+            ],
+            flowLevelOptions: [
+                SelectableOption(id: "light", title: "Light", isSelected: false),
+                SelectableOption(id: "medium", title: "Medium", isSelected: true),
+                SelectableOption(id: "heavy", title: "Heavy", isSelected: false)
+            ]
+        ),
+        onFlowPresenceSelected: { id in print("Presence: \(id)") },
+        onFlowLevelSelected: { id in print("Level: \(id)") }
+    )
 }

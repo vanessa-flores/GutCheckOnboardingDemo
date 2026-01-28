@@ -15,23 +15,29 @@ enum CycleLogTab: String, CaseIterable, Identifiable {
 @Observable
 class CycleLogViewModel {
 
-    // MARK: - Properties
+    // MARK: - Dependencies
+
+    private let repository: SymptomRepositoryProtocol
+    private let onSave: (Bool, FlowLevel?, Set<UUID>) -> Void
     
+    // MARK: - Properties
+
     let userId: UUID
     let date: Date
-    private let onSave: (Bool, FlowLevel?, Set<UUID>) -> Void
 
-    // MARK: - State
-    
+    // MARK: - Tab State
+
     var selectedTab: CycleLogTab = .flow
-    var hadFlow: Bool?
-    var selectedFlowLevel: FlowLevel?
-    var selectedSymptomIds: Set<UUID>
-    
-    // MARK: - Dependencies
-    
-    private let repository: SymptomRepositoryProtocol
-    
+
+    // MARK: - Flow State (private)
+
+    private(set) var hadFlow: Bool?
+    private(set) var selectedFlowLevel: FlowLevel?
+
+    // MARK: - Symptoms State (private)
+
+    private(set) var selectedSymptomIds: Set<UUID>
+
     // MARK: - Computed
 
     var formattedDate: String {
@@ -39,7 +45,7 @@ class CycleLogViewModel {
         formatter.dateFormat = "EEEE, MMM d"
         return formatter.string(from: date)
     }
-    
+
     // MARK: - Init
 
     init(
@@ -55,7 +61,6 @@ class CycleLogViewModel {
         self.repository = repository
         self.onSave = onSave
 
-        // Initialize flow state based on initial flow
         if let initialFlow = initialFlow {
             if initialFlow == .none {
                 // Was tracking period with no flow
@@ -72,18 +77,107 @@ class CycleLogViewModel {
             self.selectedFlowLevel = nil
         }
 
-        // Initialize symptom state
         self.selectedSymptomIds = initialSelectedSymptomIds
     }
 
-    func selectFlowPresence(_ hasFlow: Bool) {
-        if hadFlow == hasFlow {
+    // MARK: - Flow Tab Display Data
+
+    var flowTabDisplayData: FlowTabDisplayData {
+        FlowTabDisplayData(
+            flowPresenceOptions: [
+                SelectableOption(id: "yes", title: "Yes", isSelected: hadFlow == true),
+                SelectableOption(id: "no", title: "No", isSelected: hadFlow == false)
+            ],
+            flowLevelOptions: [
+                SelectableOption(id: FlowLevel.light.rawValue, title: FlowLevel.light.description, isSelected: selectedFlowLevel == .light),
+                SelectableOption(id: FlowLevel.medium.rawValue, title: FlowLevel.medium.description, isSelected: selectedFlowLevel == .medium),
+                SelectableOption(id: FlowLevel.heavy.rawValue, title: FlowLevel.heavy.description, isSelected: selectedFlowLevel == .heavy)
+            ]
+        )
+    }
+
+    // MARK: - Symptoms Tab Display Data
+
+    var symptomsTabDisplayData: SymptomsTabDisplayData {
+        let categories = buildSymptomCategories()
+        let count = selectedSymptomIds.count
+        let countText = "\(count) symptom\(count == 1 ? "" : "s") selected"
+
+        return SymptomsTabDisplayData(
+            categories: categories,
+            selectionCountText: countText
+        )
+    }
+
+    private func buildSymptomCategories() -> [SymptomCategoryDisplayData] {
+        // Define exactly which symptoms to show (15 total)
+        let allowedSymptomNames: Set<String> = [
+            // Digestive & Gut Health (5)
+            "Bloating",
+            "Constipation",
+            "Diarrhea",
+            "Gas",
+            "Nausea",
+            // Cycle & Hormonal (3)
+            "Dark/different colored blood",
+            "Breast soreness",
+            "Cramps",
+            // Energy, Mood & Mental Clarity (7)
+            "Anxiety",
+            "Brain fog",
+            "Depression",
+            "Mood swings",
+            "Fatigue",
+            "Irritability",
+            "Social withdrawal"        ]
+
+        // Categories in display order
+        let targetCategories: [SymptomCategory] = [
+            .digestiveGutHealth,
+            .cycleHormonal,
+            .energyMoodMental
+        ]
+
+        // Get all symptoms from repository, filter to allowed list
+        let allSymptoms = repository.allSymptoms
+            .filter { allowedSymptomNames.contains($0.name) }
+
+        // Group by category and map to display data
+        return targetCategories.compactMap { category in
+            let symptomsInCategory = allSymptoms
+                .filter { $0.category == category }
+                .sorted { $0.displayOrder < $1.displayOrder }
+
+            guard !symptomsInCategory.isEmpty else { return nil }
+
+            let symptomDisplayData = symptomsInCategory.map { symptom in
+                SymptomDisplayData(
+                    id: symptom.id,
+                    name: symptom.name,
+                    isSelected: selectedSymptomIds.contains(symptom.id)
+                )
+            }
+
+            return SymptomCategoryDisplayData(
+                id: category.rawValue,
+                title: category.rawValue.uppercased(),
+                symptoms: symptomDisplayData
+            )
+        }
+    }
+
+    // MARK: - Flow Tab Actions
+
+    func selectFlowPresence(_ optionId: String) {
+        let isYes = optionId == "yes"
+
+        if hadFlow == isYes {
             // Tapping same option again - deselect
             hadFlow = nil
             selectedFlowLevel = nil
         } else {
             // Selecting different option
-            if hasFlow {
+            if isYes {
                 // User tapped "Yes"
                 hadFlow = true
             } else {
@@ -94,7 +188,9 @@ class CycleLogViewModel {
         }
     }
 
-    func selectFlowLevel(_ level: FlowLevel) {
+    func selectFlowLevel(_ optionId: String) {
+        let level = FlowLevel(rawValue: optionId)
+
         if selectedFlowLevel == level {
             selectedFlowLevel = nil
         } else {
@@ -103,6 +199,8 @@ class CycleLogViewModel {
         }
     }
 
+    // MARK: - Symptoms Tab Actions
+
     func toggleSymptom(_ symptomId: UUID) {
         if selectedSymptomIds.contains(symptomId) {
             selectedSymptomIds.remove(symptomId)
@@ -110,6 +208,8 @@ class CycleLogViewModel {
             selectedSymptomIds.insert(symptomId)
         }
     }
+
+    // MARK: - Save
 
     func save() {
         if hadFlow == true {

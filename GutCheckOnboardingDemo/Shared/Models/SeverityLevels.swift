@@ -21,13 +21,23 @@ enum Severity: String, Codable, CaseIterable, Identifiable {
 // MARK: - Flow Level
 
 enum FlowLevel: String, Codable, CaseIterable, Identifiable {
-    case unspecified = "On Period"
-    case light = "Light"
-    case medium = "Medium"
-    case heavy = "Heavy"
-    case none = "No Flow"  // User is tracking period but no bleeding this day
+    case unspecified
+    case light
+    case medium
+    case heavy
+    case none
 
     var id: String { rawValue }
+    
+    var description: String {
+        switch self {
+        case .light: return "Light"
+        case .medium: return "Medium"
+        case .heavy: return "Heavy"
+        case .none: return "No Flow" // User is tracking period but no bleeding this day
+        case .unspecified: return "On Period"
+        }
+    }
 
     var numericValue: Int {
         switch self {
