@@ -19,7 +19,7 @@ class LoggingHubViewModel {
     // MARK: - Dependencies
 
     let userId: UUID
-    private let repository: DailyLogRepositoryProtocol & SymptomRepositoryProtocol
+    private let repository: DailyLogRepositoryProtocol
 
     // MARK: - Week State
 
@@ -96,7 +96,7 @@ class LoggingHubViewModel {
 
     // MARK: - Initialization
 
-    init(userId: UUID, repository: (DailyLogRepositoryProtocol & SymptomRepositoryProtocol) = InMemorySymptomRepository.shared) {
+    init(userId: UUID, repository: DailyLogRepositoryProtocol = InMemorySymptomRepository.shared) {
         self.userId = userId
         self.repository = repository
         self.currentWeekStart = Date().startOfWeek

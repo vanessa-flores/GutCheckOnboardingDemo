@@ -13,8 +13,8 @@ struct SampleCycleData {
     // MARK: - Loading
 
     /// Loads sample data if it doesn't already exist for the sample user
-    /// - Parameter repository: Repository conforming to both DailyLogRepositoryProtocol and SymptomRepositoryProtocol
-    static func loadIfNeeded(into repository: any DailyLogRepositoryProtocol & SymptomRepositoryProtocol) {
+    /// - Parameter repository: Repository conforming to both DailyLogRepositoryProtocol and SymptomCatalogProtocol
+    static func loadIfNeeded(into repository: any DailyLogRepositoryProtocol & SymptomCatalogProtocol) {
         // Check if data already exists for sample user
         let existingLogs = repository.dailyLogs(for: sampleUserId)
         if !existingLogs.isEmpty {
@@ -28,7 +28,7 @@ struct SampleCycleData {
     // MARK: - Private Loading Logic
 
     /// Loads realistic cycle and symptom data for the sample user
-    private static func loadSampleData(into repository: any DailyLogRepositoryProtocol & SymptomRepositoryProtocol) {
+    private static func loadSampleData(into repository: any DailyLogRepositoryProtocol & SymptomCatalogProtocol) {
         let today = Date().startOfDay
 
         // Find symptom IDs by name from repository
@@ -131,7 +131,7 @@ struct SampleCycleData {
     private static func loadCycle(
         config: CycleConfig,
         today: Date,
-        into repository: any DailyLogRepositoryProtocol & SymptomRepositoryProtocol,
+        into repository: any DailyLogRepositoryProtocol & SymptomCatalogProtocol,
         symptomIds: SymptomIds
     ) {
         let cycleStartDate = today.addingDays(-config.startDaysAgo)
@@ -183,7 +183,7 @@ struct SampleCycleData {
         symptomId: UUID,
         daysBeforePeriod: Int,
         periodStartDate: Date,
-        into repository: any DailyLogRepositoryProtocol & SymptomRepositoryProtocol
+        into repository: any DailyLogRepositoryProtocol & SymptomCatalogProtocol
     ) {
         let symptomDate = periodStartDate.addingDays(-daysBeforePeriod)
 

@@ -3,9 +3,9 @@ import Foundation
 // MARK: - In-Memory Symptom Repository
 
 /// In-memory implementation of symptom repository protocols.
-/// Perfect for development, testing, and demo purposes.
+/// Intended for development, testing, and demo purposes.
 /// Replace with a backend-connected implementation when ready.
-final class InMemorySymptomRepository: SymptomRepositoryProtocol, DailyLogRepositoryProtocol {
+final class InMemorySymptomRepository: SymptomCatalogProtocol, SymptomPreferenceProtocol, DailyLogRepositoryProtocol {
 
     // MARK: - Singleton
 
@@ -25,7 +25,7 @@ final class InMemorySymptomRepository: SymptomRepositoryProtocol, DailyLogReposi
         self.symptoms = SymptomData.allSymptoms
     }
 
-    // MARK: - SymptomRepositoryProtocol - Catalog
+    // MARK: - SymptomCatalogProtocol
 
     var allSymptoms: [Symptom] {
         symptoms.sortedForDisplay()
@@ -45,7 +45,7 @@ final class InMemorySymptomRepository: SymptomRepositoryProtocol, DailyLogReposi
         symptoms.groupedByCategory()
     }
 
-    // MARK: - SymptomRepositoryProtocol - Preferences
+    // MARK: - SymptomPreferenceProtocol
 
     func preferences(for userId: UUID) -> [UserSymptomPreference] {
         preferences[userId] ?? []
@@ -68,14 +68,6 @@ final class InMemorySymptomRepository: SymptomRepositoryProtocol, DailyLogReposi
         preferences[preference.userId] = userPrefs
     }
 
-    // MARK: - SymptomRepositoryProtocol - Logs
-
-    func save(log: SymptomLog) {
-        var userLogs = symptomLogs[log.userId] ?? []
-        userLogs.append(log)
-        symptomLogs[log.userId] = userLogs
-    }
-
     // MARK: - DailyLogRepositoryProtocol
 
     func dailyLogs(for userId: UUID) -> [DailyLog] {
@@ -90,6 +82,12 @@ final class InMemorySymptomRepository: SymptomRepositoryProtocol, DailyLogReposi
         var userLogs = dailyLogs[dailyLog.userId] ?? [:]
         userLogs[dailyLog.date] = dailyLog
         dailyLogs[dailyLog.userId] = userLogs
+    }
+
+    func save(log: SymptomLog) {
+        var userLogs = symptomLogs[log.userId] ?? []
+        userLogs.append(log)
+        symptomLogs[log.userId] = userLogs
     }
 }
 

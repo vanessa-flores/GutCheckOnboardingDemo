@@ -22,7 +22,7 @@ struct CycleInsightsUtilities {
     /// - Returns: CycleInsights if sufficient data exists, nil otherwise
     static func computeInsights(
         for userId: UUID,
-        using repository: any DailyLogRepositoryProtocol & SymptomRepositoryProtocol
+        using repository: any DailyLogRepositoryProtocol & SymptomCatalogProtocol
     ) -> CycleInsights? {
         // 1. Get all daily logs for the user
         let dailyLogs = repository.dailyLogs(for: userId)
@@ -92,7 +92,7 @@ struct CycleInsightsUtilities {
     private static func analyzePeriodWarnings(
         cycles: [ComputedCycle],
         dailyLogs: [DailyLog],
-        repository: any SymptomRepositoryProtocol
+        repository: any SymptomCatalogProtocol
     ) -> [PeriodWarningSign] {
         guard cycles.count >= 1 else { return [] }
 
