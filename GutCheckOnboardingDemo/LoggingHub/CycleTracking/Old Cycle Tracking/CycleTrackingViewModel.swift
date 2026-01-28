@@ -2,6 +2,8 @@ import Foundation
 import SwiftUI
 import Observation
 
+// Refactor: - Will be replaced by a future `LoggingHubViewModel`
+
 @Observable
 class CycleTrackingViewModel {
 

@@ -1,5 +1,7 @@
 import SwiftUI
 
+// Refactor: - Will be deleted
+
 struct CycleTrackingView: View {
     let userId: UUID
     @State private var viewModel: CycleTrackingViewModel
