@@ -15,15 +15,16 @@ enum CheckInTab: String, CaseIterable, Identifiable {
 
 @Observable
 class TodaysCheckInViewModel {
-    
+
     let userId: UUID
+    let date: Date
     private let repository: CheckInRepository
-    
+
     var selectedTab: CheckInTab = .mood
-    
+
     var selectedMood: Mood?
     var quickNote: String = ""
-    
+
     var selectedSymptomIds: Set<UUID> = []
     var expandedCategories: Set<SymptomCategory> = [
         .digestiveGutHealth,
@@ -31,38 +32,45 @@ class TodaysCheckInViewModel {
         .energyMoodMental,
         .sleepTemperature
     ]
-    
+
     private var originalDailyLog: DailyLog?
     private var dailyLog: DailyLog
-    
+
     var hasUnsavedChanges: Bool {
         guard let original = originalDailyLog else { return hasAnyData }
-        
+
         let moodChanged = selectedMood != original.mood
         let noteChanged = (quickNote.isEmpty ? nil : quickNote) != original.reflectionNotes
-        
+
         let originalSymptomIds = Set(original.symptomLogs.map { $0.symptomId })
         let symptomsChanged = selectedSymptomIds != originalSymptomIds
-        
+
         return moodChanged || noteChanged || symptomsChanged
     }
-    
+
     var hasAnyData: Bool {
         selectedMood != nil || !quickNote.isEmpty || !selectedSymptomIds.isEmpty
     }
-    
+
     var symptomsByCategory: [(category: SymptomCategory, symptoms: [Symptom])] {
         repository.symptomsGroupedByCategory()
     }
-    
-    init(userId: UUID, repository: CheckInRepository) {
+
+    var formattedDate: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEEE, MMM d"
+        return formatter.string(from: date)
+    }
+
+    init(userId: UUID, date: Date, repository: CheckInRepository) {
         self.userId = userId
+        self.date = date
         self.repository = repository
-        
-        let existingLog = repository.getTodaysLog(for: userId)
+
+        let existingLog = repository.dailyLog(for: userId, on: date)
         self.originalDailyLog = existingLog
-        self.dailyLog = existingLog ?? DailyLog.today(for: userId)
-        
+        self.dailyLog = existingLog ?? DailyLog(userId: userId, date: date)
+
         if let existing = existingLog {
             self.selectedMood = existing.mood
             self.quickNote = existing.reflectionNotes ?? ""
@@ -123,7 +131,7 @@ class TodaysCheckInViewModel {
                 id: UUID(),
                 userId: userId,
                 symptomId: symptomId,
-                date: Date().startOfDay,
+                date: date.startOfDay,
                 timestamp: Date(),
                 severity: nil,
                 notes: nil

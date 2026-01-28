@@ -1,38 +1,32 @@
 import SwiftUI
 
-// MARK: - ActiveModal
-
-private enum ActiveModal: String, Identifiable {
-    case todaysCheckIn
-    case cycleLog
-
-    var id: String { rawValue }
-}
-
 // MARK: - Logging Hub View
 
 struct LoggingHubView: View {
-    let userId: UUID
-    @State private var activeModal: ActiveModal?
-    private let repository = InMemorySymptomRepository.shared
+    @State private var viewModel: LoggingHubViewModel
 
-    private var todaysFlowLevel: FlowLevel? {
-        repository.dailyLog(for: userId, on: Date())?.flowLevel
-    }
-
-    private var todaysSymptomIds: Set<UUID> {
-        let todaysLog = repository.dailyLog(for: userId, on: Date())
-        let ids = todaysLog?.symptomLogs.map { $0.symptomId } ?? []
-        return Set(ids)
+    init(userId: UUID) {
+        self._viewModel = State(initialValue: LoggingHubViewModel(userId: userId))
     }
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 0) {
+                    // Week View
+                    CycleWeekView(
+                        weekRange: viewModel.weekRange,
+                        days: viewModel.weekDays,
+                        onPreviousWeek: { viewModel.navigateToPreviousWeek() },
+                        onNextWeek: { viewModel.navigateToNextWeek() },
+                        onDayTapped: { index in viewModel.selectDay(index) }
+                    )
+                    .padding(.horizontal, AppTheme.Spacing.md)
+                    .padding(.top, AppTheme.Spacing.md)
+
                     // Section Header
                     HStack {
-                        Text("Log Today")
+                        Text(viewModel.sectionHeaderText)
                             .font(AppTheme.Typography.title3)
                             .foregroundColor(AppTheme.Colors.textPrimary)
                         Spacer()
@@ -48,24 +42,15 @@ struct LoggingHubView: View {
                             title: "Log period",
                             subtitle: "Track your flow"
                         ) {
-                            activeModal = .cycleLog
+                            viewModel.showCycleLogModal()
                         }
-                        
-                        LogActionCard(
-                            icon: "stethoscope",
-                            title: "Log symptom",
-                            subtitle: "Quick symptom capture"
-                        ) {
-                            // TODO: Navigate to symptom logging
-                            print("Log symptom tapped")
-                        }
-                        
+
                         LogActionCard(
                             icon: "person.fill.checkmark",
-                            title: "Today's check-in",
+                            title: viewModel.checkInCardTitle,
                             subtitle: "Review your whole day"
                         ) {
-                            activeModal = .todaysCheckIn
+                            viewModel.showCheckInModal()
                         }
                     }
                     .padding(.horizontal, AppTheme.Spacing.md)
@@ -74,7 +59,7 @@ struct LoggingHubView: View {
             }
             .background(AppTheme.Colors.background)
             .navigationTitle("Log")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
@@ -86,51 +71,33 @@ struct LoggingHubView: View {
                 }
             }
         }
-        .sheet(item: $activeModal) { modal in
+        .sheet(item: $viewModel.activeModal) { modal in
             switch modal {
             case .todaysCheckIn:
                 TodaysCheckInModal(
-                    userId: userId,
-                    repository: repository
+                    userId: viewModel.userId,
+                    date: viewModel.selectedDate,
+                    repository: InMemorySymptomRepository.shared
                 )
             case .cycleLog:
                 CycleLogModal(
-                    userId: userId,
-                    date: Date(),
-                    initialFlow: todaysFlowLevel,
-                    initialSelectedSymptomIds: todaysSymptomIds,
-                    repository: repository,
+                    userId: viewModel.userId,
+                    date: viewModel.selectedDate,
+                    initialFlow: viewModel.selectedDateFlowLevel,
+                    initialSelectedSymptomIds: viewModel.selectedDateSymptomIds,
+                    repository: InMemorySymptomRepository.shared,
                     onSave: { isTracking, flowLevel, symptomIds in
-                        saveCycleData(isTracking: isTracking, flowLevel: flowLevel, symptomIds: symptomIds)
+                        viewModel.saveCycleData(isTracking: isTracking, flowLevel: flowLevel, symptomIds: symptomIds)
                     }
                 )
             }
         }
-    }
-
-    // MARK: - Helper Methods
-
-    private func saveCycleData(isTracking: Bool, flowLevel: FlowLevel?, symptomIds: Set<UUID>) {
-        var dailyLog = repository.getOrCreateTodaysLog(for: userId)
-
-        dailyLog.flowLevel = isTracking ? flowLevel : nil
-
-        // Update symptom data - clear existing and add new
-        let existingSymptomLogs = dailyLog.symptomLogs
-        for log in existingSymptomLogs {
-            dailyLog = dailyLog.removingSymptomLog(withId: log.id)
+        .onChange(of: viewModel.activeModal) { oldValue, newValue in
+            // Refresh data when modal is dismissed
+            if oldValue != nil && newValue == nil {
+                viewModel.refreshData()
+            }
         }
-
-        for symptomId in symptomIds {
-            let symptomLog = SymptomLog(
-                userId: userId,
-                symptomId: symptomId,
-                date: Date()
-            )
-            dailyLog = dailyLog.addingSymptomLog(symptomLog)
-        }
-
-        repository.save(dailyLog: dailyLog)
     }
 }
 
@@ -201,11 +168,11 @@ struct LogActionCard: View {
         ) {
             print("Tapped")
         }
-        
+
         LogActionCard(
-            icon: "stethoscope",
-            title: "Log symptom",
-            subtitle: "Quick symptom capture"
+            icon: "person.fill.checkmark",
+            title: "Today's check-in",
+            subtitle: "Review your whole day"
         ) {
             print("Tapped")
         }

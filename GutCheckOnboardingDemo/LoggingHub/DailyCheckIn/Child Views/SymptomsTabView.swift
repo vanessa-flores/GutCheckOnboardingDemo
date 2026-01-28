@@ -152,6 +152,7 @@ struct PlainHeaderButtonStyle: ButtonStyle {
     SymptomsTabView(
         viewModel: TodaysCheckInViewModel(
             userId: UUID(),
+            date: Date(),
             repository: InMemorySymptomRepository.shared
         )
     )
@@ -160,6 +161,7 @@ struct PlainHeaderButtonStyle: ButtonStyle {
 #Preview("With Selections") {
     let viewModel = TodaysCheckInViewModel(
         userId: UUID(),
+        date: Date(),
         repository: InMemorySymptomRepository.shared
     )
     

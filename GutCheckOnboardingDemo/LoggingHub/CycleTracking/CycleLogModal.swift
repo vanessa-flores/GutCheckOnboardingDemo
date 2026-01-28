@@ -7,7 +7,6 @@ struct CycleLogModal: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var viewModel: CycleLogViewModel
-    private let repository: SymptomRepositoryProtocol
 
     init(
         userId: UUID,
@@ -17,7 +16,6 @@ struct CycleLogModal: View {
         repository: SymptomRepositoryProtocol,
         onSave: @escaping (Bool, FlowLevel?, Set<UUID>) -> Void
     ) {
-        self.repository = repository
         self._viewModel = State(initialValue: CycleLogViewModel(
             userId: userId,
             date: date,
@@ -50,18 +48,7 @@ struct CycleLogModal: View {
                     contentBackground
                         .ignoresSafeArea()
 
-                    switch viewModel.selectedTab {
-                    case .flow:
-                        FlowTabView(
-                            hadFlow: $viewModel.hadFlow,
-                            selectedFlowLevel: $viewModel.selectedFlowLevel
-                        )
-                    case .symptoms:
-                        CycleSymptomsTabView(
-                            selectedSymptomIds: $viewModel.selectedSymptomIds,
-                            repository: repository
-                        )
-                    }
+                    tabContent
                 }
             }
             .background(Color.white)
@@ -87,6 +74,29 @@ struct CycleLogModal: View {
         }
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
+    }
+
+    @ViewBuilder
+    private var tabContent: some View {
+        switch viewModel.selectedTab {
+        case .flow:
+            FlowTabView(
+                displayData: viewModel.flowTabDisplayData,
+                onFlowPresenceSelected: { optionId in
+                    viewModel.selectFlowPresence(optionId)
+                },
+                onFlowLevelSelected: { optionId in
+                    viewModel.selectFlowLevel(optionId)
+                }
+            )
+        case .symptoms:
+            CycleSymptomsTabView(
+                displayData: viewModel.symptomsTabDisplayData,
+                onSymptomToggled: { symptomId in
+                    viewModel.toggleSymptom(symptomId)
+                }
+            )
+        }
     }
 }
 
