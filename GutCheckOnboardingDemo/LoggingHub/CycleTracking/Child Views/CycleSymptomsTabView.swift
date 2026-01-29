@@ -8,44 +8,49 @@ struct CycleSymptomsTabView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            List {
-                ForEach(displayData.categories) { category in
-                    Section {
-                        ForEach(category.symptoms) { symptom in
-                            SelectableRow(
-                                title: symptom.name,
-                                isSelected: symptom.isSelected
-                            ) {
-                                onSymptomToggled(symptom.id)
-                            }
+            symptomsList
+
+            selectionCounter
+        }
+    }
+
+    // MARK: - Private Views
+
+    private var symptomsList: some View {
+        List {
+            ForEach(displayData.categories) { category in
+                Section {
+                    ForEach(category.symptoms) { symptom in
+                        SelectableRow(
+                            title: symptom.name,
+                            isSelected: symptom.isSelected
+                        ) {
+                            onSymptomToggled(symptom.id)
                         }
-                    } header: {
-                        Text(category.title)
                     }
+                } header: {
+                    Text(category.title)
                 }
             }
-            .listStyle(.insetGrouped)
-            .scrollContentBackground(.hidden)
-            .background(Color(hex: "FBFAF9"))
-
-            // Selection Counter (sticky at bottom)
-            HStack {
-                Text(displayData.selectionCountText)
-                    .font(AppTheme.Typography.caption)
-                    .foregroundColor(AppTheme.Colors.textSecondary)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, AppTheme.Spacing.sm)
-            .background(
-                Color(hex: "F8F6F3")
-                    .opacity(0.95)
-            )
-            .overlay(
-                Divider()
-                    .padding(.horizontal, 0),
-                alignment: .top
-            )
         }
+        .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
+        .background(AppTheme.Colors.background)
+    }
+
+    private var selectionCounter: some View {
+        HStack {
+            Text(displayData.selectionCountText)
+                .font(AppTheme.Typography.caption)
+                .foregroundColor(AppTheme.Colors.textSecondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, AppTheme.Spacing.sm)
+        .background(AppTheme.Colors.surfaceSecondary.opacity(0.95))
+        .overlay(
+            Divider(),
+            alignment: .top
+        )
     }
 }
 

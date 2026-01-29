@@ -22,9 +22,6 @@ struct TodaysCheckInModal: View {
                     .foregroundColor(AppTheme.Colors.textSecondary)
                     .padding(.top, AppTheme.Spacing.xs)
 
-                Divider()
-                    .padding(.top, AppTheme.Spacing.sm)
-
                 tabContent
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
