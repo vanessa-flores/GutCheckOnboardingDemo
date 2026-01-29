@@ -45,4 +45,6 @@ struct CycleWeekHeader: View {
         onNextWeek: {}
     )
     .padding()
+    .background(AppTheme.Colors.surface)
+    .cornerRadius(AppTheme.CornerRadius.large)
 }

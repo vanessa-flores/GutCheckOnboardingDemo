@@ -74,7 +74,7 @@ struct SymptomsTabView: View {
         
         return Text(symptom.name)
             .font(AppTheme.Typography.caption)
-            .foregroundColor(isSelected ? .white : AppTheme.Colors.textPrimary)
+            .foregroundStyle(isSelected ? AppTheme.Colors.textOnPrimary : AppTheme.Colors.textPrimary)
             .padding(.horizontal, AppTheme.Spacing.sm)
             .padding(.vertical, AppTheme.Spacing.xs)
             .background(isSelected ? AppTheme.Colors.primaryAction : AppTheme.Colors.surface)

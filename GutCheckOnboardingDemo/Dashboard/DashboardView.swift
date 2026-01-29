@@ -53,7 +53,7 @@ struct DashboardView: View {
                                             .opacity(0.5)
                                     )
                             }
-                            .foregroundColor(.white)
+                            .foregroundColor(AppTheme.Colors.textOnPrimary)
                             .frame(maxWidth: .infinity)
                             .frame(height: 56)
                             .background(AppTheme.Colors.primaryAction)
