@@ -30,12 +30,15 @@ struct CycleSymptomsTabView: View {
                     }
                 } header: {
                     Text(category.title)
+                        .font(AppTheme.Typography.body)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(AppTheme.Colors.textPrimary)
                 }
             }
         }
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
-        .background(AppTheme.Colors.background)
+        .background(AppTheme.Colors.surface)
     }
 
     private var selectionCounter: some View {
@@ -62,7 +65,7 @@ struct CycleSymptomsTabView: View {
             categories: [
                 SymptomCategoryDisplayData(
                     id: "digestive",
-                    title: "DIGESTIVE & GUT HEALTH",
+                    title: "Digestive & Gut Health",
                     symptoms: [
                         SymptomDisplayData(id: UUID(), name: "Bloating", isSelected: true),
                         SymptomDisplayData(id: UUID(), name: "Nausea", isSelected: false)
@@ -70,7 +73,7 @@ struct CycleSymptomsTabView: View {
                 ),
                 SymptomCategoryDisplayData(
                     id: "cycle",
-                    title: "CYCLE & HORMONAL",
+                    title: "Cycle & Hormonal",
                     symptoms: [
                         SymptomDisplayData(id: UUID(), name: "Cramps", isSelected: false),
                         SymptomDisplayData(id: UUID(), name: "Breast soreness", isSelected: true)

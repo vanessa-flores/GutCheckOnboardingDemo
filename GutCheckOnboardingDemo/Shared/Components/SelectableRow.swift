@@ -21,7 +21,7 @@ struct SelectableRow: View {
                 }
             }
         }
-        .listRowBackground(AppTheme.Colors.surface)
+        .listRowBackground(AppTheme.Colors.surfaceSecondary)
     }
 }
 

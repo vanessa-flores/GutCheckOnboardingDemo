@@ -20,6 +20,8 @@ struct FlowTabView: View {
                 }
             } header: {
                 Text("Did you have flow today?")
+                    .font(AppTheme.Typography.bodyMedium)
+                    .foregroundStyle(AppTheme.Colors.textPrimary)
             }
 
             Section {
@@ -33,11 +35,13 @@ struct FlowTabView: View {
                 }
             } header: {
                 Text("Flow Level")
+                    .font(AppTheme.Typography.bodyMedium)
+                    .foregroundStyle(AppTheme.Colors.textPrimary)
             }
         }
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
-        .background(AppTheme.Colors.background)
+        .background(AppTheme.Colors.surface)
     }
 }
 

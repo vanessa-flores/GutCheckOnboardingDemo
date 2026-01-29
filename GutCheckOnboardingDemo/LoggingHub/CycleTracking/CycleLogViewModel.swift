@@ -160,7 +160,7 @@ class CycleLogViewModel {
 
             return SymptomCategoryDisplayData(
                 id: category.rawValue,
-                title: category.rawValue.uppercased(),
+                title: category.rawValue,
                 symptoms: symptomDisplayData
             )
         }

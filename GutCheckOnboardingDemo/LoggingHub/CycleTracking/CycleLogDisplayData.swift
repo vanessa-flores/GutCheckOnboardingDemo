@@ -29,7 +29,7 @@ struct SymptomDisplayData: Identifiable {
 /// Grouped symptom category with symptoms
 struct SymptomCategoryDisplayData: Identifiable {
     let id: String              // Category raw value
-    let title: String           // Display title (e.g., "DIGESTIVE & GUT HEALTH")
+    let title: String           // Display title (e.g., "Digestive & Gut Health")
     let symptoms: [SymptomDisplayData]
 }
 

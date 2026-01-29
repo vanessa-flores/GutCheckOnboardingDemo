@@ -22,7 +22,7 @@ struct SymptomsTabView: View {
                 .padding(.bottom, AppTheme.Spacing.xl)
             }
         }
-        .background(AppTheme.Colors.background)
+        .background(AppTheme.Colors.surface)
     }
     
     private func categorySection(_ category: SymptomCategory, symptoms: [Symptom]) -> some View {
@@ -57,7 +57,7 @@ struct SymptomsTabView: View {
                     .padding(.bottom, AppTheme.Spacing.sm)
             }
         }
-        .background(AppTheme.Colors.surface)
+        .background(AppTheme.Colors.surfaceSecondary)
         .cornerRadius(AppTheme.CornerRadius.medium)
     }
     
