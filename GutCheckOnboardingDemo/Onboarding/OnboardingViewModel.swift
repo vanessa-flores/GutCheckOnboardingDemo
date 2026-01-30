@@ -109,7 +109,7 @@ class OnboardingViewModel {
     
     private func animateForward(completion: @escaping () -> Void) {
         // Slide current content out to left
-        withAnimation(.easeOut(duration: 0.2)) {
+        withAnimation(.easeOut(duration: AppTheme.Animation.slideTransition)) {
             contentOffset = -screenWidth
         }
 
@@ -120,7 +120,7 @@ class OnboardingViewModel {
             self.contentOffset = self.screenWidth
 
             // Slide new content in from right
-            withAnimation(.easeOut(duration: 0.2)) {
+            withAnimation(.easeOut(duration: AppTheme.Animation.slideTransition)) {
                 self.contentOffset = 0
             }
         }
@@ -128,7 +128,7 @@ class OnboardingViewModel {
 
     private func animateBackward(completion: @escaping () -> Void) {
         // Slide current content out to right
-        withAnimation(.easeOut(duration: 0.2)) {
+        withAnimation(.easeOut(duration: AppTheme.Animation.slideTransition)) {
             contentOffset = screenWidth
         }
 
@@ -139,7 +139,7 @@ class OnboardingViewModel {
             self.contentOffset = -self.screenWidth
 
             // Slide new content in from left
-            withAnimation(.easeOut(duration: 0.2)) {
+            withAnimation(.easeOut(duration: AppTheme.Animation.slideTransition)) {
                 self.contentOffset = 0
             }
         }

@@ -62,7 +62,7 @@ struct GettingStartedContainerView: View {
                 Circle()
                     .fill(index == viewModel.progressIndex
                         ? AppTheme.Colors.primaryAction
-                        : AppTheme.Colors.textSecondary.opacity(0.3))
+                          : AppTheme.Colors.textSecondary.opacity(AppTheme.Animation.quick))
                     .frame(
                         width: AppTheme.ComponentSizes.progressDotSize,
                         height: AppTheme.ComponentSizes.progressDotSize

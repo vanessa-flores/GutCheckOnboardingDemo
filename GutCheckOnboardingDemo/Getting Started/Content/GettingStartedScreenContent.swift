@@ -211,7 +211,7 @@ struct SymptomSelectionView: View {
     }
 
     private func toggleCategory(_ category: SymptomCategory) {
-        withAnimation(.easeInOut(duration: 0.3)) {
+        withAnimation(.easeInOut(duration: AppTheme.Animation.quick)) {
             if expandedCategories.contains(category) {
                 expandedCategories.remove(category)
             } else {
@@ -251,7 +251,7 @@ struct CategorySection: View {
             .buttonStyle(PlainButtonStyle())
 
             if isExpanded {
-                WrappingHStack(alignment: .leading, horizontalSpacing: 8, verticalSpacing: 12) {
+                FlowLayout(spacing: AppTheme.Spacing.xs) {
                     ForEach(symptoms) { symptom in
                         SymptomTag(
                             text: symptom.name,
