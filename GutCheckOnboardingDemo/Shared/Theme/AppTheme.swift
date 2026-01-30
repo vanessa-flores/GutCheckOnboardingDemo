@@ -285,7 +285,7 @@ struct AppTheme {
         func makeBody(configuration: Configuration) -> some View {
             configuration.label
                 .font(AppTheme.Typography.button)
-                .foregroundColor(.white)
+                .foregroundColor(AppTheme.Colors.textOnPrimary)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 18)
                 .background(

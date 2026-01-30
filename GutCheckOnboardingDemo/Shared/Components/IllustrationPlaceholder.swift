@@ -18,7 +18,7 @@ struct IllustrationPlaceholder: View {
 
             Text(text)
                 .font(AppTheme.Typography.caption)
-                .foregroundColor(AppTheme.Colors.primaryAction.opacity(0.6))
+                .foregroundColor(AppTheme.Colors.primaryAction.opacity(0.8))
                 .multilineTextAlignment(.center)
                 .padding()
         }

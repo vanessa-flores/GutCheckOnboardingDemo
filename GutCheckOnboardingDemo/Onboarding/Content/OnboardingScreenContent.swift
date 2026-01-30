@@ -125,7 +125,7 @@ struct StyledTextField: View {
             .foregroundColor(AppTheme.Colors.textPrimary)
             .tint(AppTheme.Colors.primaryAction)
             .padding(AppTheme.Spacing.md)
-            .background(Color.white)
+            .background(AppTheme.Colors.surface)
             .cornerRadius(AppTheme.CornerRadius.medium)
             .overlay(
                 RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium)
