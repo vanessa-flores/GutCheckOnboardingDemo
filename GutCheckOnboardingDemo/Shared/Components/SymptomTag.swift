@@ -11,25 +11,23 @@ struct SymptomTag: View {
     // MARK: - Body
 
     var body: some View {
-        Button(action: onTap) {
-            Text(text)
-                .font(AppTheme.Typography.caption)
-                .foregroundStyle(isSelected ? AppTheme.Colors.textOnPrimary : AppTheme.Colors.textPrimary)
-                .lineLimit(1)
-                .padding(.horizontal, AppTheme.Spacing.sm)
-                .padding(.vertical, AppTheme.Spacing.xs)
-                .background(isSelected ? AppTheme.Colors.primaryAction : AppTheme.Colors.surface)
-                .cornerRadius(AppTheme.CornerRadius.xlarge)
-                .overlay(
-                    RoundedRectangle(cornerRadius: AppTheme.CornerRadius.xlarge)
-                        .stroke(
-                            isSelected ? AppTheme.Colors.primaryAction : AppTheme.Colors.textSecondary.opacity(0.3),
-                            lineWidth: 1.5
-                        )
-                )
-        }
-        .buttonStyle(PlainButtonStyle())
-        .animation(.easeInOut(duration: 0.2), value: isSelected)
+        Text(text)
+            .font(AppTheme.Typography.caption)
+            .foregroundStyle(isSelected ? AppTheme.Colors.textOnPrimary : AppTheme.Colors.textPrimary)
+            .padding(.horizontal, AppTheme.Spacing.sm)
+            .padding(.vertical, AppTheme.Spacing.xs)
+            .background(isSelected ? AppTheme.Colors.primaryAction : AppTheme.Colors.surface)
+            .cornerRadius(20)
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(
+                        isSelected ? AppTheme.Colors.primaryAction : AppTheme.Colors.textSecondary.opacity(0.3),
+                        lineWidth: 1.5
+                    )
+            )
+            .onTapGesture {
+                onTap()
+            }
     }
 }
 
