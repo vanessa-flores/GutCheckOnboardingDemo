@@ -251,7 +251,7 @@ struct CategorySection: View {
             .buttonStyle(PlainButtonStyle())
 
             if isExpanded {
-                WrappingHStack(alignment: .leading, horizontalSpacing: 8, verticalSpacing: 12) {
+                FlowLayout(spacing: AppTheme.Spacing.xs) {
                     ForEach(symptoms) { symptom in
                         SymptomTag(
                             text: symptom.name,
