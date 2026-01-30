@@ -13,25 +13,20 @@ struct SymptomTag: View {
     var body: some View {
         Button(action: onTap) {
             Text(text)
-                .font(AppTheme.Typography.bodyMedium)
-                .foregroundColor(isSelected ? .white : AppTheme.Colors.textPrimary)
+                .font(AppTheme.Typography.caption)
+                .foregroundStyle(isSelected ? AppTheme.Colors.textOnPrimary : AppTheme.Colors.textPrimary)
                 .lineLimit(1)
-                .padding(.horizontal, AppTheme.Spacing.md)
-                .frame(height: 44)
-                .background(
-                    isSelected
-                        ? AppTheme.Colors.primaryAction
-                        : AppTheme.Colors.surface
-                )
+                .padding(.horizontal, AppTheme.Spacing.sm)
+                .padding(.vertical, AppTheme.Spacing.xs)
+                .background(isSelected ? AppTheme.Colors.primaryAction : AppTheme.Colors.surface)
+                .cornerRadius(AppTheme.CornerRadius.xlarge)
                 .overlay(
                     RoundedRectangle(cornerRadius: AppTheme.CornerRadius.xlarge)
-                        .strokeBorder(
-                            isSelected ? Color.clear : AppTheme.Colors.textSecondary.opacity(0.3),
+                        .stroke(
+                            isSelected ? AppTheme.Colors.primaryAction : AppTheme.Colors.textSecondary.opacity(0.3),
                             lineWidth: 1.5
                         )
                 )
-                .cornerRadius(AppTheme.CornerRadius.xlarge)
-                .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 2)
         }
         .buttonStyle(PlainButtonStyle())
         .animation(.easeInOut(duration: 0.2), value: isSelected)
