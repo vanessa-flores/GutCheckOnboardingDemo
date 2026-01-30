@@ -38,7 +38,7 @@ struct SelectableCard: View {
                         Image(systemName: "checkmark")
                             .font(AppTheme.Typography.caption)
                             .fontWeight(.bold)
-                            .foregroundColor(.white)
+                            .foregroundColor(AppTheme.Colors.textOnPrimary)
                     }
                 }
             }

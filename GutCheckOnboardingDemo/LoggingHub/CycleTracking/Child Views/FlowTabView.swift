@@ -1,7 +1,6 @@
 import SwiftUI
 
-// Very light warm background for content
-private let contentBackground = Color(hex: "FBFAF9")
+// MARK: - FlowTabView
 
 struct FlowTabView: View {
     let displayData: FlowTabDisplayData
@@ -21,6 +20,8 @@ struct FlowTabView: View {
                 }
             } header: {
                 Text("Did you have flow today?")
+                    .font(AppTheme.Typography.bodyMedium)
+                    .foregroundStyle(AppTheme.Colors.textPrimary)
             }
 
             Section {
@@ -34,11 +35,13 @@ struct FlowTabView: View {
                 }
             } header: {
                 Text("Flow Level")
+                    .font(AppTheme.Typography.bodyMedium)
+                    .foregroundStyle(AppTheme.Colors.textPrimary)
             }
         }
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
-        .background(contentBackground)
+        .background(AppTheme.Colors.surface)
     }
 }
 

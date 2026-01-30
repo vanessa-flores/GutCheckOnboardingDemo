@@ -95,7 +95,7 @@ struct CycleInsightsCard: View {
                 }
                 .padding(AppTheme.Spacing.xl)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color.white)
+                .background(AppTheme.Colors.surface)
                 .cornerRadius(AppTheme.CornerRadius.large)
                 .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 2)
             }

@@ -5,42 +5,56 @@ struct AppTheme {
     // MARK: - Colors
     struct Colors {
         // MARK: Primary Colors
-        /// Soft Sage Green - Use for primary CTAs, active states, key data points
-        static let primaryAction = Color(hex: "7BA591")
+        /// Sage Green - Primary CTAs, active states
+        static let primaryAction = Color("PrimaryAction")
+        /// Screen backgrounds
+        static let background = Color("Background")
         
-        /// Warm Off-White - Use for main backgrounds, cards
-        static let background = Color(hex: "F8F6F3")
-        
-        // MARK: Secondary Colors
-        /// Warm Sand - Use for secondary buttons, highlights, icons
-        static let accent = Color(hex: "D4A574")
+        // MARK: - Accent Colors
+        /// Warm Sand - Secondary buttons, highlights
+        static let accent = Color("Accent")
+        /// Accent as background (darker in dark mode for containers)
+        static let accentBackground = Color("AccentBackground")
         
         // MARK: Text Colors
-        /// Deep Forest - Use for headers, body text
-        static let textPrimary = Color(hex: "2D3E3A")
+        /// Deep Forest - Headers, body text
+        static let textPrimary = Color("TextPrimary")
+        /// Muted Teal-Grey - Captions, secondary text
+        static let textSecondary = Color("TextSecondary")
+        /// Text on primary action buttons
+        static let textOnPrimary = Color("TextOnPrimary")
+        /// Text on accent backgrounds
+        static let textOnAccent = Color("TextOnAccent")
         
-        /// Muted Teal-Grey - Use for secondary text, captions
-        static let textSecondary = Color(hex: "6B7B77")
+        // MARK: - Utility Colors
+            
+        /// Light Mint / Sage - Success states background
+        static let success = Color("Success")
+        /// Text on success backgrounds
+        static let textOnSuccess = Color("TextOnSuccess")
+        /// Peachy Tan / Warm Amber - Warning states background
+        static let warning = Color("Warning")
+        /// Text on warning backgrounds
+        static let textOnWarning = Color("TextOnWarning")
+        /// Dusty Rose - Error states background
+        static let error = Color("Error")
+        /// Text on error backgrounds
+        static let textOnError = Color("TextOnError")
+        /// Pale Teal - Info states background
+        static let info = Color("Info")
+        /// Text on info backgrounds
+        static let textOnInfo = Color("TextOnInfo")
         
-        // MARK: Utility Colors
-        /// Light Mint - Use for success states
-        static let success = Color(hex: "8BB89D")
-        
-        /// Peachy Tan - Use for warning states
-        static let warning = Color(hex: "E8B98F")
-        
-        /// Dusty Rose - Use for error states (not bright red)
-        static let error = Color(hex: "C89090")
-        
-        /// Pale Teal - Use for info states
-        static let info = Color(hex: "A8BFC4")
-        
-        // MARK: Semantic Colors (for specific use cases)
-        /// Pure white for elevated cards/surfaces
-        static let surface = Color.white
-        
-        /// Primary action with opacity for disabled states
-        static let primaryActionDisabled = Color(hex: "7BA591").opacity(0.4)
+        // MARK: - Other
+            
+        /// Dividers, borders
+        static let separator = Color("Separator")
+        /// Cards, elevated surfaces
+        static let surface = Color("Surface")
+        /// Grouped backgrounds, table cells
+        static let surfaceSecondary = Color("SurfaceSecondary")
+        /// Disabled primary action state
+        static let primaryActionDisabled = Color("PrimaryAction").opacity(0.4)
     }
     
     // MARK: - Typography
@@ -271,7 +285,7 @@ struct AppTheme {
         func makeBody(configuration: Configuration) -> some View {
             configuration.label
                 .font(AppTheme.Typography.button)
-                .foregroundColor(.white)
+                .foregroundColor(AppTheme.Colors.textOnPrimary)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 18)
                 .background(

@@ -107,6 +107,7 @@ struct GettingStartedContainerView: View {
         VStack(spacing: AppTheme.Spacing.xs) {
             Button(action: viewModel.handlePrimaryAction) {
                 Text(viewModel.primaryButtonTitle)
+                    .foregroundStyle(AppTheme.Colors.textOnPrimary)
             }
             .buttonStyle(AppTheme.PrimaryButtonStyle())
             .disabled(!viewModel.isPrimaryButtonEnabled)

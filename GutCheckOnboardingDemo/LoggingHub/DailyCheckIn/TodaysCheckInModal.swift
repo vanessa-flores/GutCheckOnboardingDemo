@@ -22,13 +22,10 @@ struct TodaysCheckInModal: View {
                     .foregroundColor(AppTheme.Colors.textSecondary)
                     .padding(.top, AppTheme.Spacing.xs)
 
-                Divider()
-                    .padding(.top, AppTheme.Spacing.sm)
-
                 tabContent
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .background(AppTheme.Colors.background)
+            .background(AppTheme.Colors.surface)
             .navigationTitle("Daily Check-in")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

@@ -22,7 +22,7 @@ struct SymptomsTabView: View {
                 .padding(.bottom, AppTheme.Spacing.xl)
             }
         }
-        .background(AppTheme.Colors.background)
+        .background(AppTheme.Colors.surface)
     }
     
     private func categorySection(_ category: SymptomCategory, symptoms: [Symptom]) -> some View {
@@ -57,7 +57,7 @@ struct SymptomsTabView: View {
                     .padding(.bottom, AppTheme.Spacing.sm)
             }
         }
-        .background(AppTheme.Colors.surface)
+        .background(AppTheme.Colors.surfaceSecondary)
         .cornerRadius(AppTheme.CornerRadius.medium)
     }
     
@@ -74,7 +74,7 @@ struct SymptomsTabView: View {
         
         return Text(symptom.name)
             .font(AppTheme.Typography.caption)
-            .foregroundColor(isSelected ? .white : AppTheme.Colors.textPrimary)
+            .foregroundStyle(isSelected ? AppTheme.Colors.textOnPrimary : AppTheme.Colors.textPrimary)
             .padding(.horizontal, AppTheme.Spacing.sm)
             .padding(.vertical, AppTheme.Spacing.xs)
             .background(isSelected ? AppTheme.Colors.primaryAction : AppTheme.Colors.surface)

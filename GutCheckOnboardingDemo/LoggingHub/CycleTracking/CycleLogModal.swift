@@ -1,11 +1,9 @@
 import SwiftUI
 
-// Very light warm background for content
-private let contentBackground = Color(hex: "FBFAF9")
+// MARK: - CycleLogModal
 
 struct CycleLogModal: View {
     @Environment(\.dismiss) private var dismiss
-
     @State private var viewModel: CycleLogViewModel
 
     init(
@@ -29,29 +27,18 @@ struct CycleLogModal: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                Picker("Tab", selection: $viewModel.selectedTab) {
-                    Text("Flow").tag(CycleLogTab.flow)
-                    Text("Symptoms").tag(CycleLogTab.symptoms)
-                }
-                .pickerStyle(.segmented)
-                .padding(.horizontal, AppTheme.Spacing.md)
-                .padding(.top, AppTheme.Spacing.sm)
+                tabPicker
 
+                // Date subtitle
                 Text(viewModel.formattedDate)
                     .font(AppTheme.Typography.caption)
                     .foregroundColor(AppTheme.Colors.textSecondary)
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, AppTheme.Spacing.sm)
-                    .padding(.bottom, AppTheme.Spacing.sm)
+                    .padding(.top, AppTheme.Spacing.xs)
 
-                ZStack {
-                    contentBackground
-                        .ignoresSafeArea()
-
-                    tabContent
-                }
+                tabContent
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .background(Color.white)
+            .background(AppTheme.Colors.surface)
             .navigationTitle("Log Period")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -74,6 +61,18 @@ struct CycleLogModal: View {
         }
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
+    }
+
+    // MARK: - Private Views
+
+    private var tabPicker: some View {
+        Picker("Tab", selection: $viewModel.selectedTab) {
+            Text("Flow").tag(CycleLogTab.flow)
+            Text("Symptoms").tag(CycleLogTab.symptoms)
+        }
+        .pickerStyle(.segmented)
+        .padding(.horizontal, AppTheme.Spacing.md)
+        .padding(.vertical, AppTheme.Spacing.sm)
     }
 
     @ViewBuilder

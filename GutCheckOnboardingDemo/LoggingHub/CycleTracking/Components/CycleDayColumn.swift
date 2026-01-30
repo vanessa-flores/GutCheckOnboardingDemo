@@ -39,7 +39,7 @@ struct CycleDayColumn: View {
                 Text("\(data.dateNumber)")
                     .font(AppTheme.Typography.body.weight(.semibold))
                     .foregroundColor(
-                        data.isToday ? .white :
+                        data.isToday ? AppTheme.Colors.textOnPrimary :
                         data.isFuture ? AppTheme.Colors.textPrimary.opacity(0.4) :
                         AppTheme.Colors.textPrimary
                     )

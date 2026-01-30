@@ -8,44 +8,52 @@ struct CycleSymptomsTabView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            List {
-                ForEach(displayData.categories) { category in
-                    Section {
-                        ForEach(category.symptoms) { symptom in
-                            SelectableRow(
-                                title: symptom.name,
-                                isSelected: symptom.isSelected
-                            ) {
-                                onSymptomToggled(symptom.id)
-                            }
+            symptomsList
+
+            selectionCounter
+        }
+    }
+
+    // MARK: - Private Views
+
+    private var symptomsList: some View {
+        List {
+            ForEach(displayData.categories) { category in
+                Section {
+                    ForEach(category.symptoms) { symptom in
+                        SelectableRow(
+                            title: symptom.name,
+                            isSelected: symptom.isSelected
+                        ) {
+                            onSymptomToggled(symptom.id)
                         }
-                    } header: {
-                        Text(category.title)
                     }
+                } header: {
+                    Text(category.title)
+                        .font(AppTheme.Typography.body)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(AppTheme.Colors.textPrimary)
                 }
             }
-            .listStyle(.insetGrouped)
-            .scrollContentBackground(.hidden)
-            .background(Color(hex: "FBFAF9"))
-
-            // Selection Counter (sticky at bottom)
-            HStack {
-                Text(displayData.selectionCountText)
-                    .font(AppTheme.Typography.caption)
-                    .foregroundColor(AppTheme.Colors.textSecondary)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, AppTheme.Spacing.sm)
-            .background(
-                Color(hex: "F8F6F3")
-                    .opacity(0.95)
-            )
-            .overlay(
-                Divider()
-                    .padding(.horizontal, 0),
-                alignment: .top
-            )
         }
+        .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
+        .background(AppTheme.Colors.surface)
+    }
+
+    private var selectionCounter: some View {
+        HStack {
+            Text(displayData.selectionCountText)
+                .font(AppTheme.Typography.caption)
+                .foregroundColor(AppTheme.Colors.textSecondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, AppTheme.Spacing.sm)
+        .background(AppTheme.Colors.surfaceSecondary.opacity(0.95))
+        .overlay(
+            Divider(),
+            alignment: .top
+        )
     }
 }
 
@@ -57,7 +65,7 @@ struct CycleSymptomsTabView: View {
             categories: [
                 SymptomCategoryDisplayData(
                     id: "digestive",
-                    title: "DIGESTIVE & GUT HEALTH",
+                    title: "Digestive & Gut Health",
                     symptoms: [
                         SymptomDisplayData(id: UUID(), name: "Bloating", isSelected: true),
                         SymptomDisplayData(id: UUID(), name: "Nausea", isSelected: false)
@@ -65,7 +73,7 @@ struct CycleSymptomsTabView: View {
                 ),
                 SymptomCategoryDisplayData(
                     id: "cycle",
-                    title: "CYCLE & HORMONAL",
+                    title: "Cycle & Hormonal",
                     symptoms: [
                         SymptomDisplayData(id: UUID(), name: "Cramps", isSelected: false),
                         SymptomDisplayData(id: UUID(), name: "Breast soreness", isSelected: true)
