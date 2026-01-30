@@ -37,6 +37,11 @@ class CycleLogViewModel {
     // MARK: - Symptoms State (private)
 
     private(set) var selectedSymptomIds: Set<UUID>
+    var expandedCategories: Set<SymptomCategory> = [
+        .cycleHormonal,
+        .digestiveGutHealth,
+        .energyMoodMental
+    ]
 
     // MARK: - Computed
 
@@ -133,8 +138,8 @@ class CycleLogViewModel {
 
         // Categories in display order
         let targetCategories: [SymptomCategory] = [
-            .digestiveGutHealth,
             .cycleHormonal,
+            .digestiveGutHealth,
             .energyMoodMental
         ]
 
@@ -146,7 +151,7 @@ class CycleLogViewModel {
         return targetCategories.compactMap { category in
             let symptomsInCategory = allSymptoms
                 .filter { $0.category == category }
-                .sorted { $0.displayOrder < $1.displayOrder }
+                .sorted { $0.name < $1.name }
 
             guard !symptomsInCategory.isEmpty else { return nil }
 
@@ -207,6 +212,24 @@ class CycleLogViewModel {
         } else {
             selectedSymptomIds.insert(symptomId)
         }
+    }
+
+    func toggleCategory(_ category: SymptomCategory) {
+        withAnimation(.easeInOut(duration: AppTheme.Animation.quick)) {
+            if expandedCategories.contains(category) {
+                expandedCategories.remove(category)
+            } else {
+                expandedCategories.insert(category)
+            }
+        }
+    }
+
+    func isCategoryExpanded(_ category: SymptomCategory) -> Bool {
+        expandedCategories.contains(category)
+    }
+
+    func isSymptomSelected(_ id: UUID) -> Bool {
+        selectedSymptomIds.contains(id)
     }
 
     // MARK: - Save
