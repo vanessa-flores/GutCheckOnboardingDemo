@@ -211,7 +211,7 @@ struct SymptomSelectionView: View {
     }
 
     private func toggleCategory(_ category: SymptomCategory) {
-        withAnimation(.easeInOut(duration: 0.3)) {
+        withAnimation(.easeInOut(duration: AppTheme.Animation.quick)) {
             if expandedCategories.contains(category) {
                 expandedCategories.remove(category)
             } else {

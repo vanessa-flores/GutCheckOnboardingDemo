@@ -93,7 +93,7 @@ struct MoodTabView: View {
                 )
                 .cornerRadius(AppTheme.CornerRadius.medium)
                 .onTapGesture {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    withAnimation(.spring(response: AppTheme.Animation.quick, dampingFraction: 0.7)) {
                         viewModel.selectMood(mood)
                     }
                 }

@@ -28,7 +28,7 @@ struct SymptomsTabView: View {
     private func categorySection(_ category: SymptomCategory, symptoms: [Symptom]) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             Button {
-                withAnimation(.easeInOut(duration: 0.2)) {
+                withAnimation(.easeInOut(duration: AppTheme.Animation.quick)) {
                     viewModel.toggleCategory(category)
                 }
             } label: {
