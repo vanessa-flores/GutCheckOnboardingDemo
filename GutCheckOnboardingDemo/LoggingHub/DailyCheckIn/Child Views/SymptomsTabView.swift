@@ -64,31 +64,15 @@ struct SymptomsTabView: View {
     private func symptomTags(_ symptoms: [Symptom]) -> some View {
         FlowLayout(spacing: AppTheme.Spacing.xs) {
             ForEach(symptoms) { symptom in
-                symptomTag(symptom)
+                SymptomTag(
+                    text: symptom.name,
+                    isSelected: viewModel.isSymptomSelected(symptom.id),
+                    onTap: {
+                        viewModel.toggleSymptom(symptom.id)
+                    }
+                )
             }
         }
-    }
-    
-    private func symptomTag(_ symptom: Symptom) -> some View {
-        let isSelected = viewModel.isSymptomSelected(symptom.id)
-        
-        return Text(symptom.name)
-            .font(AppTheme.Typography.caption)
-            .foregroundStyle(isSelected ? AppTheme.Colors.textOnPrimary : AppTheme.Colors.textPrimary)
-            .padding(.horizontal, AppTheme.Spacing.sm)
-            .padding(.vertical, AppTheme.Spacing.xs)
-            .background(isSelected ? AppTheme.Colors.primaryAction : AppTheme.Colors.surface)
-            .cornerRadius(20)
-            .overlay(
-                RoundedRectangle(cornerRadius: 20)
-                    .stroke(
-                        isSelected ? AppTheme.Colors.primaryAction : AppTheme.Colors.textSecondary.opacity(0.3),
-                        lineWidth: 1.5
-                    )
-            )
-            .onTapGesture {
-                viewModel.toggleSymptom(symptom.id)
-            }
     }
 }
 
