@@ -15,36 +15,10 @@ struct SelectableOption: Identifiable {
     let isSelected: Bool
 }
 
-// MARK: - SymptomDisplayData
-
-/// Individual symptom item (needs UUID for toggle callback)
-struct SymptomDisplayData: Identifiable {
-    let id: UUID
-    let name: String
-    let isSelected: Bool
-}
-
-// MARK: - SymptomCategoryDisplayData
-
-/// Grouped symptom category with symptoms
-struct SymptomCategoryDisplayData: Identifiable {
-    let id: String              // Category raw value
-    let title: String           // Display title (e.g., "Digestive & Gut Health")
-    let symptoms: [SymptomDisplayData]
-}
-
 // MARK: - FlowTabDisplayData
 
 /// Groups all display data for the Flow tab
 struct FlowTabDisplayData {
     let flowPresenceOptions: [SelectableOption]
     let flowLevelOptions: [SelectableOption]
-}
-
-// MARK: - SymptomsTabDisplayData
-
-/// Groups all display data for the Symptoms tab
-struct SymptomsTabDisplayData {
-    let categories: [SymptomCategoryDisplayData]
-    let selectionCountText: String    // "3 symptoms selected"
 }
