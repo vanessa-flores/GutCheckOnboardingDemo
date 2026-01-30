@@ -89,12 +89,7 @@ struct CycleLogModal: View {
                 }
             )
         case .symptoms:
-            CycleSymptomsTabView(
-                displayData: viewModel.symptomsTabDisplayData,
-                onSymptomToggled: { symptomId in
-                    viewModel.toggleSymptom(symptomId)
-                }
-            )
+            CycleSymptomsTabView(viewModel: viewModel)
         }
     }
 }
