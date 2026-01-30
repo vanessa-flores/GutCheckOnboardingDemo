@@ -51,6 +51,57 @@ class CycleLogViewModel {
         return formatter.string(from: date)
     }
 
+    var symptomsByCategory: [(category: SymptomCategory, symptoms: [Symptom])] {
+        // Define exactly which symptoms to show (15 total)
+        let allowedSymptomNames: Set<String> = [
+            // Digestive & Gut Health (5)
+            "Bloating",
+            "Constipation",
+            "Diarrhea",
+            "Gas",
+            "Nausea",
+            // Cycle & Hormonal (3)
+            "Dark/different colored blood",
+            "Breast soreness",
+            "Cramps",
+            // Energy, Mood & Mental Clarity (7)
+            "Anxiety",
+            "Brain fog",
+            "Depression",
+            "Mood swings",
+            "Fatigue",
+            "Irritability",
+            "Social withdrawal"
+        ]
+
+        // Categories in display order
+        let targetCategories: [SymptomCategory] = [
+            .cycleHormonal,
+            .digestiveGutHealth,
+            .energyMoodMental
+        ]
+
+        // Get all symptoms from repository, filter to allowed list
+        let allSymptoms = repository.allSymptoms
+            .filter { allowedSymptomNames.contains($0.name) }
+
+        // Group by category and return domain models
+        return targetCategories.compactMap { category in
+            let symptomsInCategory = allSymptoms
+                .filter { $0.category == category }
+                .sorted { $0.name < $1.name }
+
+            guard !symptomsInCategory.isEmpty else { return nil }
+
+            return (category: category, symptoms: symptomsInCategory)
+        }
+    }
+
+    var symptomSelectionCountText: String {
+        let count = selectedSymptomIds.count
+        return "\(count) symptom\(count == 1 ? "" : "s") selected"
+    }
+
     // MARK: - Init
 
     init(
