@@ -171,36 +171,38 @@ struct SymptomSelectionView: View {
                 .padding(.bottom, AppTheme.Spacing.xl)
                 .onboardingAnimated(offset: contentOffset)
 
-            ForEach(GettingStartedCopy.SymptomSelection.featuredCategories, id: \.category) { item in
-                CategorySection(
-                    category: item.category,
-                    symptoms: item.symptoms,
-                    isExpanded: expandedCategories.contains(item.category),
-                    selectedSymptomIds: viewModel.selectedSymptomIds,
-                    onToggleCategory: {
-                        toggleCategory(item.category)
-                    },
-                    onToggleSymptom: { symptomId in
-                        viewModel.toggleSymptom(symptomId)
-                    }
-                )
-                .onboardingAnimated(offset: contentOffset)
-            }
+            VStack(spacing: AppTheme.Spacing.md) {
+                ForEach(GettingStartedCopy.SymptomSelection.featuredCategories, id: \.category) { item in
+                    CategorySection(
+                        category: item.category,
+                        symptoms: item.symptoms,
+                        isExpanded: expandedCategories.contains(item.category),
+                        selectedSymptomIds: viewModel.selectedSymptomIds,
+                        onToggleCategory: {
+                            toggleCategory(item.category)
+                        },
+                        onToggleSymptom: { symptomId in
+                            viewModel.toggleSymptom(symptomId)
+                        }
+                    )
+                    .onboardingAnimated(offset: contentOffset)
+                }
 
-            ForEach(GettingStartedCopy.SymptomSelection.otherCategories, id: \.category) { item in
-                CategorySection(
-                    category: item.category,
-                    symptoms: item.symptoms,
-                    isExpanded: expandedCategories.contains(item.category),
-                    selectedSymptomIds: viewModel.selectedSymptomIds,
-                    onToggleCategory: {
-                        toggleCategory(item.category)
-                    },
-                    onToggleSymptom: { symptomId in
-                        viewModel.toggleSymptom(symptomId)
-                    }
-                )
-                .onboardingAnimated(offset: contentOffset)
+                ForEach(GettingStartedCopy.SymptomSelection.otherCategories, id: \.category) { item in
+                    CategorySection(
+                        category: item.category,
+                        symptoms: item.symptoms,
+                        isExpanded: expandedCategories.contains(item.category),
+                        selectedSymptomIds: viewModel.selectedSymptomIds,
+                        onToggleCategory: {
+                            toggleCategory(item.category)
+                        },
+                        onToggleSymptom: { symptomId in
+                            viewModel.toggleSymptom(symptomId)
+                        }
+                    )
+                    .onboardingAnimated(offset: contentOffset)
+                }
             }
         }
         .onAppear {
@@ -236,19 +238,21 @@ struct CategorySection: View {
             Button(action: onToggleCategory) {
                 HStack {
                     Text(category.rawValue)
-                        .font(AppTheme.Typography.title3)
+                        .font(AppTheme.Typography.bodySmall)
+                        .fontWeight(.semibold)
                         .foregroundColor(AppTheme.Colors.textPrimary)
 
                     Spacer()
 
                     Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
-                        .font(AppTheme.Typography.bodySmall)
+                        .imageScale(.small)
                         .fontWeight(.medium)
                         .foregroundColor(AppTheme.Colors.textSecondary)
                 }
-                .padding(.vertical, AppTheme.Spacing.md)
+                .padding(.vertical, AppTheme.Spacing.sm)
+                .padding(.horizontal, AppTheme.Spacing.sm)
             }
-            .buttonStyle(PlainButtonStyle())
+            .buttonStyle(PlainHeaderButtonStyle())
 
             if isExpanded {
                 FlowLayout(spacing: AppTheme.Spacing.xs) {
@@ -262,14 +266,12 @@ struct CategorySection: View {
                         )
                     }
                 }
+                .padding(.top, AppTheme.Spacing.xs)
+                .padding(.horizontal, AppTheme.Spacing.sm)
                 .padding(.bottom, AppTheme.Spacing.xl)
             }
         }
-        .overlay(
-            Rectangle()
-                .frame(height: 1)
-                .foregroundColor(AppTheme.Colors.textSecondary.opacity(0.1)),
-            alignment: .bottom
-        )
+        .background(AppTheme.Colors.surface)
+        .cornerRadius(AppTheme.CornerRadius.medium)
     }
 }

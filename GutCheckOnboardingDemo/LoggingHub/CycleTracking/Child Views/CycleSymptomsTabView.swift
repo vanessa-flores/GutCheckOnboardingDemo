@@ -86,11 +86,7 @@ struct CycleSymptomsTabView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, AppTheme.Spacing.sm)
-        .background(AppTheme.Colors.surfaceSecondary.opacity(0.95))
-        .overlay(
-            Divider(),
-            alignment: .top
-        )
+        .background(AppTheme.Colors.surface)
     }
 }
 
