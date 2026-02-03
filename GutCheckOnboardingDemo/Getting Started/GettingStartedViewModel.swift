@@ -118,8 +118,6 @@ class GettingStartedViewModel: SymptomCategorySelectable {
         selectedCycleStatus = option
     }
 
-    // Note: toggleSymptom is provided by SymptomCategorySelectable protocol extension
-
     func handlePrimaryAction() {
         switch router.activeScreen {
         case .symptomSelection:
