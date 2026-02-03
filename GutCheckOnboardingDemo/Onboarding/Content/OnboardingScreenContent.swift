@@ -129,7 +129,7 @@ struct StyledTextField: View {
             .cornerRadius(AppTheme.CornerRadius.medium)
             .overlay(
                 RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium)
-                    .stroke(isError ? AppTheme.Colors.error : AppTheme.Colors.textSecondary, lineWidth: 2)
+                    .stroke(isError ? AppTheme.Colors.error : AppTheme.Colors.textSecondary.opacity(0.3), lineWidth: 1.5)
             )
             .onSubmit { onSubmit() }
 
@@ -217,18 +217,18 @@ struct SymptomCategoryView: View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
             Text(category.title)
                 .font(AppTheme.Typography.title3)
-                .foregroundColor(AppTheme.Colors.primaryAction)
+                .foregroundColor(AppTheme.Colors.textPrimary)
             
             VStack(alignment: .leading, spacing: AppTheme.Spacing.xs) {
                 ForEach(category.symptoms) { symptom in
                     HStack(alignment: .top, spacing: AppTheme.Spacing.sm) {
                         Text("•")
-                            .font(AppTheme.Typography.body)
+                            .font(AppTheme.Typography.bodyMedium)
                             .fontWeight(.bold)
                             .foregroundColor(AppTheme.Colors.accent)
                         
                         Text(symptom.displayText)
-                            .font(AppTheme.Typography.body)
+                            .font(AppTheme.Typography.bodyMedium)
                             .foregroundColor(AppTheme.Colors.textSecondary)
                     }
                 }
