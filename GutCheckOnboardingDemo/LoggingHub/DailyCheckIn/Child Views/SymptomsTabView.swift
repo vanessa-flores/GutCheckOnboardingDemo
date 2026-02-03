@@ -21,8 +21,8 @@ struct SymptomsTabView: View {
                 .padding(.horizontal, AppTheme.Spacing.md)
                 .padding(.bottom, AppTheme.Spacing.xl)
             }
+            .background(AppTheme.Colors.background)
         }
-        .background(AppTheme.Colors.surface)
     }
     
     private func categorySection(_ category: SymptomCategory, symptoms: [Symptom]) -> some View {
@@ -45,20 +45,20 @@ struct SymptomsTabView: View {
                         .fontWeight(.medium)
                         .foregroundColor(AppTheme.Colors.textSecondary)
                 }
-                .padding(.vertical, AppTheme.Spacing.sm)
-                .padding(.horizontal, AppTheme.Spacing.sm)
+                .padding(.vertical, AppTheme.Spacing.md)
+                .padding(.horizontal, AppTheme.Spacing.md)
             }
             .buttonStyle(PlainHeaderButtonStyle())
             
             if viewModel.isCategoryExpanded(category) {
                 symptomTags(symptoms)
-                    .padding(.horizontal, AppTheme.Spacing.sm)
-                    .padding(.top, AppTheme.Spacing.xs)
-                    .padding(.bottom, AppTheme.Spacing.sm)
+                    .padding(.top, AppTheme.Spacing.xxs)
+                    .padding(.horizontal, AppTheme.Spacing.md)
+                    .padding(.bottom, AppTheme.Spacing.md)
             }
         }
-        .background(AppTheme.Colors.surfaceSecondary)
-        .cornerRadius(AppTheme.CornerRadius.medium)
+        .background(AppTheme.Colors.surface)
+        .cornerRadius(AppTheme.CornerRadius.large)
     }
     
     private func symptomTags(_ symptoms: [Symptom]) -> some View {

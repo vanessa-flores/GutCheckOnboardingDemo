@@ -70,7 +70,7 @@ struct MoodTabView: View {
                 Spacer()
             }
         }
-        .background(AppTheme.Colors.surface)
+        .background(AppTheme.Colors.background)
     }
     
     private var moodOptions: some View {

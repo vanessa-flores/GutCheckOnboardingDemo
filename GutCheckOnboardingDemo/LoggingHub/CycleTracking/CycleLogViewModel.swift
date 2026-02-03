@@ -37,6 +37,11 @@ class CycleLogViewModel {
     // MARK: - Symptoms State (private)
 
     private(set) var selectedSymptomIds: Set<UUID>
+    var expandedCategories: Set<SymptomCategory> = [
+        .cycleHormonal,
+        .digestiveGutHealth,
+        .energyMoodMental
+    ]
 
     // MARK: - Computed
 
@@ -44,6 +49,57 @@ class CycleLogViewModel {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, MMM d"
         return formatter.string(from: date)
+    }
+
+    var symptomsByCategory: [(category: SymptomCategory, symptoms: [Symptom])] {
+        // Define exactly which symptoms to show (15 total)
+        let allowedSymptomNames: Set<String> = [
+            // Digestive & Gut Health (5)
+            "Bloating",
+            "Constipation",
+            "Diarrhea",
+            "Gas",
+            "Nausea",
+            // Cycle & Hormonal (3)
+            "Dark/different colored blood",
+            "Breast soreness",
+            "Cramps",
+            // Energy, Mood & Mental Clarity (7)
+            "Anxiety",
+            "Brain fog",
+            "Depression",
+            "Mood swings",
+            "Fatigue",
+            "Irritability",
+            "Social withdrawal"
+        ]
+
+        // Categories in display order
+        let targetCategories: [SymptomCategory] = [
+            .cycleHormonal,
+            .digestiveGutHealth,
+            .energyMoodMental
+        ]
+
+        // Get all symptoms from repository, filter to allowed list
+        let allSymptoms = repository.allSymptoms
+            .filter { allowedSymptomNames.contains($0.name) }
+
+        // Group by category and return domain models
+        return targetCategories.compactMap { category in
+            let symptomsInCategory = allSymptoms
+                .filter { $0.category == category }
+                .sorted { $0.name < $1.name }
+
+            guard !symptomsInCategory.isEmpty else { return nil }
+
+            return (category: category, symptoms: symptomsInCategory)
+        }
+    }
+
+    var symptomSelectionCountText: String {
+        let count = selectedSymptomIds.count
+        return "\(count) symptom\(count == 1 ? "" : "s") selected"
     }
 
     // MARK: - Init
@@ -96,76 +152,6 @@ class CycleLogViewModel {
         )
     }
 
-    // MARK: - Symptoms Tab Display Data
-
-    var symptomsTabDisplayData: SymptomsTabDisplayData {
-        let categories = buildSymptomCategories()
-        let count = selectedSymptomIds.count
-        let countText = "\(count) symptom\(count == 1 ? "" : "s") selected"
-
-        return SymptomsTabDisplayData(
-            categories: categories,
-            selectionCountText: countText
-        )
-    }
-
-    private func buildSymptomCategories() -> [SymptomCategoryDisplayData] {
-        // Define exactly which symptoms to show (15 total)
-        let allowedSymptomNames: Set<String> = [
-            // Digestive & Gut Health (5)
-            "Bloating",
-            "Constipation",
-            "Diarrhea",
-            "Gas",
-            "Nausea",
-            // Cycle & Hormonal (3)
-            "Dark/different colored blood",
-            "Breast soreness",
-            "Cramps",
-            // Energy, Mood & Mental Clarity (7)
-            "Anxiety",
-            "Brain fog",
-            "Depression",
-            "Mood swings",
-            "Fatigue",
-            "Irritability",
-            "Social withdrawal"        ]
-
-        // Categories in display order
-        let targetCategories: [SymptomCategory] = [
-            .digestiveGutHealth,
-            .cycleHormonal,
-            .energyMoodMental
-        ]
-
-        // Get all symptoms from repository, filter to allowed list
-        let allSymptoms = repository.allSymptoms
-            .filter { allowedSymptomNames.contains($0.name) }
-
-        // Group by category and map to display data
-        return targetCategories.compactMap { category in
-            let symptomsInCategory = allSymptoms
-                .filter { $0.category == category }
-                .sorted { $0.displayOrder < $1.displayOrder }
-
-            guard !symptomsInCategory.isEmpty else { return nil }
-
-            let symptomDisplayData = symptomsInCategory.map { symptom in
-                SymptomDisplayData(
-                    id: symptom.id,
-                    name: symptom.name,
-                    isSelected: selectedSymptomIds.contains(symptom.id)
-                )
-            }
-
-            return SymptomCategoryDisplayData(
-                id: category.rawValue,
-                title: category.rawValue,
-                symptoms: symptomDisplayData
-            )
-        }
-    }
-
     // MARK: - Flow Tab Actions
 
     func selectFlowPresence(_ optionId: String) {
@@ -207,6 +193,24 @@ class CycleLogViewModel {
         } else {
             selectedSymptomIds.insert(symptomId)
         }
+    }
+
+    func toggleCategory(_ category: SymptomCategory) {
+        withAnimation(.easeInOut(duration: AppTheme.Animation.quick)) {
+            if expandedCategories.contains(category) {
+                expandedCategories.remove(category)
+            } else {
+                expandedCategories.insert(category)
+            }
+        }
+    }
+
+    func isCategoryExpanded(_ category: SymptomCategory) -> Bool {
+        expandedCategories.contains(category)
+    }
+
+    func isSymptomSelected(_ id: UUID) -> Bool {
+        selectedSymptomIds.contains(id)
     }
 
     // MARK: - Save

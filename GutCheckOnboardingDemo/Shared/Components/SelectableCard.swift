@@ -49,7 +49,7 @@ struct SelectableCard: View {
                     ? AppTheme.Colors.primaryAction.opacity(0.18)
                     : AppTheme.Colors.surface
             )
-            .cornerRadius(AppTheme.CornerRadius.medium)
+            .cornerRadius(AppTheme.CornerRadius.large)
             .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 2)
         }
         .buttonStyle(PlainButtonStyle())

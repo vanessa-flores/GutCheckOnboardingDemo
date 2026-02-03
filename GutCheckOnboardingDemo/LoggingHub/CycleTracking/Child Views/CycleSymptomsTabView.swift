@@ -3,8 +3,7 @@ import SwiftUI
 // MARK: - CycleSymptomsTabView
 
 struct CycleSymptomsTabView: View {
-    let displayData: SymptomsTabDisplayData
-    let onSymptomToggled: (UUID) -> Void
+    @Bindable var viewModel: CycleLogViewModel
 
     var body: some View {
         VStack(spacing: 0) {
@@ -17,43 +16,77 @@ struct CycleSymptomsTabView: View {
     // MARK: - Private Views
 
     private var symptomsList: some View {
-        List {
-            ForEach(displayData.categories) { category in
-                Section {
-                    ForEach(category.symptoms) { symptom in
-                        SelectableRow(
-                            title: symptom.name,
-                            isSelected: symptom.isSelected
-                        ) {
-                            onSymptomToggled(symptom.id)
-                        }
-                    }
-                } header: {
-                    Text(category.title)
-                        .font(AppTheme.Typography.body)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(AppTheme.Colors.textPrimary)
+        ScrollView {
+            VStack(spacing: AppTheme.Spacing.md) {
+                ForEach(viewModel.symptomsByCategory, id: \.category) { group in
+                    categorySection(group.category, symptoms: group.symptoms)
                 }
             }
+            .padding(.horizontal, AppTheme.Spacing.md)
+            .padding(.vertical, AppTheme.Spacing.md)
         }
-        .listStyle(.insetGrouped)
-        .scrollContentBackground(.hidden)
+        .background(AppTheme.Colors.background)
+    }
+
+    private func categorySection(_ category: SymptomCategory, symptoms: [Symptom]) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Button {
+                withAnimation(.easeInOut(duration: AppTheme.Animation.quick)) {
+                    viewModel.toggleCategory(category)
+                }
+            } label: {
+                HStack {
+                    Text(category.rawValue)
+                        .font(AppTheme.Typography.bodySmall)
+                        .fontWeight(.semibold)
+                        .foregroundColor(AppTheme.Colors.textPrimary)
+
+                    Spacer()
+
+                    Image(systemName: viewModel.isCategoryExpanded(category) ? "chevron.down" : "chevron.right")
+                        .imageScale(.small)
+                        .fontWeight(.medium)
+                        .foregroundColor(AppTheme.Colors.textSecondary)
+                }
+                .padding(.vertical, AppTheme.Spacing.md)
+                .padding(.horizontal, AppTheme.Spacing.md)
+            }
+            .buttonStyle(PlainHeaderButtonStyle())
+
+            if viewModel.isCategoryExpanded(category) {
+                symptomTags(symptoms)
+                    .padding(.top, AppTheme.Spacing.xxs)
+                    .padding(.horizontal, AppTheme.Spacing.md)
+                    .padding(.bottom, AppTheme.Spacing.md)
+            }
+        }
         .background(AppTheme.Colors.surface)
+        .cornerRadius(AppTheme.CornerRadius.large)
+    }
+
+    private func symptomTags(_ symptoms: [Symptom]) -> some View {
+        FlowLayout(spacing: AppTheme.Spacing.xs) {
+            ForEach(symptoms) { symptom in
+                SymptomTag(
+                    text: symptom.name,
+                    isSelected: viewModel.isSymptomSelected(symptom.id),
+                    onTap: {
+                        viewModel.toggleSymptom(symptom.id)
+                    }
+                )
+            }
+        }
     }
 
     private var selectionCounter: some View {
         HStack {
-            Text(displayData.selectionCountText)
+            Text(viewModel.symptomSelectionCountText)
                 .font(AppTheme.Typography.caption)
                 .foregroundColor(AppTheme.Colors.textSecondary)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, AppTheme.Spacing.sm)
-        .background(AppTheme.Colors.surfaceSecondary.opacity(0.95))
-        .overlay(
-            Divider(),
-            alignment: .top
-        )
+        .background(AppTheme.Colors.background)
     }
 }
 
@@ -61,27 +94,13 @@ struct CycleSymptomsTabView: View {
 
 #Preview {
     CycleSymptomsTabView(
-        displayData: SymptomsTabDisplayData(
-            categories: [
-                SymptomCategoryDisplayData(
-                    id: "digestive",
-                    title: "Digestive & Gut Health",
-                    symptoms: [
-                        SymptomDisplayData(id: UUID(), name: "Bloating", isSelected: true),
-                        SymptomDisplayData(id: UUID(), name: "Nausea", isSelected: false)
-                    ]
-                ),
-                SymptomCategoryDisplayData(
-                    id: "cycle",
-                    title: "Cycle & Hormonal",
-                    symptoms: [
-                        SymptomDisplayData(id: UUID(), name: "Cramps", isSelected: false),
-                        SymptomDisplayData(id: UUID(), name: "Breast soreness", isSelected: true)
-                    ]
-                )
-            ],
-            selectionCountText: "2 symptoms selected"
-        ),
-        onSymptomToggled: { id in print("Toggled: \(id)") }
+        viewModel: CycleLogViewModel(
+            userId: UUID(),
+            date: Date(),
+            initialFlow: nil,
+            initialSelectedSymptomIds: [],
+            repository: InMemorySymptomRepository.shared,
+            onSave: { _, _, _ in }
+        )
     )
 }

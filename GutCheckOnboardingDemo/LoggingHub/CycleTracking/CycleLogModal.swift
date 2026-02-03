@@ -38,7 +38,7 @@ struct CycleLogModal: View {
                 tabContent
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .background(AppTheme.Colors.surface)
+            .background(AppTheme.Colors.background)
             .navigationTitle("Log Period")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -89,12 +89,7 @@ struct CycleLogModal: View {
                 }
             )
         case .symptoms:
-            CycleSymptomsTabView(
-                displayData: viewModel.symptomsTabDisplayData,
-                onSymptomToggled: { symptomId in
-                    viewModel.toggleSymptom(symptomId)
-                }
-            )
+            CycleSymptomsTabView(viewModel: viewModel)
         }
     }
 }
