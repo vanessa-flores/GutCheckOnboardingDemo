@@ -14,7 +14,7 @@ enum CheckInTab: String, CaseIterable, Identifiable {
 // MARK: - TodaysCheckInViewModel
 
 @Observable
-class TodaysCheckInViewModel {
+class TodaysCheckInViewModel: SymptomCategorySelectable {
 
     let userId: UUID
     let date: Date
@@ -24,6 +24,8 @@ class TodaysCheckInViewModel {
 
     var selectedMood: Mood?
     var quickNote: String = ""
+
+    // MARK: - SymptomCategorySelectable Properties
 
     var selectedSymptomIds: Set<UUID> = []
     var expandedCategories: Set<SymptomCategory> = [
@@ -89,31 +91,10 @@ class TodaysCheckInViewModel {
             selectedMood = mood
         }
     }
-    
-    func toggleSymptom(_ symptomId: UUID) {
-        if selectedSymptomIds.contains(symptomId) {
-            selectedSymptomIds.remove(symptomId)
-        } else {
-            selectedSymptomIds.insert(symptomId)
-        }
-    }
-    
-    func toggleCategory(_ category: SymptomCategory) {
-        if expandedCategories.contains(category) {
-            expandedCategories.remove(category)
-        } else {
-            expandedCategories.insert(category)
-        }
-    }
-    
-    func isCategoryExpanded(_ category: SymptomCategory) -> Bool {
-        expandedCategories.contains(category)
-    }
-    
-    func isSymptomSelected(_ symptomId: UUID) -> Bool {
-        selectedSymptomIds.contains(symptomId)
-    }
-    
+
+    // Note: toggleSymptom, toggleCategory, isCategoryExpanded, and isSymptomSelected
+    // are provided by SymptomCategorySelectable protocol extension
+
     func save() {
         var updatedLog = dailyLog
         
