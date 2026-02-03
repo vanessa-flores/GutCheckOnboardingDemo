@@ -195,10 +195,10 @@ struct Screen2ContentView: View {
             OnboardingBody(
                 text: OnboardingCopy.Screen2.body,
                 offset: contentOffset,
-                bottomPadding: AppTheme.Spacing.xl
+                bottomPadding: AppTheme.Spacing.xxl
             )
 
-            VStack(alignment: .leading, spacing: AppTheme.Spacing.xl) {
+            VStack(alignment: .leading, spacing: AppTheme.Spacing.xxl) {
                 ForEach(OnboardingSymptomRepository.allCategories) { category in
                     SymptomCategoryView(category: category)
                 }
@@ -221,7 +221,7 @@ struct SymptomCategoryView: View {
             
             VStack(alignment: .leading, spacing: AppTheme.Spacing.xs) {
                 ForEach(category.symptoms) { symptom in
-                    HStack(alignment: .top, spacing: AppTheme.Spacing.xs) {
+                    HStack(alignment: .top, spacing: AppTheme.Spacing.sm) {
                         Text("•")
                             .font(AppTheme.Typography.body)
                             .fontWeight(.bold)

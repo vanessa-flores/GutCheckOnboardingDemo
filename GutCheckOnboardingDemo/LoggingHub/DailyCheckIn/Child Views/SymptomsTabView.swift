@@ -45,16 +45,16 @@ struct SymptomsTabView: View {
                         .fontWeight(.medium)
                         .foregroundColor(AppTheme.Colors.textSecondary)
                 }
-                .padding(.vertical, AppTheme.Spacing.sm)
-                .padding(.horizontal, AppTheme.Spacing.sm)
+                .padding(.vertical, AppTheme.Spacing.md)
+                .padding(.horizontal, AppTheme.Spacing.md)
             }
             .buttonStyle(PlainHeaderButtonStyle())
             
             if viewModel.isCategoryExpanded(category) {
                 symptomTags(symptoms)
-                    .padding(.horizontal, AppTheme.Spacing.sm)
-                    .padding(.top, AppTheme.Spacing.xs)
-                    .padding(.bottom, AppTheme.Spacing.sm)
+                    .padding(.top, AppTheme.Spacing.xxs)
+                    .padding(.horizontal, AppTheme.Spacing.md)
+                    .padding(.bottom, AppTheme.Spacing.md)
             }
         }
         .cornerRadius(AppTheme.CornerRadius.medium)

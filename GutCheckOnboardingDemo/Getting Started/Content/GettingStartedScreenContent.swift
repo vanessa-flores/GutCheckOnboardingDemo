@@ -249,8 +249,8 @@ struct CategorySection: View {
                         .fontWeight(.medium)
                         .foregroundColor(AppTheme.Colors.textSecondary)
                 }
-                .padding(.vertical, AppTheme.Spacing.sm)
-                .padding(.horizontal, AppTheme.Spacing.sm)
+                .padding(.vertical, AppTheme.Spacing.md)
+                .padding(.horizontal, AppTheme.Spacing.md)
             }
             .buttonStyle(PlainHeaderButtonStyle())
 
@@ -266,9 +266,9 @@ struct CategorySection: View {
                         )
                     }
                 }
-                .padding(.top, AppTheme.Spacing.xs)
-                .padding(.horizontal, AppTheme.Spacing.sm)
-                .padding(.bottom, AppTheme.Spacing.xl)
+                .padding(.top, AppTheme.Spacing.xxs)
+                .padding(.horizontal, AppTheme.Spacing.md)
+                .padding(.bottom, AppTheme.Spacing.md)
             }
         }
         .background(AppTheme.Colors.surface)
