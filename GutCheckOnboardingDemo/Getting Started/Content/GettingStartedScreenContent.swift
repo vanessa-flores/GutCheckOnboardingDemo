@@ -272,6 +272,6 @@ struct CategorySection: View {
             }
         }
         .background(AppTheme.Colors.surface)
-        .cornerRadius(AppTheme.CornerRadius.medium)
+        .cornerRadius(AppTheme.CornerRadius.large)
     }
 }

@@ -17,9 +17,9 @@ struct SymptomTag: View {
             .padding(.horizontal, AppTheme.Spacing.sm)
             .padding(.vertical, AppTheme.Spacing.xs)
             .background(isSelected ? AppTheme.Colors.primaryAction : AppTheme.Colors.surface)
-            .cornerRadius(20)
+            .cornerRadius(AppTheme.CornerRadius.xlarge)
             .overlay(
-                RoundedRectangle(cornerRadius: 20)
+                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.xlarge)
                     .stroke(
                         isSelected ? AppTheme.Colors.primaryAction : AppTheme.Colors.textSecondary.opacity(0.3),
                         lineWidth: 1.5

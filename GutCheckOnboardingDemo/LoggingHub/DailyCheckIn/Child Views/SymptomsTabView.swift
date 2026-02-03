@@ -57,8 +57,8 @@ struct SymptomsTabView: View {
                     .padding(.bottom, AppTheme.Spacing.md)
             }
         }
-        .cornerRadius(AppTheme.CornerRadius.medium)
         .background(AppTheme.Colors.surface)
+        .cornerRadius(AppTheme.CornerRadius.large)
     }
     
     private func symptomTags(_ symptoms: [Symptom]) -> some View {
