@@ -20,7 +20,7 @@ struct BehaviorsTabView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(AppTheme.Colors.surface)
+        .background(AppTheme.Colors.background)
     }
 }
 

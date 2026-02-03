@@ -25,7 +25,7 @@ struct CycleSymptomsTabView: View {
             .padding(.horizontal, AppTheme.Spacing.md)
             .padding(.vertical, AppTheme.Spacing.md)
         }
-        .background(AppTheme.Colors.surface)
+        .background(AppTheme.Colors.background)
     }
 
     private func categorySection(_ category: SymptomCategory, symptoms: [Symptom]) -> some View {
@@ -60,8 +60,8 @@ struct CycleSymptomsTabView: View {
                     .padding(.bottom, AppTheme.Spacing.sm)
             }
         }
-        .background(AppTheme.Colors.surfaceSecondary)
         .cornerRadius(AppTheme.CornerRadius.medium)
+        .background(AppTheme.Colors.surface)
     }
 
     private func symptomTags(_ symptoms: [Symptom]) -> some View {
@@ -86,7 +86,7 @@ struct CycleSymptomsTabView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, AppTheme.Spacing.sm)
-        .background(AppTheme.Colors.surface)
+        .background(AppTheme.Colors.background)
     }
 }
 

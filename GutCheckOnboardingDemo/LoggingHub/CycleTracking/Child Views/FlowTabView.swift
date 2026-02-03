@@ -41,7 +41,7 @@ struct FlowTabView: View {
         }
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
-        .background(AppTheme.Colors.surface)
+        .background(AppTheme.Colors.background)
     }
 }
 

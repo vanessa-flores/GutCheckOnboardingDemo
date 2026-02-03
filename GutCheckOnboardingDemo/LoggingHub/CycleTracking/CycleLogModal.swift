@@ -38,7 +38,7 @@ struct CycleLogModal: View {
                 tabContent
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .background(AppTheme.Colors.surface)
+            .background(AppTheme.Colors.background)
             .navigationTitle("Log Period")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

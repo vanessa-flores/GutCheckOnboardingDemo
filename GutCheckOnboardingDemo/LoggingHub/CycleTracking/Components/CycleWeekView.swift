@@ -55,6 +55,4 @@ struct CycleWeekView: View {
             print("Day \(index) tapped")
         }
     )
-    .padding()
-    .background(AppTheme.Colors.background)
 }

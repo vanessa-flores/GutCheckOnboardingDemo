@@ -87,7 +87,7 @@ struct PlaceholderTextEditor: View {
             TextEditor(text: $text)
                 .frame(height: AppTheme.ComponentSizes.textEditorHeight)
                 .padding(AppTheme.Spacing.sm)
-                .background(Color.white)
+                .background(AppTheme.Colors.surface)
                 .cornerRadius(AppTheme.CornerRadius.medium)
                 .overlay(
                     RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium)
