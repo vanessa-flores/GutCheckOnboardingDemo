@@ -2,11 +2,11 @@ import SwiftUI
 import Observation
 
 @Observable
-class GettingStartedViewModel {
-    
+class GettingStartedViewModel: SymptomCategorySelectable {
+
     // Navigation
     var router: GettingStartedRouter
-    
+
     // Animation State
     var contentOffset: CGFloat = 0
     var showContent: Bool = true
@@ -18,6 +18,10 @@ class GettingStartedViewModel {
     var selectedGutHealthAwareness: GettingStartedCopy.GutHealthAwareness.Option? = nil
     var selectedCycleStatus: GettingStartedCopy.MenstrualCycleStatus.Option? = nil
     var selectedSymptomIds: Set<UUID> = []
+
+    // MARK: - SymptomCategorySelectable Properties
+
+    var expandedCategories: Set<SymptomCategory> = []
 
     // Flow completion state
     var isGettingStartedComplete: Bool = false
@@ -46,8 +50,8 @@ class GettingStartedViewModel {
         router.canGoBack
     }
 
-    var selectedSymptomCount: Int {
-        selectedSymptomIds.count
+    var symptomsByCategory: [(category: SymptomCategory, symptoms: [Symptom])] {
+        repository.symptomsGroupedByCategory()
     }
 
     // MARK: - Button Configuration
@@ -86,6 +90,14 @@ class GettingStartedViewModel {
         self.repository = repository
         self.userId = userId
         self.onComplete = onComplete
+
+        // Initialize expanded categories with featured categories
+        self.expandedCategories = [
+            .digestiveGutHealth,
+            .cycleHormonal,
+            .energyMoodMental,
+            .sleepTemperature
+        ]
     }
     
     // MARK: - Actions
@@ -106,13 +118,7 @@ class GettingStartedViewModel {
         selectedCycleStatus = option
     }
 
-    func toggleSymptom(_ symptomId: UUID) {
-        if selectedSymptomIds.contains(symptomId) {
-            selectedSymptomIds.remove(symptomId)
-        } else {
-            selectedSymptomIds.insert(symptomId)
-        }
-    }
+    // Note: toggleSymptom is provided by SymptomCategorySelectable protocol extension
 
     func handlePrimaryAction() {
         switch router.activeScreen {

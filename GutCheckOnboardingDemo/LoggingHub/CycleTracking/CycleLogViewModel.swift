@@ -13,13 +13,13 @@ enum CycleLogTab: String, CaseIterable, Identifiable {
 // MARK: - CycleLogViewModel
 
 @Observable
-class CycleLogViewModel {
+class CycleLogViewModel: SymptomCategorySelectable {
 
     // MARK: - Dependencies
 
     private let repository: SymptomCatalogProtocol
     private let onSave: (Bool, FlowLevel?, Set<UUID>) -> Void
-    
+
     // MARK: - Properties
 
     let userId: UUID
@@ -34,9 +34,9 @@ class CycleLogViewModel {
     private(set) var hadFlow: Bool?
     private(set) var selectedFlowLevel: FlowLevel?
 
-    // MARK: - Symptoms State (private)
+    // MARK: - SymptomCategorySelectable Properties
 
-    private(set) var selectedSymptomIds: Set<UUID>
+    var selectedSymptomIds: Set<UUID>
     var expandedCategories: Set<SymptomCategory> = [
         .cycleHormonal,
         .digestiveGutHealth,
@@ -187,31 +187,8 @@ class CycleLogViewModel {
 
     // MARK: - Symptoms Tab Actions
 
-    func toggleSymptom(_ symptomId: UUID) {
-        if selectedSymptomIds.contains(symptomId) {
-            selectedSymptomIds.remove(symptomId)
-        } else {
-            selectedSymptomIds.insert(symptomId)
-        }
-    }
-
-    func toggleCategory(_ category: SymptomCategory) {
-        withAnimation(.easeInOut(duration: AppTheme.Animation.quick)) {
-            if expandedCategories.contains(category) {
-                expandedCategories.remove(category)
-            } else {
-                expandedCategories.insert(category)
-            }
-        }
-    }
-
-    func isCategoryExpanded(_ category: SymptomCategory) -> Bool {
-        expandedCategories.contains(category)
-    }
-
-    func isSymptomSelected(_ id: UUID) -> Bool {
-        selectedSymptomIds.contains(id)
-    }
+    // Note: toggleSymptom, toggleCategory, isCategoryExpanded, and isSymptomSelected
+    // are provided by SymptomCategorySelectable protocol extension
 
     // MARK: - Save
 

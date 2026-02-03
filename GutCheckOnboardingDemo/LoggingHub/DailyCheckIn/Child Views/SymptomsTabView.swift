@@ -15,63 +15,18 @@ struct SymptomsTabView: View {
                 
                 VStack(spacing: AppTheme.Spacing.md) {
                     ForEach(viewModel.symptomsByCategory, id: \.category) { group in
-                        categorySection(group.category, symptoms: group.symptoms)
+                        ExpandableSymptomCategorySection(
+                            category: group.category,
+                            symptoms: group.symptoms,
+                            expandedCategories: $viewModel.expandedCategories,
+                            selectedSymptomIds: $viewModel.selectedSymptomIds
+                        )
                     }
                 }
                 .padding(.horizontal, AppTheme.Spacing.md)
                 .padding(.bottom, AppTheme.Spacing.xl)
             }
             .background(AppTheme.Colors.background)
-        }
-    }
-    
-    private func categorySection(_ category: SymptomCategory, symptoms: [Symptom]) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Button {
-                withAnimation(.easeInOut(duration: AppTheme.Animation.quick)) {
-                    viewModel.toggleCategory(category)
-                }
-            } label: {
-                HStack {
-                    Text(category.rawValue)
-                        .font(AppTheme.Typography.bodySmall)
-                        .fontWeight(.semibold)
-                        .foregroundColor(AppTheme.Colors.textPrimary)
-                    
-                    Spacer()
-                    
-                    Image(systemName: viewModel.isCategoryExpanded(category) ? "chevron.down" : "chevron.right")
-                        .imageScale(.small)
-                        .fontWeight(.medium)
-                        .foregroundColor(AppTheme.Colors.textSecondary)
-                }
-                .padding(.vertical, AppTheme.Spacing.md)
-                .padding(.horizontal, AppTheme.Spacing.md)
-            }
-            .buttonStyle(PlainHeaderButtonStyle())
-            
-            if viewModel.isCategoryExpanded(category) {
-                symptomTags(symptoms)
-                    .padding(.top, AppTheme.Spacing.xxs)
-                    .padding(.horizontal, AppTheme.Spacing.md)
-                    .padding(.bottom, AppTheme.Spacing.md)
-            }
-        }
-        .background(AppTheme.Colors.surface)
-        .cornerRadius(AppTheme.CornerRadius.large)
-    }
-    
-    private func symptomTags(_ symptoms: [Symptom]) -> some View {
-        FlowLayout(spacing: AppTheme.Spacing.xs) {
-            ForEach(symptoms) { symptom in
-                SymptomTag(
-                    text: symptom.name,
-                    isSelected: viewModel.isSymptomSelected(symptom.id),
-                    onTap: {
-                        viewModel.toggleSymptom(symptom.id)
-                    }
-                )
-            }
         }
     }
 }
