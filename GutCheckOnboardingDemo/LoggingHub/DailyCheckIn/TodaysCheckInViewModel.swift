@@ -92,9 +92,6 @@ class TodaysCheckInViewModel: SymptomCategorySelectable {
         }
     }
 
-    // Note: toggleSymptom, toggleCategory, isCategoryExpanded, and isSymptomSelected
-    // are provided by SymptomCategorySelectable protocol extension
-
     func save() {
         var updatedLog = dailyLog
         

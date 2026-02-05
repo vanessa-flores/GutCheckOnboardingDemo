@@ -185,11 +185,6 @@ class CycleLogViewModel: SymptomCategorySelectable {
         }
     }
 
-    // MARK: - Symptoms Tab Actions
-
-    // Note: toggleSymptom, toggleCategory, isCategoryExpanded, and isSymptomSelected
-    // are provided by SymptomCategorySelectable protocol extension
-
     // MARK: - Save
 
     func save() {
