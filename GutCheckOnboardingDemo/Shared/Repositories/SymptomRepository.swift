@@ -22,5 +22,4 @@ protocol DailyLogRepositoryProtocol {
     func dailyLogs(for userId: UUID) -> [DailyLog]
     func dailyLog(for userId: UUID, on date: Date) -> DailyLog?
     func save(dailyLog: DailyLog)
-    func save(log: SymptomLog)
 }

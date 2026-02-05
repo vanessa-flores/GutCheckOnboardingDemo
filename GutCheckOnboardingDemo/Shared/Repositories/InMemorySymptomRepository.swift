@@ -15,7 +15,6 @@ final class InMemorySymptomRepository: SymptomCatalogProtocol, SymptomPreference
 
     private var symptoms: [Symptom] = []
     private var preferences: [UUID: [UserSymptomPreference]] = [:]  // userId -> preferences
-    private var symptomLogs: [UUID: [SymptomLog]] = [:]             // userId -> logs
     private var dailyLogs: [UUID: [Date: DailyLog]] = [:]            // userId -> date -> dailyLog
 
     // MARK: - Initialization
@@ -82,12 +81,6 @@ final class InMemorySymptomRepository: SymptomCatalogProtocol, SymptomPreference
         var userLogs = dailyLogs[dailyLog.userId] ?? [:]
         userLogs[dailyLog.date] = dailyLog
         dailyLogs[dailyLog.userId] = userLogs
-    }
-
-    func save(log: SymptomLog) {
-        var userLogs = symptomLogs[log.userId] ?? []
-        userLogs.append(log)
-        symptomLogs[log.userId] = userLogs
     }
 }
 
