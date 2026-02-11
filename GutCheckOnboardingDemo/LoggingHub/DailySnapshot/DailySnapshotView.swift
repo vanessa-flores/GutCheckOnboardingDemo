@@ -78,10 +78,7 @@ struct DailySnapshotView: View {
                     .fontWeight(.medium)
                     .foregroundColor(AppTheme.Colors.textPrimary)
             } else {
-                Text("Not logged")
-                    .font(AppTheme.Typography.bodySmall)
-                    .foregroundColor(AppTheme.Colors.textSecondary.opacity(0.6))
-                    .italic()
+                notLoggedText
             }
         }
         .padding(.horizontal, AppTheme.Spacing.md)
@@ -108,10 +105,7 @@ struct DailySnapshotView: View {
 
                 // Value
                 if displayData.symptomNames.isEmpty {
-                    Text("Not logged")
-                        .font(AppTheme.Typography.bodySmall)
-                        .foregroundColor(AppTheme.Colors.textSecondary.opacity(0.6))
-                        .italic()
+                    notLoggedText
                 } else {
                     symptomText
                         .multilineTextAlignment(.trailing)
@@ -192,14 +186,20 @@ struct DailySnapshotView: View {
                     .fontWeight(.medium)
                     .foregroundColor(AppTheme.Colors.textPrimary)
             } else {
-                Text("Not logged")
-                    .font(AppTheme.Typography.bodySmall)
-                    .foregroundColor(AppTheme.Colors.textSecondary.opacity(0.6))
-                    .italic()
+                notLoggedText
             }
         }
         .padding(.horizontal, AppTheme.Spacing.md)
         .padding(.vertical, AppTheme.Spacing.sm)
+    }
+
+    // MARK: - Shared Components
+
+    private var notLoggedText: some View {
+        Text("Not logged")
+            .font(AppTheme.Typography.bodySmall)
+            .foregroundColor(AppTheme.Colors.textSecondary.opacity(0.6))
+            .italic()
     }
 }
 
