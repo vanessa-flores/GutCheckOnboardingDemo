@@ -54,6 +54,10 @@ struct LoggingHubView: View {
                         }
                     }
                     .padding(.horizontal, AppTheme.Spacing.md)
+
+                    // Daily Snapshot
+                    DailySnapshotView(displayData: viewModel.snapshotData)
+                        .padding(.horizontal, AppTheme.Spacing.md)
                 }
                 .padding(.bottom, AppTheme.Spacing.xl)
             }
