@@ -134,26 +134,17 @@ struct DailySnapshotView: View {
                 .fontWeight(.medium)
                 .foregroundColor(AppTheme.Colors.textPrimary)
                 .lineLimit(nil)
-        } else if let preview = displayData.symptomPreview {
-            // Parse preview to style the overflow portion
-            if displayData.showOverflow {
-                let components = preview.components(separatedBy: " …+")
-                if components.count == 2 {
-                    Text(components[0])
-                        .font(AppTheme.Typography.body)
-                        .fontWeight(.medium)
-                        .foregroundColor(AppTheme.Colors.textPrimary)
-                    + Text(" …+\(components[1])")
-                        .font(AppTheme.Typography.body)
-                        .foregroundColor(AppTheme.Colors.textSecondary)
-                } else {
-                    Text(preview)
-                        .font(AppTheme.Typography.body)
-                        .fontWeight(.medium)
-                        .foregroundColor(AppTheme.Colors.textPrimary)
-                }
+        } else if let main = displayData.symptomPreviewMain {
+            if let overflow = displayData.symptomOverflowCount {
+                Text(main)
+                    .font(AppTheme.Typography.body)
+                    .fontWeight(.medium)
+                    .foregroundColor(AppTheme.Colors.textPrimary)
+                + Text(" …+\(overflow)")
+                    .font(AppTheme.Typography.body)
+                    .foregroundColor(AppTheme.Colors.textSecondary)
             } else {
-                Text(preview)
+                Text(main)
                     .font(AppTheme.Typography.body)
                     .fontWeight(.medium)
                     .foregroundColor(AppTheme.Colors.textPrimary)

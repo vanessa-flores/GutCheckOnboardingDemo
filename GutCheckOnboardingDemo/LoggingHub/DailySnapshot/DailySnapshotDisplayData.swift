@@ -14,16 +14,19 @@ struct DailySnapshotDisplayData: Equatable {
         moodEmoji != nil || !symptomNames.isEmpty || flowLabel != nil
     }
 
-    var symptomPreview: String? {
+    var symptomPreviewMain: String? {
         guard !symptomNames.isEmpty else { return nil }
 
         if symptomNames.count <= 2 {
             return symptomNames.joined(separator: ", ")
         } else {
-            let preview = symptomNames.prefix(2).joined(separator: ", ")
-            let remaining = symptomNames.count - 2
-            return "\(preview) …+\(remaining)"
+            return symptomNames.prefix(2).joined(separator: ", ")
         }
+    }
+
+    var symptomOverflowCount: Int? {
+        guard symptomNames.count > 2 else { return nil }
+        return symptomNames.count - 2
     }
 
     var allSymptomsText: String? {
