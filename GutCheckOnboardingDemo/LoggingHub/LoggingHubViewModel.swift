@@ -20,6 +20,7 @@ class LoggingHubViewModel {
 
     let userId: UUID
     private let repository: DailyLogRepositoryProtocol
+    private let symptomCatalog: SymptomCatalogProtocol
 
     // MARK: - Week State
 
@@ -30,6 +31,10 @@ class LoggingHubViewModel {
     // MARK: - Modal State
 
     var activeModal: ActiveModal? = nil
+
+    // MARK: - Snapshot State
+
+    var snapshotData: DailySnapshotDisplayData = .empty
 
     // MARK: - Computed Properties (Week-Related)
 
@@ -54,31 +59,41 @@ class LoggingHubViewModel {
         return "\(formatter.string(from: currentWeekStart)) - \(formatter.string(from: weekEnd))"
     }
 
-    /// "Log Today", "Log Yesterday", or "Log Tuesday"
+    /// "Log Today", "Log Yesterday", "Log Tuesday", "Log Tue, Jan 28", or "Log Tue, Jan 28, 2025"
     var sectionHeaderText: String {
         if isSelectedDateToday {
             return "Log Today"
         } else if isSelectedDateYesterday {
             return "Log Yesterday"
         } else {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "EEEE"
-            return "Log \(formatter.string(from: selectedDate))"
+            let today = Date()
+            let calendar = Calendar.current
+            let isInCurrentWeek = calendar.isDate(selectedDate, equalTo: today, toGranularity: .weekOfYear)
+
+            if isInCurrentWeek {
+                // Same week: "Log Tuesday"
+                let formatter = DateFormatter()
+                formatter.dateFormat = "EEEE"
+                return "Log \(formatter.string(from: selectedDate))"
+            } else {
+                // Different week: check if same year
+                let selectedYear = calendar.component(.year, from: selectedDate)
+                let currentYear = calendar.component(.year, from: today)
+
+                let formatter = DateFormatter()
+                if selectedYear == currentYear {
+                    // Same year: "Log Tue, Jan 28"
+                    formatter.dateFormat = "EEE, MMM d"
+                } else {
+                    // Different year: "Log Tue, Jan 28, 2025"
+                    formatter.dateFormat = "EEE, MMM d, yyyy"
+                }
+                return "Log \(formatter.string(from: selectedDate))"
+            }
         }
     }
 
-    /// "Today's check-in", "Yesterday's check-in", or "Tuesday's check-in"
-    var checkInCardTitle: String {
-        if isSelectedDateToday {
-            return "Today's check-in"
-        } else if isSelectedDateYesterday {
-            return "Yesterday's check-in"
-        } else {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "EEEE"
-            return "\(formatter.string(from: selectedDate))'s check-in"
-        }
-    }
+    let checkInCardTitle = "Daily check-in"
 
     // MARK: - Computed Properties (Selected Date Data)
 
@@ -96,12 +111,18 @@ class LoggingHubViewModel {
 
     // MARK: - Initialization
 
-    init(userId: UUID, repository: DailyLogRepositoryProtocol = InMemorySymptomRepository.shared) {
+    init(
+        userId: UUID,
+        repository: DailyLogRepositoryProtocol = InMemorySymptomRepository.shared,
+        symptomCatalog: SymptomCatalogProtocol = InMemorySymptomRepository.shared
+    ) {
         self.userId = userId
         self.repository = repository
+        self.symptomCatalog = symptomCatalog
         self.currentWeekStart = Date().startOfWeek
         self.selectedDate = Date().startOfDay
         loadWeekData()
+        loadSnapshotData()
     }
 
     // MARK: - Week Navigation
@@ -113,6 +134,7 @@ class LoggingHubViewModel {
         guard date <= Date().startOfDay else { return }  // Prevent future selection
         selectedDate = date
         loadWeekData()
+        loadSnapshotData()
     }
 
     /// Moves the week view backward by 7 days and reloads data
@@ -123,6 +145,7 @@ class LoggingHubViewModel {
         let today = Date().startOfDay
         selectedDate = min(lastDayOfWeek, today)
         loadWeekData()
+        loadSnapshotData()
     }
 
     /// Moves the week view forward by 7 days and reloads data
@@ -137,10 +160,12 @@ class LoggingHubViewModel {
         let lastDayOfWeek = currentWeekStart.addingDays(6)
         selectedDate = min(lastDayOfWeek, today)
         loadWeekData()
+        loadSnapshotData()
     }
 
     func refreshData() {
         loadWeekData()
+        loadSnapshotData()
     }
 
     // MARK: - Modal Actions
@@ -233,5 +258,35 @@ class LoggingHubViewModel {
     private static func dayLabel(for index: Int) -> String {
         let labels = ["M", "T", "W", "Th", "F", "Sa", "Su"]
         return labels[index]
+    }
+
+    private func loadSnapshotData() {
+        guard let dailyLog = repository.dailyLog(for: userId, on: selectedDate) else {
+            snapshotData = .empty
+            return
+        }
+
+        let moodEmoji = dailyLog.mood?.emoji
+        let moodLabel = dailyLog.mood?.displayName
+
+        let symptomNames = dailyLog.symptomLogs.compactMap { symptomLog -> String? in
+            guard let symptom = symptomCatalog.symptom(withId: symptomLog.symptomId) else { return nil }
+            return symptom.name.lowercased()
+        }
+
+        let flowLabel: String? = {
+            guard let flowLevel = dailyLog.flowLevel else { return nil }
+            if flowLevel == .none {
+                return "No flow"
+            }
+            return flowLevel.description
+        }()
+
+        snapshotData = DailySnapshotDisplayData(
+            moodEmoji: moodEmoji,
+            moodLabel: moodLabel,
+            symptomNames: symptomNames,
+            flowLabel: flowLabel
+        )
     }
 }
