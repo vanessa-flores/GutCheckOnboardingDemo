@@ -5,8 +5,6 @@ import SwiftUI
 struct DailySnapshotView: View {
     let displayData: DailySnapshotDisplayData
 
-    @State private var showAllSymptoms = false
-
     var body: some View {
         VStack(spacing: 0) {
             // Section Header
@@ -38,19 +36,18 @@ struct DailySnapshotView: View {
                     // Data State
                     VStack(spacing: 0) {
                         moodRow
+                            .padding(.top, AppTheme.Spacing.md)
                         Divider()
                         symptomsRow
                         Divider()
                         periodRow
+                            .padding(.bottom, AppTheme.Spacing.md)
                     }
                 }
             }
             .frame(maxWidth: .infinity)
             .background(AppTheme.Colors.surface)
             .cornerRadius(AppTheme.CornerRadius.large)
-        }
-        .onChange(of: displayData) { _, _ in
-            showAllSymptoms = false
         }
     }
 
@@ -81,74 +78,39 @@ struct DailySnapshotView: View {
             }
         }
         .padding(.horizontal, AppTheme.Spacing.md)
-        .padding(.vertical, AppTheme.Spacing.sm)
+        .padding(.bottom, AppTheme.Spacing.sm)
     }
 
     // MARK: - Symptoms Row
 
     private var symptomsRow: some View {
-        VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-            HStack(alignment: .top, spacing: AppTheme.Spacing.md) {
-                // Icon
-                Image(systemName: "stethoscope")
-                    .imageScale(.medium)
-                    .foregroundColor(AppTheme.Colors.primaryAction)
-                    .frame(width: 24)
+        HStack(alignment: .top, spacing: AppTheme.Spacing.md) {
+            // Icon
+            Image(systemName: "stethoscope")
+                .imageScale(.medium)
+                .foregroundColor(AppTheme.Colors.primaryAction)
+                .frame(width: 24)
 
-                // Label
-                Text("Symptoms")
+            // Label
+            Text("Symptoms")
+                .font(AppTheme.Typography.body)
+                .foregroundColor(AppTheme.Colors.textSecondary)
+
+            Spacer()
+
+            // Value
+            if let symptomsList = displayData.symptomsList {
+                Text(symptomsList)
                     .font(AppTheme.Typography.body)
-                    .foregroundColor(AppTheme.Colors.textSecondary)
-
-                Spacer()
-
-                // Value
-                if displayData.symptomNames.isEmpty {
-                    notLoggedText
-                } else {
-                    symptomText
-                        .multilineTextAlignment(.trailing)
-                }
-            }
-
-            // Show More/Less Button
-            if displayData.showOverflow {
-                Button(action: { showAllSymptoms.toggle() }) {
-                    Text(showAllSymptoms ? "Show less" : "Show more")
-                        .font(AppTheme.Typography.caption)
-                        .foregroundColor(AppTheme.Colors.primaryAction)
-                }
-                .frame(maxWidth: .infinity, alignment: .trailing)
+                    .fontWeight(.medium)
+                    .foregroundColor(AppTheme.Colors.textPrimary)
+                    .multilineTextAlignment(.trailing)
+            } else {
+                notLoggedText
             }
         }
         .padding(.horizontal, AppTheme.Spacing.md)
         .padding(.vertical, AppTheme.Spacing.sm)
-    }
-
-    @ViewBuilder
-    private var symptomText: some View {
-        if showAllSymptoms, let allText = displayData.allSymptomsText {
-            Text(allText)
-                .font(AppTheme.Typography.body)
-                .fontWeight(.medium)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .lineLimit(nil)
-        } else if let main = displayData.symptomPreviewMain {
-            if let overflow = displayData.symptomOverflowCount {
-                Text(main)
-                    .font(AppTheme.Typography.body)
-                    .fontWeight(.medium)
-                    .foregroundColor(AppTheme.Colors.textPrimary)
-                + Text(" …+\(overflow)")
-                    .font(AppTheme.Typography.body)
-                    .foregroundColor(AppTheme.Colors.textSecondary)
-            } else {
-                Text(main)
-                    .font(AppTheme.Typography.body)
-                    .fontWeight(.medium)
-                    .foregroundColor(AppTheme.Colors.textPrimary)
-            }
-        }
     }
 
     // MARK: - Period Row
@@ -180,7 +142,7 @@ struct DailySnapshotView: View {
             }
         }
         .padding(.horizontal, AppTheme.Spacing.md)
-        .padding(.vertical, AppTheme.Spacing.sm)
+        .padding(.top, AppTheme.Spacing.sm)
     }
 
     // MARK: - Shared Components
@@ -209,7 +171,7 @@ struct DailySnapshotView: View {
             displayData: DailySnapshotDisplayData(
                 moodEmoji: "🙂",
                 moodLabel: "good",
-                symptomNames: ["bloating", "fatigue"],
+                symptomNames: [],
                 flowLabel: nil
             )
         )
