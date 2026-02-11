@@ -8,13 +8,16 @@ struct DailySnapshotView: View {
     @State private var showAllSymptoms = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            // Section Label
-            Text("DAILY SNAPSHOT")
-                .font(AppTheme.Typography.caption)
-                .foregroundColor(AppTheme.Colors.textSecondary)
-                .padding(.top, AppTheme.Spacing.xl)
-                .padding(.bottom, AppTheme.Spacing.sm)
+        VStack(spacing: 0) {
+            // Section Header
+            HStack {
+                Text("Daily Snapshot")
+                    .font(AppTheme.Typography.title3)
+                    .foregroundColor(AppTheme.Colors.textPrimary)
+                Spacer()
+            }
+            .padding(.top, AppTheme.Spacing.lg)
+            .padding(.bottom, AppTheme.Spacing.sm)
 
             // Card Container
             VStack(spacing: 0) {
@@ -35,13 +38,9 @@ struct DailySnapshotView: View {
                     // Data State
                     VStack(spacing: 0) {
                         moodRow
-
                         Divider()
-
                         symptomsRow
-
                         Divider()
-
                         periodRow
                     }
                 }
