@@ -4,7 +4,7 @@ import Foundation
 
 /// Display data for the read-only Daily Snapshot card shown on the Logging Hub.
 /// Pre-formatted, ready-to-render data with no business logic.
-struct DailySnapshotDisplayData {
+struct DailySnapshotDisplayData: Equatable {
     let moodEmoji: String?
     let moodLabel: String?
     let symptomNames: [String]
