@@ -49,7 +49,6 @@ struct DailySnapshotView: View {
             .frame(maxWidth: .infinity)
             .background(AppTheme.Colors.surface)
             .cornerRadius(AppTheme.CornerRadius.large)
-            .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 2)
         }
         .onChange(of: displayData) { _, _ in
             showAllSymptoms = false
