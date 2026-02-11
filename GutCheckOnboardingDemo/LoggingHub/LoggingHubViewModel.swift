@@ -54,31 +54,41 @@ class LoggingHubViewModel {
         return "\(formatter.string(from: currentWeekStart)) - \(formatter.string(from: weekEnd))"
     }
 
-    /// "Log Today", "Log Yesterday", or "Log Tuesday"
+    /// "Log Today", "Log Yesterday", "Log Tuesday", "Log Tue, Jan 28", or "Log Tue, Jan 28, 2025"
     var sectionHeaderText: String {
         if isSelectedDateToday {
             return "Log Today"
         } else if isSelectedDateYesterday {
             return "Log Yesterday"
         } else {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "EEEE"
-            return "Log \(formatter.string(from: selectedDate))"
+            let today = Date()
+            let calendar = Calendar.current
+            let isInCurrentWeek = calendar.isDate(selectedDate, equalTo: today, toGranularity: .weekOfYear)
+
+            if isInCurrentWeek {
+                // Same week: "Log Tuesday"
+                let formatter = DateFormatter()
+                formatter.dateFormat = "EEEE"
+                return "Log \(formatter.string(from: selectedDate))"
+            } else {
+                // Different week: check if same year
+                let selectedYear = calendar.component(.year, from: selectedDate)
+                let currentYear = calendar.component(.year, from: today)
+
+                let formatter = DateFormatter()
+                if selectedYear == currentYear {
+                    // Same year: "Log Tue, Jan 28"
+                    formatter.dateFormat = "EEE, MMM d"
+                } else {
+                    // Different year: "Log Tue, Jan 28, 2025"
+                    formatter.dateFormat = "EEE, MMM d, yyyy"
+                }
+                return "Log \(formatter.string(from: selectedDate))"
+            }
         }
     }
 
-    /// "Today's check-in", "Yesterday's check-in", or "Tuesday's check-in"
-    var checkInCardTitle: String {
-        if isSelectedDateToday {
-            return "Today's check-in"
-        } else if isSelectedDateYesterday {
-            return "Yesterday's check-in"
-        } else {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "EEEE"
-            return "\(formatter.string(from: selectedDate))'s check-in"
-        }
-    }
+    let checkInCardTitle = "Daily check-in"
 
     // MARK: - Computed Properties (Selected Date Data)
 
