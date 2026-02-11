@@ -85,7 +85,7 @@ struct DailySnapshotView: View {
             }
         }
         .padding(.horizontal, AppTheme.Spacing.md)
-        .padding(.vertical, AppTheme.Spacing.md)
+        .padding(.vertical, AppTheme.Spacing.sm)
     }
 
     // MARK: - Symptoms Row
@@ -129,7 +129,7 @@ struct DailySnapshotView: View {
             }
         }
         .padding(.horizontal, AppTheme.Spacing.md)
-        .padding(.vertical, AppTheme.Spacing.md)
+        .padding(.vertical, AppTheme.Spacing.sm)
     }
 
     @ViewBuilder
@@ -199,7 +199,7 @@ struct DailySnapshotView: View {
             }
         }
         .padding(.horizontal, AppTheme.Spacing.md)
-        .padding(.vertical, AppTheme.Spacing.md)
+        .padding(.vertical, AppTheme.Spacing.sm)
     }
 }
 
