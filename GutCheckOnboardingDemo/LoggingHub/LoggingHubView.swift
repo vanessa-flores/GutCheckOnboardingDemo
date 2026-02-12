@@ -62,6 +62,7 @@ struct LoggingHubView: View {
                 .padding(.bottom, AppTheme.Spacing.xl)
             }
             .background(AppTheme.Colors.background)
+            .scrollBounceBehavior(.basedOnSize, axes: .vertical)
             .navigationTitle("Log")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
