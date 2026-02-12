@@ -55,7 +55,7 @@ class TodaysCheckInViewModel: SymptomCategorySelectable {
     }
 
     var symptomsByCategory: [(category: SymptomCategory, symptoms: [Symptom])] {
-        repository.symptomsGroupedByCategory()
+        SymptomFilteringService.dailyCheckInSymptoms(from: repository)
     }
 
     var formattedDate: String {
