@@ -66,4 +66,42 @@ struct SymptomFilteringService {
             return (category: category, symptoms: symptomsInCategory)
         }
     }
+
+    // MARK: - Daily Check-In Symptoms
+
+    /// Returns symptoms appropriate for daily check-in context
+    ///
+    /// Filters the full symptom catalog to ~56 symptoms across all categories by excluding
+    /// chronic/ongoing symptoms that don't meaningfully fluctuate day to day:
+    /// - Excludes 9 symptoms: irregular periods, muscle mass loss, brittle hair/nails,
+    ///   unwanted hair growth, skin changes, sensitive skin, UTIs, gum/dental problems,
+    ///   weight gain/changes
+    /// - Includes all other symptoms from the catalog
+    /// - Sorts by category displayOrder, then symptom displayOrder within category
+    ///
+    /// - Parameter repository: Repository providing access to the full symptom catalog
+    /// - Returns: Symptoms grouped by category in display order
+    static func dailyCheckInSymptoms(
+        from repository: SymptomCatalogProtocol
+    ) -> [(category: SymptomCategory, symptoms: [Symptom])] {
+        // Define chronic/ongoing symptoms to exclude (9 total)
+        let excludedSymptomNames: Set<String> = [
+            "Irregular periods",
+            "Muscle mass loss",
+            "Brittle hair/nails",
+            "Unwanted hair growth",
+            "Skin changes",
+            "Sensitive skin",
+            "Urinary Tract Infections (UTIs)",
+            "Gum/dental problems",
+            "Weight gain/changes"
+        ]
+
+        // Get all symptoms, exclude chronic/ongoing symptoms
+        let filteredSymptoms = repository.allSymptoms
+            .filter { !excludedSymptomNames.contains($0.name) }
+
+        // Group by category and sort by displayOrder
+        return filteredSymptoms.groupedByCategory()
+    }
 }
