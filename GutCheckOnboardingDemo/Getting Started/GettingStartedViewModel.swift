@@ -178,6 +178,14 @@ class GettingStartedViewModel: SymptomCategorySelectable {
     }
     
     private func handleSymptomSelection() {
+        saveSymptomPreferences()
         completeGettingStarted()
+    }
+    
+    // TODO: Persist selected symptoms as UserSymptomPreference when
+    // SymptomPreferenceProtocol is re-added. This will power user-customizable
+    // symptom lists in the daily check-in and cycle tracking contexts.
+    private func saveSymptomPreferences() {
+        print("Selected \(selectedSymptomIds.count) symptoms for tracking (persistence not yet implemented)")
     }
 }
