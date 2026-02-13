@@ -20,7 +20,6 @@ class LoggingHubViewModel {
 
     let userId: UUID
     private let repository: DailyLogRepositoryProtocol
-    private let symptomCatalog: SymptomCatalogProtocol
 
     // MARK: - Week State
 
@@ -113,12 +112,10 @@ class LoggingHubViewModel {
 
     init(
         userId: UUID,
-        repository: DailyLogRepositoryProtocol = InMemorySymptomRepository.shared,
-        symptomCatalog: SymptomCatalogProtocol = InMemorySymptomRepository.shared
+        repository: DailyLogRepositoryProtocol = InMemorySymptomRepository.shared
     ) {
         self.userId = userId
         self.repository = repository
-        self.symptomCatalog = symptomCatalog
         self.currentWeekStart = Date().startOfWeek
         self.selectedDate = Date().startOfDay
         loadWeekData()
@@ -270,7 +267,7 @@ class LoggingHubViewModel {
         let moodLabel = dailyLog.mood?.displayName
 
         let symptomNames = dailyLog.symptomLogs.compactMap { symptomLog -> String? in
-            guard let symptom = symptomCatalog.symptom(withId: symptomLog.symptomId) else { return nil }
+            guard let symptom = repository.symptom(withId: symptomLog.symptomId) else { return nil }
             return symptom.name.lowercased()
         }
 
