@@ -8,14 +8,6 @@ protocol SymptomCatalogProtocol {
     func symptomsGroupedByCategory() -> [(category: SymptomCategory, symptoms: [Symptom])]
 }
 
-// MARK: - Symptom Preference Protocol
-
-protocol SymptomPreferenceProtocol {
-    func preferences(for userId: UUID) -> [UserSymptomPreference]
-    func activePreferences(for userId: UUID) -> [UserSymptomPreference]
-    func save(preference: UserSymptomPreference)
-}
-
 // MARK: - Daily Log Repository Protocol
 
 protocol DailyLogRepositoryProtocol: SymptomCatalogProtocol {

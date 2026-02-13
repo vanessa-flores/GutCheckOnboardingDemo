@@ -5,7 +5,7 @@ import Foundation
 /// In-memory implementation of symptom repository protocols.
 /// Intended for development, testing, and demo purposes.
 /// Replace with a backend-connected implementation when ready.
-final class InMemorySymptomRepository: SymptomPreferenceProtocol, DailyLogRepositoryProtocol {
+final class InMemorySymptomRepository: DailyLogRepositoryProtocol {
 
     // MARK: - Singleton
 
@@ -14,7 +14,6 @@ final class InMemorySymptomRepository: SymptomPreferenceProtocol, DailyLogReposi
     // MARK: - Storage
 
     private var symptoms: [Symptom] = []
-    private var preferences: [UUID: [UserSymptomPreference]] = [:]  // userId -> preferences
     private var dailyLogs: [UUID: [Date: DailyLog]] = [:]            // userId -> date -> dailyLog
 
     // MARK: - Initialization
@@ -42,29 +41,6 @@ final class InMemorySymptomRepository: SymptomPreferenceProtocol, DailyLogReposi
 
     func symptomsGroupedByCategory() -> [(category: SymptomCategory, symptoms: [Symptom])] {
         symptoms.groupedByCategory()
-    }
-
-    // MARK: - SymptomPreferenceProtocol
-
-    func preferences(for userId: UUID) -> [UserSymptomPreference] {
-        preferences[userId] ?? []
-    }
-
-    func activePreferences(for userId: UUID) -> [UserSymptomPreference] {
-        preferences(for: userId).activelyTracked
-    }
-
-    func save(preference: UserSymptomPreference) {
-        var userPrefs = preferences[preference.userId] ?? []
-
-        // Update existing or add new
-        if let index = userPrefs.firstIndex(where: { $0.symptomId == preference.symptomId }) {
-            userPrefs[index] = preference
-        } else {
-            userPrefs.append(preference)
-        }
-
-        preferences[preference.userId] = userPrefs
     }
 
     // MARK: - DailyLogRepositoryProtocol
