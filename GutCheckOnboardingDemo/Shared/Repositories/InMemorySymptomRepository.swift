@@ -5,7 +5,7 @@ import Foundation
 /// In-memory implementation of symptom repository protocols.
 /// Intended for development, testing, and demo purposes.
 /// Replace with a backend-connected implementation when ready.
-final class InMemorySymptomRepository: SymptomCatalogProtocol, SymptomPreferenceProtocol, DailyLogRepositoryProtocol {
+final class InMemorySymptomRepository: SymptomPreferenceProtocol, DailyLogRepositoryProtocol {
 
     // MARK: - Singleton
 
@@ -84,17 +84,3 @@ final class InMemorySymptomRepository: SymptomCatalogProtocol, SymptomPreference
     }
 }
 
-// MARK: - Convenience Extensions
-
-extension InMemorySymptomRepository {
-    /// Bulk save preferences (used during onboarding)
-    func savePreferences(_ newPreferences: [UserSymptomPreference], for userId: UUID) {
-        for preference in newPreferences {
-            save(preference: preference)
-        }
-    }
-}
-
-// MARK: - CheckInRepositoryProtocol Extension
-
-extension InMemorySymptomRepository: CheckInRepositoryProtocol {}

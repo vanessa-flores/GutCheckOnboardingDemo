@@ -192,7 +192,9 @@ class GettingStartedViewModel: SymptomCategorySelectable {
         }
 
         // Save all preferences to repository
-        repository.savePreferences(preferences, for: userId)
+        for preference in preferences {
+            repository.save(preference: preference)
+        }
 
         print("Saved \(preferences.count) symptom preferences for user \(userId)")
     }

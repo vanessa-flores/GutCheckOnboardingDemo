@@ -18,7 +18,7 @@ class TodaysCheckInViewModel: SymptomCategorySelectable {
 
     let userId: UUID
     let date: Date
-    private let repository: CheckInRepositoryProtocol
+    private let repository: DailyLogRepositoryProtocol
 
     var selectedTab: CheckInTab = .mood
 
@@ -64,7 +64,7 @@ class TodaysCheckInViewModel: SymptomCategorySelectable {
         return formatter.string(from: date)
     }
 
-    init(userId: UUID, date: Date, repository: CheckInRepositoryProtocol) {
+    init(userId: UUID, date: Date, repository: DailyLogRepositoryProtocol) {
         self.userId = userId
         self.date = date
         self.repository = repository
