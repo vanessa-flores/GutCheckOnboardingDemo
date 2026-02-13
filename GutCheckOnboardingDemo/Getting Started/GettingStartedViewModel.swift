@@ -28,8 +28,7 @@ class GettingStartedViewModel: SymptomCategorySelectable {
 
     // MARK: - Private Properties
 
-    private let repository: InMemorySymptomRepository
-    private let userId: UUID
+    private let repository: SymptomCatalogProtocol
     private let onComplete: () -> Void
     
     // MARK: - Computed Properties
@@ -82,13 +81,11 @@ class GettingStartedViewModel: SymptomCategorySelectable {
 
     init(
         router: GettingStartedRouter = GettingStartedRouter(),
-        repository: InMemorySymptomRepository = .shared,
-        userId: UUID,
+        repository: SymptomCatalogProtocol = InMemorySymptomRepository.shared,
         onComplete: @escaping () -> Void
     ) {
         self.router = router
         self.repository = repository
-        self.userId = userId
         self.onComplete = onComplete
 
         // Initialize expanded categories with featured categories
@@ -184,16 +181,11 @@ class GettingStartedViewModel: SymptomCategorySelectable {
         saveSymptomPreferences()
         completeGettingStarted()
     }
-
+    
+    // TODO: Persist selected symptoms as UserSymptomPreference when
+    // SymptomPreferenceProtocol is re-added. This will power user-customizable
+    // symptom lists in the daily check-in and cycle tracking contexts.
     private func saveSymptomPreferences() {
-        // Create UserSymptomPreference for each selected symptom
-        let preferences = selectedSymptomIds.map { symptomId in
-            UserSymptomPreference.track(symptomId: symptomId, for: userId)
-        }
-
-        // Save all preferences to repository
-        repository.savePreferences(preferences, for: userId)
-
-        print("Saved \(preferences.count) symptom preferences for user \(userId)")
+        print("Selected \(selectedSymptomIds.count) symptoms for tracking (persistence not yet implemented)")
     }
 }

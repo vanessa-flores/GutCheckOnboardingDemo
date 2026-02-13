@@ -6,7 +6,7 @@ struct TodaysCheckInModal: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: TodaysCheckInViewModel
 
-    init(userId: UUID, date: Date, repository: CheckInRepositoryProtocol) {
+    init(userId: UUID, date: Date, repository: DailyLogRepositoryProtocol) {
         let vm = TodaysCheckInViewModel(userId: userId, date: date, repository: repository)
         _viewModel = State(initialValue: vm)
     }

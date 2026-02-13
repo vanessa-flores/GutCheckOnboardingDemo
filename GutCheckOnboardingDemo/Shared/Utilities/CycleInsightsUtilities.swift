@@ -18,11 +18,11 @@ struct CycleInsightsUtilities {
     /// Computes cycle insights for a user based on their daily logs and symptoms
     /// - Parameters:
     ///   - userId: The user's ID
-    ///   - repository: Combined repository providing daily logs and symptom data
+    ///   - repository: Repository providing daily logs and symptom data
     /// - Returns: CycleInsights if sufficient data exists, nil otherwise
     static func computeInsights(
         for userId: UUID,
-        using repository: any DailyLogRepositoryProtocol & SymptomCatalogProtocol
+        using repository: DailyLogRepositoryProtocol
     ) -> CycleInsights? {
         // 1. Get all daily logs for the user
         let dailyLogs = repository.dailyLogs(for: userId)

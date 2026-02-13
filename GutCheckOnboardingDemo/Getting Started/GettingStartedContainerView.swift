@@ -10,7 +10,7 @@ struct GettingStartedContainerView: View {
 
     init(userId: UUID, onComplete: @escaping () -> Void) {
         self.userId = userId
-        self._viewModel = State(initialValue: GettingStartedViewModel(userId: userId, onComplete: onComplete))
+        self._viewModel = State(initialValue: GettingStartedViewModel(onComplete: onComplete))
     }
     
     // MARK: - Body
